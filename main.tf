@@ -13,6 +13,7 @@ locals {
 }
 
 provider "google" {
+  version = "2.17.0"
   project = var.project
   region  = local.region
 }
@@ -53,15 +54,22 @@ resource "google_container_cluster" "domino_cluster" {
     }
   }
 
-  private_cluster_config {
-    enable_private_endpoint = true
-    enable_private_nodes    = true
-    master_ipv4_cidr_block  = "10.0.1.0/28"
-  }
+  # TODO: Private clusters need to be enabled
+  # private_cluster_config {
+  #   enable_private_endpoint = true
+  #   enable_private_nodes    = true
+  #   master_ipv4_cidr_block  = "10.0.1.0/28"
+  # }
 
-  ip_allocation_policy {}
+  #  # For testing & dev purposes. Should be removed for production.
+  # ip_allocation_policy {}
 
-  master_authorized_networks_config {}
+  # master_authorized_networks_config {
+  #   cidr_blocks {
+  #       cidr_block   = "0.0.0.0/8"
+  #       display_name = "all-for-testing"
+  #   }
+  # }
 }
 
 resource "google_container_node_pool" "platform" {
