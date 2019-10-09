@@ -6,13 +6,15 @@ terraform {
   }
 }
 
-provider "google" {
-  project = "${var.project}"
+locals {
+  # Converts a cluster's location to a zone/region. A 'location' may be a region or zone: a region becomes the '[region]-a' zone.
+  region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location)-1)
+  zone = length(split("-", var.location)) == 3 ? var.location : format("%s-a", var.location)
 }
 
-locals {
-  # Converts a cluster's location to a zone. A 'location' may be a region or zone: a region becomes the '[region]-a' zone.
-  zone = length(split("-", google_container_cluster.domino_cluster.location)) == 3 ? google_container_cluster.domino_cluster.location : format("%s-a", google_container_cluster.domino_cluster.location)
+provider "google" {
+  project = "${var.project}"
+  region = "${local.region}"
 }
 
 resource "google_filestore_instance" "nfs" {
