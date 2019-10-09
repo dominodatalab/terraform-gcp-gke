@@ -1,20 +1,20 @@
 terraform {
   required_version = ">= 0.12.0"
   backend "gcs" {
-    bucket  = "domino-terraform-default"  # Should specify using cli -backend-config="bucket=domino-terraform-default"
+    bucket = "domino-terraform-default" # Should specify using cli -backend-config="bucket=domino-terraform-default"
     # prefix  = "terraform/state"  # Specify using cli -backend-config="prefix=domino-[cluster-name]/terraform/state"
   }
 }
 
 locals {
   # Converts a cluster's location to a zone/region. A 'location' may be a region or zone: a region becomes the '[region]-a' zone.
-  region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location)-1)
-  zone = length(split("-", var.location)) == 3 ? var.location : format("%s-a", var.location)
+  region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location) - 1)
+  zone   = length(split("-", var.location)) == 3 ? var.location : format("%s-a", var.location)
 }
 
 provider "google" {
   project = var.project
-  region = local.region
+  region  = local.region
 }
 
 resource "google_filestore_instance" "nfs" {
@@ -34,15 +34,15 @@ resource "google_filestore_instance" "nfs" {
 }
 
 resource "google_container_cluster" "domino_cluster" {
-  name     = var.cluster_name
-  location = var.location
+  name        = var.cluster_name
+  location    = var.location
   description = var.description
 
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
   # node pool and immediately delete it.
   remove_default_node_pool = true
-  initial_node_count = 1
+  initial_node_count       = 1
 
   master_auth {
     username = ""
@@ -55,9 +55,9 @@ resource "google_container_cluster" "domino_cluster" {
 }
 
 resource "google_container_node_pool" "platform" {
-  name       = "platform"
-  location   = google_container_cluster.domino_cluster.location
-  cluster    = google_container_cluster.domino_cluster.name
+  name     = "platform"
+  location = google_container_cluster.domino_cluster.location
+  cluster  = google_container_cluster.domino_cluster.name
 
   initial_node_count = var.platform_nodes_min
   autoscaling {
@@ -73,7 +73,7 @@ resource "google_container_node_pool" "platform" {
       "dominodatalab.com/node-pool" = "platform"
     }
 
-    disk_size_gb = 100
+    disk_size_gb    = 100
     local_ssd_count = 2
   }
 
@@ -83,9 +83,9 @@ resource "google_container_node_pool" "platform" {
 }
 
 resource "google_container_node_pool" "compute" {
-  name       = "compute"
-  location   = google_container_cluster.domino_cluster.location
-  cluster    = google_container_cluster.domino_cluster.name
+  name     = "compute"
+  location = google_container_cluster.domino_cluster.location
+  cluster  = google_container_cluster.domino_cluster.name
 
   initial_node_count = var.compute_nodes_min
   autoscaling {
@@ -101,7 +101,7 @@ resource "google_container_node_pool" "compute" {
       "dominodatalab.com/node-pool" = "compute"
     }
 
-    disk_size_gb = 100
+    disk_size_gb    = 100
     local_ssd_count = 2
   }
 
@@ -111,9 +111,9 @@ resource "google_container_node_pool" "compute" {
 }
 
 resource "google_container_node_pool" "build" {
-  name       = "build"
-  location   = google_container_cluster.domino_cluster.location
-  cluster    = google_container_cluster.domino_cluster.name
+  name     = "build"
+  location = google_container_cluster.domino_cluster.location
+  cluster  = google_container_cluster.domino_cluster.name
 
   initial_node_count = var.build_nodes_min
   autoscaling {
@@ -126,11 +126,11 @@ resource "google_container_node_pool" "build" {
     machine_type = var.build_node_type
 
     labels = {
-      "domino/build-node" = "true"
+      "domino/build-node"           = "true"
       "dominodatalab.com/node-pool" = "build"
     }
 
-    disk_size_gb = 100
+    disk_size_gb    = 100
     local_ssd_count = 2
   }
 

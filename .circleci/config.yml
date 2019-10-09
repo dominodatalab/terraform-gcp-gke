@@ -33,8 +33,16 @@ jobs:
             echo ${CLOUDSDK_SERVICE_KEY} > /tmp/gcp-${CIRCLE_BUILD_NUM}.json
 
       - run:
+          name: Terraform fmt
+          command: terraform fmt -check
+
+      - run:
           name: Terraform init
           command: terraform init -backend-config="prefix=/terraform/state/${TF_VAR_cluster_name}"
+
+      - run:
+          name: Terraform validate
+          command: terraform validate -json
 
       - run:
           name: Terraform apply
