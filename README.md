@@ -17,18 +17,19 @@ module "rancher" {
 Please submit any feature enhancements, bug fixes, or ideas via pull requests or issues.
 
 ### Manual Deployment
-First configure the environment
-```
-gcloud auth application-default login
-export CLUSTER_NAME=[cluster-name]
-terraform init -backend-config="prefix=/terraform/state/${CLUSTER_NAME}"
-```
+1. Install [gcloud](https://cloud.google.com/sdk/docs/quickstarts) and configure the environment
+    ```
+    gcloud auth application-default login
+    export TF_VAR_cluster_name=[cluster-name]
+    terraform init -backend-config="prefix=/terraform/state/${TF_VAR_cluster_name}"
+    ```
 
-```
-terraform apply -var cluster_name=${CLUSTER_NAME} -auto-approve
-```
+1. With the environment setup, you can now apply the terraform module
+    ```
+    terraform apply -auto-approve
+    ```
 
-Be sure to cleanup the cluster after you are done working
-```
-terraform destroy -var cluster_name=${CLUSTER_NAME} -auto-approve
-```
+1. Be sure to cleanup the cluster after you are done working
+    ```
+    terraform destroy -auto-approve
+    ```
