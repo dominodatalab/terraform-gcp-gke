@@ -18,6 +18,11 @@ provider "google" {
   region  = local.region
 }
 
+resource "google_compute_network" "vpc_network" {
+  name = var.cluster_name
+  description = var.description
+}
+
 resource "google_filestore_instance" "nfs" {
   name = var.cluster_name
   tier = "STANDARD"
@@ -29,7 +34,7 @@ resource "google_filestore_instance" "nfs" {
   }
 
   networks {
-    network = "default"
+    network = google_compute_network.vpc_network.name
     modes   = ["MODE_IPV4"]
   }
 }
@@ -44,6 +49,8 @@ resource "google_container_cluster" "domino_cluster" {
   # node pool and immediately delete it.
   remove_default_node_pool = true
   initial_node_count       = 1
+
+  network = google_compute_network.vpc_network.self_link
 
   master_auth {
     username = ""
