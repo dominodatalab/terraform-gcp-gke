@@ -50,7 +50,7 @@ variable "compute_node_type" {
 variable "location" {
   type = string
   default = "us-west1-a"
-  description = "The location (region or zone) of the cluster. A zone creates a single master. A region creates replicated masters"
+  description = "The location (region or zone) of the cluster. A zone creates a single master. Specifying a region creates replicated masters accross all zones"
 }
 
 variable "platform_nodes_max" {
