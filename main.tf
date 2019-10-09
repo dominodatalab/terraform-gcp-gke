@@ -52,6 +52,16 @@ resource "google_container_cluster" "domino_cluster" {
       issue_client_certificate = true
     }
   }
+
+  private_cluster_config {
+    enable_private_endpoint = true
+    enable_private_nodes = true
+    master_ipv4_cidr_block = "10.0.1.0/28"
+  }
+
+  ip_allocation_policy {}
+
+  master_authorized_networks_config {}
 }
 
 resource "google_container_node_pool" "platform" {
