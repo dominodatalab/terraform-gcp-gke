@@ -34,7 +34,7 @@ resource "google_filestore_instance" "nfs" {
 resource "google_container_cluster" "domino_cluster" {
   name     = "${var.cluster_name}"
   location = "${var.location}"
-  description = "The primary Domino K8s Cluster for ${var.cluster_name}"
+  description = "${var.description}"
 
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default

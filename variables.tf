@@ -27,6 +27,11 @@ variable "build_node_type" {
   default = "n1-standard-1"
 }
 
+variable "description" {
+  type = string
+  default = "The Domino K8s Cluster"
+}
+
 variable "compute_nodes_max" {
   type = number
   default = 5
