@@ -13,14 +13,14 @@ locals {
 }
 
 provider "google" {
-  project = "${var.project}"
-  region = "${local.region}"
+  project = var.project
+  region = local.region
 }
 
 resource "google_filestore_instance" "nfs" {
-  name = "${var.cluster_name}"  
+  name = var.cluster_name
   tier = "STANDARD"
-  zone = "${local.zone}"
+  zone = local.zone
 
   file_shares {
     capacity_gb = 2660
@@ -34,9 +34,9 @@ resource "google_filestore_instance" "nfs" {
 }
 
 resource "google_container_cluster" "domino_cluster" {
-  name     = "${var.cluster_name}"
-  location = "${var.location}"
-  description = "${var.description}"
+  name     = var.cluster_name
+  location = var.location
+  description = var.description
 
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
@@ -56,18 +56,18 @@ resource "google_container_cluster" "domino_cluster" {
 
 resource "google_container_node_pool" "platform" {
   name       = "platform"
-  location   = "${google_container_cluster.domino_cluster.location}"
-  cluster    = "${google_container_cluster.domino_cluster.name}"
+  location   = google_container_cluster.domino_cluster.location
+  cluster    = google_container_cluster.domino_cluster.name
 
-  initial_node_count = "${var.platform_nodes_min}"
+  initial_node_count = var.platform_nodes_min
   autoscaling {
-    max_node_count = "${var.platform_nodes_max}"
-    min_node_count = "${var.platform_nodes_min}"
+    max_node_count = var.platform_nodes_max
+    min_node_count = var.platform_nodes_min
   }
 
   node_config {
-    preemptible  = "${var.platform_nodes_preemptible}"
-    machine_type = "${var.platform_node_type}"
+    preemptible  = var.platform_nodes_preemptible
+    machine_type = var.platform_node_type
 
     labels = {
       "dominodatalab.com/node-pool" = "platform"
@@ -84,18 +84,18 @@ resource "google_container_node_pool" "platform" {
 
 resource "google_container_node_pool" "compute" {
   name       = "compute"
-  location   = "${google_container_cluster.domino_cluster.location}"
-  cluster    = "${google_container_cluster.domino_cluster.name}"
+  location   = google_container_cluster.domino_cluster.location
+  cluster    = google_container_cluster.domino_cluster.name
 
-  initial_node_count = "${var.compute_nodes_min}"
+  initial_node_count = var.compute_nodes_min
   autoscaling {
-    max_node_count = "${var.compute_nodes_max}"
-    min_node_count = "${var.compute_nodes_min}"
+    max_node_count = var.compute_nodes_max
+    min_node_count = var.compute_nodes_min
   }
 
   node_config {
-    preemptible  = "${var.compute_nodes_preemptible}"
-    machine_type = "${var.platform_node_type}"
+    preemptible  = var.compute_nodes_preemptible
+    machine_type = var.platform_node_type
 
     labels = {
       "dominodatalab.com/node-pool" = "compute"
@@ -112,18 +112,18 @@ resource "google_container_node_pool" "compute" {
 
 resource "google_container_node_pool" "build" {
   name       = "build"
-  location   = "${google_container_cluster.domino_cluster.location}"
-  cluster    = "${google_container_cluster.domino_cluster.name}"
+  location   = google_container_cluster.domino_cluster.location
+  cluster    = google_container_cluster.domino_cluster.name
 
-  initial_node_count = "${var.build_nodes_min}"
+  initial_node_count = var.build_nodes_min
   autoscaling {
-    max_node_count = "${var.build_nodes_max}"
-    min_node_count = "${var.build_nodes_min}"
+    max_node_count = var.build_nodes_max
+    min_node_count = var.build_nodes_min
   }
 
   node_config {
-    preemptible  = "${var.build_nodes_preemptible}"
-    machine_type = "${var.build_node_type}"
+    preemptible  = var.build_nodes_preemptible
+    machine_type = var.build_node_type
 
     labels = {
       "domino/build-node" = "true"
