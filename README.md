@@ -2,12 +2,25 @@
 
 ## Usage
 
-### Create a development GKE cluster containing autoscalers
+### Create a development GKE cluster
 ```hcl
 module "rancher" {
   source   = "github.com/cerebrotech/terraform-gcp-gke"
 
   cluster_name   = "cluster-name"
+}
+```
+
+### Create a prod GKE cluster
+```hcl
+module "rancher" {
+  source   = "github.com/cerebrotech/terraform-gcp-gke"
+
+  cluster_name   = "cluster-name"
+  project = "gcp-project"
+  location = "us-west1"
+  
+  # Some more variables may need to be configured to meet specific needs
 }
 ```
 
