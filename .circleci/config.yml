@@ -1,0 +1,45 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: google/cloud-sdk
+    environment:
+      CLOUDSDK_CORE_PROJECT: domino-eng-platform-dev
+      CLOUDSDK_COMPUTE_ZONE: us-west1-a
+      GOOGLE_APPLICATION_CREDENTIALS: /root/.config/gcloud/legacy_credentials/terraform-gke-test@domino-eng-platform-dev.iam.gserviceaccount.com/adc.json
+      TERRAFORM_VERSION: 0.12.10
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install Terraform
+          command: |
+            apt-get install -y wget zip
+            wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+            unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+            unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin
+
+      - run:
+          name: Activate GCP Service Account
+          command: echo ${CLOUDSDK_SERVICE_KEY} | gcloud auth activate-service-account --key-file=-
+
+      - run:
+          name: Configure test cluster env
+          command: |
+            echo 'export TF_VAR_cluster_name="terraform-gke-test-${CIRCLE_BUILD_NUM}"' >> $BASH_ENV
+            echo 'export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp-${CIRCLE_BUILD_NUM}.json"' >> $BASH_ENV
+            echo ${CLOUDSDK_SERVICE_KEY} > /tmp/gcp-${CIRCLE_BUILD_NUM}.json
+  
+      - run:
+          name: Terraform init
+          command: terraform init -backend-config="prefix=/terraform/state/${TF_VAR_cluster_name}"
+
+      - run:
+          name: Terraform apply
+          command: terraform apply -auto-approve
+
+      - run:
+          name: Terraform destroy
+          command: terraform destroy -auto-approve
+          when: always
