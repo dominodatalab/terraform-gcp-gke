@@ -10,7 +10,7 @@ locals {
   enable_private_endpoint = length(var.master_authorized_networks_config.cidr_block) == 0
 
   # Converts a cluster's location to a zone/region. A 'location' may be a region or zone: a region becomes the '[region]-a' zone.
-  region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location) - 1)
+  region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location) - 2)
   zone   = length(split("-", var.location)) == 3 ? var.location : format("%s-a", var.location)
 }
 
@@ -23,6 +23,19 @@ provider "google" {
 resource "google_compute_network" "vpc_network" {
   name        = var.cluster_name
   description = var.description
+}
+
+resource "google_compute_router" "router" {
+  name    = var.cluster_name
+  network = google_compute_network.vpc_network.name
+}
+
+resource "google_compute_router_nat" "nat" {
+  name                               = var.cluster_name
+  router                             = google_compute_router.router.name
+  region                             = local.region
+  nat_ip_allocate_option             = "AUTO_ONLY"
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
 }
 
 resource "google_filestore_instance" "nfs" {
