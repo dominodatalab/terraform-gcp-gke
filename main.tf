@@ -7,6 +7,8 @@ terraform {
 }
 
 locals {
+  enable_private_endpoint = length(var.master_authorized_networks_config.cidr_block) == 0
+
   # Converts a cluster's location to a zone/region. A 'location' may be a region or zone: a region becomes the '[region]-a' zone.
   region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location) - 1)
   zone   = length(split("-", var.location)) == 3 ? var.location : format("%s-a", var.location)
@@ -63,7 +65,7 @@ resource "google_container_cluster" "domino_cluster" {
 
   # TODO: Private clusters need to be enabled
   private_cluster_config {
-    enable_private_endpoint = true
+    enable_private_endpoint = local.enable_private_endpoint
     enable_private_nodes    = true
     master_ipv4_cidr_block  = "172.16.1.0/28"
   }
