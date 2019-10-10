@@ -62,21 +62,21 @@ resource "google_container_cluster" "domino_cluster" {
   }
 
   # TODO: Private clusters need to be enabled
-  # private_cluster_config {
-  #   enable_private_endpoint = true
-  #   enable_private_nodes    = true
-  #   master_ipv4_cidr_block  = "10.0.1.0/28"
-  # }
+  private_cluster_config {
+    enable_private_endpoint = true
+    enable_private_nodes    = true
+    master_ipv4_cidr_block  = "10.0.1.0/28"
+  }
 
-  #  # For testing & dev purposes. Should be removed for production.
-  # ip_allocation_policy {}
+  ip_allocation_policy {}
 
-  # master_authorized_networks_config {
-  #   cidr_blocks {
-  #       cidr_block   = "0.0.0.0/8"
-  #       display_name = "all-for-testing"
-  #   }
-  # }
+  # For testing & dev purposes. Should be removed for production.
+  master_authorized_networks_config {
+    cidr_blocks {
+        cidr_block   = var.master_authorized_networks_config.cidr_block
+        display_name = var.master_authorized_networks_config.display_name
+    }
+  }
 }
 
 resource "google_container_node_pool" "platform" {

@@ -58,6 +58,18 @@ variable "location" {
   description = "The location (region or zone) of the cluster. A zone creates a single master. Specifying a region creates replicated masters accross all zones"
 }
 
+variable "master_authorized_networks_config" {
+  type = object({
+    cidr_block   = string
+    display_name = string
+  })
+  default = {
+    cidr_block   = "12.245.82.18/32"
+    display_name = "domino-hq-for-testing"
+  }
+  description = "Configuration options for master authorized networks."
+}
+
 variable "platform_nodes_max" {
   type    = number
   default = 3
