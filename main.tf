@@ -63,7 +63,6 @@ resource "google_container_cluster" "domino_cluster" {
     }
   }
 
-  # TODO: Private clusters need to be enabled
   private_cluster_config {
     enable_private_endpoint = local.enable_private_endpoint
     enable_private_nodes    = true
