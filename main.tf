@@ -22,6 +22,8 @@ provider "google" {
 
 provider "google-beta" {
   version = "2.17.0"
+  project = var.project
+  region  = local.region
 }
 
 resource "google_compute_address" "static_ip_address" {
