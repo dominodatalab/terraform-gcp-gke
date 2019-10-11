@@ -11,7 +11,7 @@ output "workload_identity_service_accounts" {
     "compute", google_service_account.compute.unique_id,
     "platform", google_service_account.platform.unique_id,
   )
-  description = "GKE cluster workload identity namespace IAM service accounts"
+  description = "GKE cluster Workload Identity namespace IAM service accounts"
 }
 
 output "domino_ipv4_addr" {
