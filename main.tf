@@ -21,7 +21,7 @@ provider "google" {
 }
 
 resource "google_compute_address" "static_ip_address" {
-  name = var.cluster_name
+  name        = var.cluster_name
   description = "External static IPv4 address for var.description"
 }
 
@@ -41,6 +41,23 @@ resource "google_compute_router_nat" "nat" {
   region                             = local.region
   nat_ip_allocate_option             = "AUTO_ONLY"
   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+}
+
+resource "google_storage_bucket" "bucket" {
+  name     = var.cluster_name
+  location = length(split("-", var.location))[0]
+
+  versioning = true
+  lifecycle_rule {
+    action {
+      type = Delete
+    }
+    condition {
+      age = 365
+    }
+  }
+
+  force_destroy = true
 }
 
 resource "google_filestore_instance" "nfs" {
