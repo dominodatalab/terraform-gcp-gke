@@ -4,13 +4,13 @@ resource "google_service_account" "default" {
 }
 
 resource "google_service_account" "kube_system" {
-  account_id   = "${var.cluster_name}-kube-system"
-  display_name = "${var.cluster_name}-kube-system"
+  account_id   = "${var.cluster_name}-system"
+  display_name = "${var.cluster_name}-system"
 }
 
 resource "google_service_account" "kube_public" {
-  account_id   = "${var.cluster_name}-kube-public"
-  display_name = "${var.cluster_name}-kube-public"
+  account_id   = "${var.cluster_name}-public"
+  display_name = "${var.cluster_name}-public"
 }
 
 resource "google_service_account" "compute" {
@@ -23,7 +23,7 @@ resource "google_service_account" "platform" {
   display_name = "${var.cluster_name}-platform"
 }
 
-resource "google_service_account_iam_binding" "default_service_account" {
+resource "google_service_account_iam_binding" "service_account" {
   service_account_id = google_service_account.default.name
   role               = "roles/iam.serviceAccountUser"
   members            = ["serviceAccount:${google_service_account.default.email}"]
