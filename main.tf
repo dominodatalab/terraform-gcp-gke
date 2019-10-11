@@ -21,7 +21,7 @@ provider "google" {
 }
 
 provider "google-beta" {
-   version = "2.17.0"
+  version = "2.17.0"
 }
 
 resource "google_compute_address" "static_ip_address" {
