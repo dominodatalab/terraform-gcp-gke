@@ -20,6 +20,10 @@ provider "google" {
   region  = local.region
 }
 
+provider "google-beta" {
+   version = "2.17.0"
+}
+
 resource "google_compute_address" "static_ip_address" {
   name        = var.cluster_name
   description = "External static IPv4 address for var.description"
@@ -80,6 +84,8 @@ resource "google_filestore_instance" "nfs" {
 }
 
 resource "google_container_cluster" "domino_cluster" {
+  provider = "google-beta"
+
   name        = var.cluster_name
   location    = var.location
   description = var.description
@@ -99,6 +105,10 @@ resource "google_container_cluster" "domino_cluster" {
     client_certificate_config {
       issue_client_certificate = true
     }
+  }
+
+  vertical_pod_autoscaling {
+    enabled = true
   }
 
   private_cluster_config {
@@ -143,6 +153,7 @@ resource "google_container_node_pool" "platform" {
   management {
     auto_repair = true
   }
+
 }
 
 resource "google_container_node_pool" "compute" {
