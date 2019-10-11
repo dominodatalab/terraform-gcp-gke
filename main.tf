@@ -239,28 +239,3 @@ resource "google_kms_crypto_key" "crypto_key" {
   rotation_period = "86400.0s"
   purpose         = "ENCRYPT_DECRYPT"
 }
-
-resource "google_service_account" "default" {
-  account_id   = "${var.cluster_name}-default"
-  display_name = "${var.cluster_name}-default"
-}
-
-resource "google_service_account" "kube_system" {
-  account_id   = "${var.cluster_name}-kube-system"
-  display_name = "${var.cluster_name}-kube-system"
-}
-
-resource "google_service_account" "kube_public" {
-  account_id   = "${var.cluster_name}-kube-public"
-  display_name = "${var.cluster_name}-kube-public"
-}
-
-resource "google_service_account" "compute" {
-  account_id   = "${var.cluster_name}-compute"
-  display_name = "${var.cluster_name}-compute"
-}
-
-resource "google_service_account" "platform" {
-  account_id   = "${var.cluster_name}-platform"
-  display_name = "${var.cluster_name}-platform"
-}
