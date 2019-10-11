@@ -24,6 +24,18 @@ module "rancher" {
 }
 ```
 
+## IAM Permissions
+The following project [IAM permissions](https://console.cloud.google.com/iam-admin/iam) must be granted to the provisioning user/service:
+- Cloud KMS Admin
+- Compute Instance Admin (v1)
+- Compute Network Admin
+- Kubernetes Engine Admin
+- Cloud Filestore Editor
+- Service Account Admin
+- Service Account User
+- Storage Admin
+
+It may be possible to lower the "admin" privilage levels to a "creator" level if provisioning cleanup is not required. However, the permissions level for "creator-only" has not been tested. It is assume that a cluster creator can also cleanup (i.e. destroy) the cluster.
 
 ## Development
 
