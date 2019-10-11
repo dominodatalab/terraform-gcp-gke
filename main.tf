@@ -45,12 +45,15 @@ resource "google_compute_router_nat" "nat" {
 
 resource "google_storage_bucket" "bucket" {
   name     = var.cluster_name
-  location = length(split("-", var.location))[0]
+  location = split("-", var.location)[0]
 
-  versioning = true
+  versioning {
+    enabled = true
+  }
+
   lifecycle_rule {
     action {
-      type = Delete
+      type = "Delete"
     }
     condition {
       age = 365
