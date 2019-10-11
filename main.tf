@@ -98,6 +98,8 @@ resource "google_container_cluster" "domino_cluster" {
 
   network = google_compute_network.vpc_network.self_link
 
+  enable_tpu = true
+
   master_auth {
     username = ""
     password = ""
