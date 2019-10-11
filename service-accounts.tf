@@ -23,32 +23,32 @@ resource "google_service_account" "platform" {
   display_name = "${var.cluster_name}-platform"
 }
 
-resource "google_service_account_iam_binding" "service_account" {
-  service_account_id = google_service_account.default.name
-  role               = "roles/iam.serviceAccountUser"
-  members            = ["serviceAccount:${google_service_account.default.email}"]
+resource "google_project_iam_member" "service_account" {
+  project = var.project
+  role    = "roles/iam.serviceAccountUser"
+  member  = "serviceAccount:${google_service_account.default.email}"
 }
 
-resource "google_service_account_iam_binding" "kube_system_service_account" {
-  service_account_id = google_service_account.kube_system.name
-  role               = "roles/iam.serviceAccountUser"
-  members            = ["serviceAccount:${google_service_account.kube_system.email}"]
+resource "google_project_iam_member" "kube_system_service_account" {
+  project = var.project
+  role    = "roles/iam.serviceAccountUser"
+  member  = "serviceAccount:${google_service_account.kube_system.email}"
 }
 
-resource "google_service_account_iam_binding" "kube_public_service_account" {
-  service_account_id = google_service_account.kube_public.name
-  role               = "roles/iam.serviceAccountUser"
-  members            = ["serviceAccount:${google_service_account.kube_public.email}"]
+resource "google_project_iam_member" "kube_public_service_account" {
+  project = var.project
+  role    = "roles/iam.serviceAccountUser"
+  member  = "serviceAccount:${google_service_account.kube_public.email}"
 }
 
-resource "google_service_account_iam_binding" "compute_service_account" {
-  service_account_id = google_service_account.compute.name
-  role               = "roles/iam.serviceAccountUser"
-  members            = ["serviceAccount:${google_service_account.compute.email}"]
+resource "google_project_iam_member" "compute_service_account" {
+  project = var.project
+  role    = "roles/iam.serviceAccountUser"
+  member  = "serviceAccount:${google_service_account.compute.email}"
 }
 
-resource "google_service_account_iam_binding" "platform_service_account" {
-  service_account_id = google_service_account.platform.name
-  role               = "roles/iam.serviceAccountUser"
-  members            = ["serviceAccount:${google_service_account.platform.email}"]
+resource "google_project_iam_member" "platform_service_account" {
+  project = var.project
+  role    = "roles/iam.serviceAccountUser"
+  member  = "serviceAccount:${google_service_account.platform.email}"
 }
