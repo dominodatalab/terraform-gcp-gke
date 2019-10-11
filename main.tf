@@ -129,6 +129,13 @@ resource "google_container_cluster" "domino_cluster" {
       display_name = var.master_authorized_networks_config.display_name
     }
   }
+
+  # Application-layer Secrets Encryption
+  database_encryption {
+    state    = "ENCRYPTED"
+    key_name = google_kms_crypto_key.crypto_key.self_link
+  }
+
 }
 
 resource "google_container_node_pool" "platform" {
@@ -215,4 +222,16 @@ resource "google_container_node_pool" "build" {
   management {
     auto_repair = true
   }
+}
+
+resource "google_kms_key_ring" "key_ring" {
+  name     = var.cluster_name
+  location = local.region
+}
+
+resource "google_kms_crypto_key" "crypto_key" {
+  name            = var.cluster_name
+  key_ring        = google_kms_key_ring.key_ring.self_link
+  rotation_period = "86400.0s"
+  purpose         = "ENCRYPT_DECRYPT"
 }
