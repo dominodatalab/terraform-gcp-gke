@@ -20,6 +20,11 @@ provider "google" {
   region  = local.region
 }
 
+resource "google_compute_address" "static_ip_address" {
+  name = var.cluster_name
+  description = "External static IPv4 address for var.description"
+}
+
 resource "google_compute_network" "vpc_network" {
   name        = var.cluster_name
   description = var.description
