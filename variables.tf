@@ -91,7 +91,7 @@ variable "platform_node_type" {
 }
 
 variable "enable_vertical_pod_autoscaling" {
-  type        = boolean
+  type        = bool
   default     = true
   description = "Enable GKE vertical scaling"
 }
