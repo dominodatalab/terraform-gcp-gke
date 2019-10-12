@@ -229,7 +229,7 @@ resource "google_container_node_pool" "build" {
 }
 
 resource "google_kms_key_ring" "key_ring" {
-  name     = var.cluster_name
+  name     = "${var.cluster_name}-${formatdate("YYYYMMDDhhmmss", timestamp())}"
   location = local.region
 }
 
