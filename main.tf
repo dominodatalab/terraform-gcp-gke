@@ -112,7 +112,7 @@ resource "google_container_cluster" "domino_cluster" {
   }
 
   vertical_pod_autoscaling {
-    enabled = true
+    enabled = var.enable_vertical_pod_autoscaling
   }
 
   private_cluster_config {

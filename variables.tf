@@ -89,3 +89,9 @@ variable "platform_node_type" {
   type    = string
   default = "n1-standard-8"
 }
+
+variable "enable_vertical_pod_autoscaling" {
+  type        = boolean
+  default     = true
+  description = "Enable GKE vertical scaling"
+}
