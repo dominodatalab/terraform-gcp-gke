@@ -50,7 +50,7 @@ resource "google_compute_router_nat" "nat" {
 }
 
 resource "google_storage_bucket" "bucket" {
-  name     = var.cluster_name
+  name     = "dominodatalab-${var.cluster_name}"
   location = split("-", var.location)[0]
 
   versioning {
@@ -229,7 +229,7 @@ resource "google_container_node_pool" "build" {
 }
 
 resource "google_kms_key_ring" "key_ring" {
-  name     = "domino-data-lab"
+  name     = var.cluster_name
   location = local.region
 }
 
