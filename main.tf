@@ -57,7 +57,7 @@ resource "google_compute_subnetwork" "default" {
 
 resource "google_compute_router" "router" {
   name    = var.cluster_name
-  network = google_compute_network.vpc_network.name
+  network = google_compute_subnetwork.default.self_link
 }
 
 resource "google_compute_router_nat" "nat" {
@@ -99,7 +99,7 @@ resource "google_filestore_instance" "nfs" {
   }
 
   networks {
-    network = google_compute_network.vpc_network.name
+    network = google_compute_subnetwork.default.self_link
     modes   = ["MODE_IPV4"]
   }
 }
@@ -117,7 +117,7 @@ resource "google_container_cluster" "domino_cluster" {
   remove_default_node_pool = true
   initial_node_count       = 1
 
-  network = google_compute_network.vpc_network.self_link
+  network = google_compute_subnetwork.default.self_link
 
   enable_tpu = true
 
