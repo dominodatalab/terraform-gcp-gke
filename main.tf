@@ -117,7 +117,7 @@ resource "google_container_cluster" "domino_cluster" {
   remove_default_node_pool = true
   initial_node_count       = 1
 
-  network = google_compute_network.vpc_network.self_link
+  network    = google_compute_network.vpc_network.self_link
   subnetwork = google_compute_subnetwork.default.self_link
 
   enable_tpu = true
