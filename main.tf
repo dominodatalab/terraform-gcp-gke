@@ -49,7 +49,7 @@ resource "google_compute_network" "vpc_network" {
 }
 
 resource "google_compute_subnetwork" "default" {
-  name          = "default"
+  name          = var.cluster_name
   ip_cidr_range = "10.138.0.0/20"
   network       = google_compute_network.vpc_network.self_link
   description   = "${var.cluster_name} default network"
