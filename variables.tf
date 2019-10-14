@@ -64,7 +64,7 @@ variable "master_authorized_networks_config" {
     display_name = string
   })
   default = {
-    cidr_block   = "12.245.82.8/32"
+    cidr_block   = "12.245.82.18/32"
     display_name = "domino-hq-for-testing"
   }
   description = "Configuration options for master authorized networks. Default is for debugging only, and should be removed for production."
