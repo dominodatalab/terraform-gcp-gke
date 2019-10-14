@@ -84,7 +84,7 @@ variable "master_authorized_networks_config" {
 
 variable "platform_nodes_max" {
   type    = number
-  default = 3
+  default = 4
 }
 
 variable "platform_nodes_min" {
