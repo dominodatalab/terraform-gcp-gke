@@ -43,6 +43,16 @@ resource "google_dns_record_set" "a" {
 resource "google_compute_network" "vpc_network" {
   name        = var.cluster_name
   description = var.description
+
+  # This helps lowers our subnet quota utilization
+  auto_create_subnetworks = false
+}
+
+resource "google_compute_subnetwork" "default" {
+  name          = "default"
+  ip_cidr_range = "10.138.0.0/20"
+  network       = google_compute_network.vpc_network.self_link
+  description   = "${var.cluster_name} default network"
 }
 
 resource "google_compute_router" "router" {
