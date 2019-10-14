@@ -99,7 +99,7 @@ resource "google_filestore_instance" "nfs" {
   }
 
   networks {
-    network = google_compute_subnetwork.default.self_link
+    network = google_compute_subnetwork.default.name
     modes   = ["MODE_IPV4"]
   }
 }
