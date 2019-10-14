@@ -12,6 +12,13 @@ output "google_container_cluster" {
   value = google_container_cluster.domino_cluster
 }
 
+output "google_filestore_instance" {
+  value = {
+    file_share = google_filestore_instance.nfs.file_shares[0].name,
+    ip_address = google_filestore_instance.nfs.networks[0].ip_addresses[0],
+  }
+}
+
 output "workload_identity_service_accounts" {
   value = map(
     "default", google_service_account.default.unique_id,
