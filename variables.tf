@@ -32,16 +32,16 @@ variable "description" {
   default = "The Domino K8s Cluster"
 }
 
-variable "dns_managed_zone_dns" {
-  type        = string
-  default     = "domino-eng-platform-dev.domino.tech"
-  description = "Cloud DNS dns name for a specific DNS zone"
-}
-
-variable "dns_managed_zone_name" {
-  type        = string
-  default     = "domino-tech"
-  description = "Cloud DNS name for a specific DNS zone"
+variable "google_dns_managed_zone" {
+  type = object({
+    name     = string
+    dns_name = string
+  })
+  default = {
+    name     = "domino-tech"
+    dns_name = "domino-eng-platform-dev.domino.tech"
+  }
+  description = "Cloud DNS zone"
 }
 
 variable "compute_nodes_max" {

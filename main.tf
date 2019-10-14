@@ -32,8 +32,8 @@ resource "google_compute_address" "static_ip" {
 }
 
 resource "google_dns_record_set" "a" {
-  name         = "${var.cluster_name}.${var.project}.${var.dns_managed_zone_dns}"
-  managed_zone = var.dns_managed_zone_name
+  name         = "${var.cluster_name}.${var.project}.${var.google_dns_managed_zone.dns_name}"
+  managed_zone = var.google_dns_managed_zone.name
   type         = "A"
   ttl          = 300
 
