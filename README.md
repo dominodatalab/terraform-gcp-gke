@@ -30,6 +30,7 @@ The following project [IAM permissions](https://console.cloud.google.com/iam-adm
 - Compute Instance Admin (v1)
 - Compute Network Admin
 - Kubernetes Engine Admin
+- DNS Administrator
 - Cloud Filestore Editor
 - Security Admin
 - Service Account Admin
