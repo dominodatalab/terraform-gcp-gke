@@ -50,6 +50,12 @@ Please submit any feature enhancements, bug fixes, or ideas via pull requests or
     export TF_VAR_cluster_name=[cluster-name]
     terraform init -backend-config="prefix=/terraform/state/${TF_VAR_cluster_name}"
     ```
+    
+    1. If recreating a cluster: GCP [Key Rings](https://cloud.google.com/kms/docs/creating-keys) persist 
+    indefinitely so the existing key ring must be added to terraform:
+    ```
+    terraform import google_kms_key_ring.key_ring projects/domino-eng-platform-dev/locations/us-west1/keyRings/${TF_VAR_cluster_name}
+    ```
 
 1. With the environment setup, you can now apply the terraform module
     ```
