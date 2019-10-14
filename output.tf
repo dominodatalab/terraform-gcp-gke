@@ -3,6 +3,15 @@ output "app_secrets_key" {
   description = "Application-layer Secrets Encryption Key"
 }
 
+output "dns" {
+  value       = google_dns_record_set.a.name
+  description = "The external (public) DNS name for the Domino UI"
+}
+
+output "google_container_cluster" {
+  value = google_container_cluster.domino_cluster
+}
+
 output "workload_identity_service_accounts" {
   value = map(
     "default", google_service_account.default.unique_id,
@@ -12,9 +21,4 @@ output "workload_identity_service_accounts" {
     "platform", google_service_account.platform.unique_id,
   )
   description = "GKE cluster Workload Identity namespace IAM service accounts"
-}
-
-output "dns" {
-  value       = google_dns_record_set.a.name
-  description = "The external (public) DNS name for the Domino UI"
 }
