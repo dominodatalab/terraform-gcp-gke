@@ -14,7 +14,7 @@ output "workload_identity_service_accounts" {
   description = "GKE cluster Workload Identity namespace IAM service accounts"
 }
 
-output "domino_ipv4_addr" {
-  value       = google_compute_address.static_ip_address.address
-  description = "The external (public) IPv4 address of the Domino UI."
+output "dns" {
+  value       = google_dns_record_set.a.name
+  description = "The external (public) DNS name for the Domino UI"
 }
