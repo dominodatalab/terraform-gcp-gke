@@ -114,7 +114,7 @@ variable "platform_nodes_ssd_gb" {
 
 variable "platform_node_type" {
   type    = string
-  default = "n1-standard-2"
+  default = "n1-standard-8"
 }
 
 variable "enable_vertical_pod_autoscaling" {
