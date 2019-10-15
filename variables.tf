@@ -22,6 +22,11 @@ variable "build_nodes_preemptible" {
   default = true
 }
 
+variable "build_nodes_ssd_gb" {
+  type    = number
+  default = 100
+}
+
 variable "build_node_type" {
   type    = string
   default = "n1-standard-1"
@@ -57,6 +62,11 @@ variable "compute_nodes_min" {
 variable "compute_nodes_preemptible" {
   type    = bool
   default = true
+}
+
+variable "compute_nodes_ssd_gb" {
+  type    = number
+  default = 100
 }
 
 variable "compute_node_type" {
@@ -95,6 +105,11 @@ variable "platform_nodes_min" {
 variable "platform_nodes_preemptible" {
   type    = bool
   default = true
+}
+
+variable "platform_nodes_ssd_gb" {
+  type    = number
+  default = 100
 }
 
 variable "platform_node_type" {

@@ -181,8 +181,8 @@ resource "google_container_node_pool" "platform" {
       "dominodatalab.com/node-pool" = "platform"
     }
 
-    disk_size_gb    = 100
-    local_ssd_count = 2
+    disk_size_gb    = var.platform_nodes_ssd_gb
+    local_ssd_count = 1
   }
 
   management {
@@ -210,8 +210,8 @@ resource "google_container_node_pool" "compute" {
       "dominodatalab.com/node-pool" = "compute"
     }
 
-    disk_size_gb    = 100
-    local_ssd_count = 2
+    disk_size_gb    = var.compute_nodes_ssd_gb
+    local_ssd_count = 1
   }
 
   management {
@@ -239,8 +239,8 @@ resource "google_container_node_pool" "build" {
       "dominodatalab.com/node-pool" = "build"
     }
 
-    disk_size_gb    = 100
-    local_ssd_count = 2
+    disk_size_gb    = var.build_nodes_ssd_gb
+    local_ssd_count = 1
   }
 
   management {
