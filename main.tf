@@ -110,7 +110,7 @@ resource "google_container_cluster" "domino_cluster" {
   name               = var.cluster_name
   location           = var.location
   description        = var.description
-  min_master_version = var.min_master_version
+  min_master_version = var.gke_version
 
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
@@ -167,6 +167,7 @@ resource "google_container_node_pool" "platform" {
   name     = "platform"
   location = google_container_cluster.domino_cluster.location
   cluster  = google_container_cluster.domino_cluster.name
+  version  = var.gke_version
 
   initial_node_count = var.platform_nodes_min
   autoscaling {
@@ -196,6 +197,7 @@ resource "google_container_node_pool" "compute" {
   name     = "compute"
   location = google_container_cluster.domino_cluster.location
   cluster  = google_container_cluster.domino_cluster.name
+  version  = var.gke_version
 
   initial_node_count = var.compute_nodes_min
   autoscaling {
@@ -224,6 +226,7 @@ resource "google_container_node_pool" "build" {
   name     = "build"
   location = google_container_cluster.domino_cluster.location
   cluster  = google_container_cluster.domino_cluster.name
+  version  = var.gke_version
 
   initial_node_count = var.build_nodes_min
   autoscaling {

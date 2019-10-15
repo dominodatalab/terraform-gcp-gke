@@ -74,6 +74,12 @@ variable "compute_node_type" {
   default = "n1-standard-1"
 }
 
+variable "gke_version" {
+  type        = string
+  default     = "1.14.6-gke.13"
+  description = "GKE K8s version for both master and node pools"
+}
+
 variable "location" {
   type        = string
   default     = "us-west1-a"
@@ -90,11 +96,6 @@ variable "master_authorized_networks_config" {
     display_name = "domino-hq-for-testing"
   }
   description = "Configuration options for master authorized networks. Default is for debugging only, and should be removed for production."
-}
-
-variable "min_master_version" {
-  type    = string
-  default = "1.14.6-gke.13"
 }
 
 variable "platform_nodes_max" {
