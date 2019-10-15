@@ -92,6 +92,11 @@ variable "master_authorized_networks_config" {
   description = "Configuration options for master authorized networks. Default is for debugging only, and should be removed for production."
 }
 
+variable "min_master_version" {
+  type    = string
+  default = "1.14.6-gke.13"
+}
+
 variable "platform_nodes_max" {
   type    = number
   default = 5

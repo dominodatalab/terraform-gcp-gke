@@ -107,9 +107,10 @@ resource "google_filestore_instance" "nfs" {
 resource "google_container_cluster" "domino_cluster" {
   provider = "google-beta"
 
-  name        = var.cluster_name
-  location    = var.location
-  description = var.description
+  name               = var.cluster_name
+  location           = var.location
+  description        = var.description
+  min_master_version = var.min_master_version
 
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
