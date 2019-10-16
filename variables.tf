@@ -74,6 +74,12 @@ variable "compute_node_type" {
   default = "n1-standard-1"
 }
 
+variable "gke_version" {
+  type        = string
+  default     = "1.14.6-gke.13"
+  description = "GKE K8s version for both master and node pools"
+}
+
 variable "location" {
   type        = string
   default     = "us-west1-a"
