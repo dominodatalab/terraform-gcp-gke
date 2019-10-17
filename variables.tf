@@ -76,7 +76,7 @@ variable "compute_node_type" {
 
 variable "filestore_ip_range" {
   type        = string
-  default     = "192.168.1.0/29"
+  default     = "10.0.0.0/29"
   description = "The IP address range must be from within the internal IP address ranges (10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16) and have a block size of 29."
 }
 
