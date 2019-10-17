@@ -169,7 +169,7 @@ resource "google_container_node_pool" "platform" {
   cluster  = google_container_cluster.domino_cluster.name
   version  = var.gke_version
 
-  initial_node_count = var.platform_nodes_min
+  initial_node_count = var.platform_nodes_max
   autoscaling {
     max_node_count = var.platform_nodes_max
     min_node_count = var.platform_nodes_min

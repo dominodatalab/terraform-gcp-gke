@@ -55,7 +55,7 @@ Please submit any feature enhancements, bug fixes, or ideas via pull requests or
     indefinitely so the existing key ring must be added to terraform:
         ```
         terraform import google_kms_key_ring.key_ring projects/domino-eng-platform-dev/locations/us-west1/keyRings/${TF_VAR_cluster_name}
-        terraform import google_kms_crypto_key.crypto_key projects/domino-eng-platform-dev/locations/us-west1/keyRings/zane-test/cryptoKeys/${TF_VAR_cluster_name}
+        terraform import google_kms_crypto_key.crypto_key projects/domino-eng-platform-dev/locations/us-west1/keyRings/${TF_VAR_cluster_name}/cryptoKeys/${TF_VAR_cluster_name}
         ```
 
 1. With the environment setup, you can now apply the terraform module
