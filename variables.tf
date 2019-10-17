@@ -74,6 +74,12 @@ variable "compute_node_type" {
   default = "n1-standard-1"
 }
 
+variable "filestore_ip_range" {
+  type        = string
+  default     = "192.168.1.0/29"
+  description = "The IP address range must be from within the internal IP address ranges (10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16) and have a block size of 29."
+}
+
 variable "gke_version" {
   type        = string
   default     = "1.14.6-gke.13"
