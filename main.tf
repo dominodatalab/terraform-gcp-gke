@@ -191,6 +191,10 @@ resource "google_container_node_pool" "platform" {
     auto_repair = true
   }
 
+  timeouts {
+    delete = "20m"
+  }
+
 }
 
 resource "google_container_node_pool" "compute" {
@@ -220,6 +224,11 @@ resource "google_container_node_pool" "compute" {
   management {
     auto_repair = true
   }
+
+  timeouts {
+    delete = "20m"
+  }
+
 }
 
 resource "google_container_node_pool" "build" {
@@ -250,6 +259,11 @@ resource "google_container_node_pool" "build" {
   management {
     auto_repair = true
   }
+
+  timeouts {
+    delete = "20m"
+  }
+
 }
 
 resource "google_kms_key_ring" "key_ring" {
