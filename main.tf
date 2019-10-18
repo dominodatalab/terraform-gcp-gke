@@ -40,14 +40,24 @@ resource "google_dns_record_set" "a" {
   rrdatas = [google_compute_address.static_ip.address]
 }
 
-resource "google_compute_network" "vpc_network" {
-  name        = var.cluster_name
-  description = var.description
+data "google_compute_network" "vpc_network" {
+  name        = "default"
+  # description = var.description
+
+  # This helps lowers our subnet quota utilization
+  # auto_create_subnetworks = false
+}
+
+resource "google_compute_subnetwork" "default" {
+  name          = var.cluster_name
+  ip_cidr_range = "10.138.0.0/20"
+  network       = data.google_compute_network.vpc_network.self_link
+  description   = "${var.cluster_name} default network"
 }
 
 resource "google_compute_router" "router" {
   name    = var.cluster_name
-  network = google_compute_network.vpc_network.self_link
+  network = data.google_compute_network.vpc_network.self_link
 }
 
 resource "google_compute_router_nat" "nat" {
@@ -89,7 +99,7 @@ resource "google_filestore_instance" "nfs" {
   }
 
   networks {
-    network = google_compute_network.vpc_network.name
+    network = data.google_compute_network.vpc_network.name
     modes   = ["MODE_IPV4"]
   }
 }
@@ -108,7 +118,8 @@ resource "google_container_cluster" "domino_cluster" {
   remove_default_node_pool = true
   initial_node_count       = 1
 
-  network = google_compute_network.vpc_network.self_link
+  network    = data.google_compute_network.vpc_network.self_link
+  subnetwork = google_compute_subnetwork.default.self_link
 
   enable_tpu = true
 
