@@ -41,7 +41,7 @@ resource "google_dns_record_set" "a" {
 }
 
 data "google_compute_network" "vpc_network" {
-  name        = "default"
+  name = "default"
   # description = var.description
 
   # This helps lowers our subnet quota utilization
