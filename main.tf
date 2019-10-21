@@ -26,6 +26,10 @@ provider "google-beta" {
   region  = local.region
 }
 
+data "google_project" "domino" {
+  project_id = var.project
+}
+
 resource "google_compute_address" "static_ip" {
   name        = var.cluster_name
   description = "External static IPv4 address for var.description"
@@ -158,7 +162,7 @@ resource "google_container_cluster" "domino_cluster" {
   }
 
   workload_identity_config {
-    identity_namespace = "${var.project}.svc.id.goog"
+    identity_namespace = "${data.google_project.domino.project_id}.svc.id.goog"
   }
 
 }
