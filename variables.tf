@@ -74,10 +74,22 @@ variable "compute_node_type" {
   default = "n1-standard-1"
 }
 
+variable "enable_vertical_pod_autoscaling" {
+  type        = bool
+  default     = true
+  description = "Enable GKE vertical scaling"
+}
+
 variable "gke_version" {
   type        = string
   default     = "1.14.6-gke.13"
   description = "GKE K8s version for both master and node pools"
+}
+
+variable "kms_name" {
+  type        = string
+  default     = null
+  description = "KMS Ring and Crypto key name - defaults to cluster name"
 }
 
 variable "location" {
@@ -121,10 +133,4 @@ variable "platform_nodes_ssd_gb" {
 variable "platform_node_type" {
   type    = string
   default = "n1-standard-8"
-}
-
-variable "enable_vertical_pod_autoscaling" {
-  type        = bool
-  default     = true
-  description = "Enable GKE vertical scaling"
 }

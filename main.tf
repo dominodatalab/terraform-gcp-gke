@@ -267,12 +267,12 @@ resource "google_container_node_pool" "build" {
 }
 
 resource "google_kms_key_ring" "key_ring" {
-  name     = var.cluster_name
+  name     = var.kms_name == null ? var.cluster_name : var.kms_name
   location = local.region
 }
 
 resource "google_kms_crypto_key" "crypto_key" {
-  name            = var.cluster_name
+  name            = var.kms_name == null ? var.cluster_name : var.kms_name
   key_ring        = google_kms_key_ring.key_ring.self_link
   rotation_period = "86400s"
   purpose         = "ENCRYPT_DECRYPT"
