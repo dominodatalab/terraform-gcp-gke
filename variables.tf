@@ -3,8 +3,9 @@ variable "cluster_name" {
 }
 
 variable "project" {
-  type    = string
-  default = "domino-eng-platform-dev"
+  type        = string
+  default     = "domino-eng-platform-dev"
+  description = "GCP Project ID"
 }
 
 variable "build_nodes_max" {
