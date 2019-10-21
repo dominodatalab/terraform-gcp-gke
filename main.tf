@@ -219,6 +219,7 @@ resource "google_container_node_pool" "compute" {
 
     labels = {
       "dominodatalab.com/node-pool" = "compute"
+      "dominodatalab.com/node-pool" = "default"
     }
 
     disk_size_gb    = var.compute_nodes_ssd_gb
