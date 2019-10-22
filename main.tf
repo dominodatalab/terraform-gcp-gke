@@ -207,7 +207,7 @@ resource "google_container_node_pool" "compute" {
   cluster  = google_container_cluster.domino_cluster.name
   version  = var.gke_version
 
-  initial_node_count = var.compute_nodes_min
+  initial_node_count = max(1, var.compute_nodes_min)
   autoscaling {
     max_node_count = var.compute_nodes_max
     min_node_count = var.compute_nodes_min
@@ -241,7 +241,7 @@ resource "google_container_node_pool" "build" {
   cluster  = google_container_cluster.domino_cluster.name
   version  = var.gke_version
 
-  initial_node_count = var.build_nodes_min
+  initial_node_count = max(1, var.build_nodes_min)
   autoscaling {
     max_node_count = var.build_nodes_max
     min_node_count = var.build_nodes_min
