@@ -30,7 +30,7 @@ data "google_project" "domino" {
   project_id = var.project
 }
 
-resource "google_compute_address" "static_ip" {
+resource "google_compute_global_address" "static_ip" {
   name        = var.cluster_name
   description = "External static IPv4 address for var.description"
 }
@@ -41,7 +41,7 @@ resource "google_dns_record_set" "a" {
   type         = "A"
   ttl          = 300
 
-  rrdatas = [google_compute_address.static_ip.address]
+  rrdatas = [google_compute_global_address.static_ip.address]
 }
 
 resource "google_compute_network" "vpc_network" {
