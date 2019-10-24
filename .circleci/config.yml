@@ -28,7 +28,6 @@ jobs:
           name: Configure test cluster env
           command: |
             echo 'export TF_VAR_description="CircleCI Build for ${CIRCLE_PR_REPONAME}: ${CIRCLE_BUILD_URL}"' >> $BASH_ENV
-            echo 'export TF_VAR_cluster="circleci-test-${CIRCLE_BUILD_NUM}"' >> $BASH_ENV
             echo 'export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp-${CIRCLE_BUILD_NUM}.json"' >> $BASH_ENV
             echo ${CLOUDSDK_SERVICE_KEY} > /tmp/gcp-${CIRCLE_BUILD_NUM}.json
 
@@ -37,12 +36,8 @@ jobs:
           command: terraform fmt -check
 
       - run:
-          name: Terraform init
-          command: terraform init -backend-config="prefix=/terraform/state/circleci_${CIRCLE_PROJECT_USERNAME}_${CIRCLE_PROJECT_REPONAME}"
-
-      - run:
           name: Terraform workspace
-          command: terraform workspace new ${CIRCLE_BUILD_NUM}
+          command: terraform workspace new circleci-${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BUILD_NUM}
 
       - run:
           name: Terraform validate
