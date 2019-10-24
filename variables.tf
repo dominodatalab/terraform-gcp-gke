@@ -32,7 +32,7 @@ variable "build_nodes_ssd_gb" {
 
 variable "build_node_type" {
   type    = string
-  default = "n1-standard-1"
+  default = "n1-standard-8"
 }
 
 variable "description" {
