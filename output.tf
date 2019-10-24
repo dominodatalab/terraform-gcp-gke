@@ -8,11 +8,6 @@ output "dns" {
   description = "The external (public) DNS name for the Domino UI"
 }
 
-output "static_ip" {
-  value       = google_compute_global_address.static_ip
-  description = "The external (public) static IPv4 for the Domino UI"
-}
-
 output "google_container_cluster" {
   value = google_container_cluster.domino_cluster
 }
