@@ -275,7 +275,7 @@ resource "google_container_node_pool" "build" {
 
 resource "random_id" "kms" {
   byte_length = 8
-  prefix      = local.cluster
+  prefix      = "${local.cluster}-"
 }
 
 resource "google_kms_key_ring" "key_ring" {
