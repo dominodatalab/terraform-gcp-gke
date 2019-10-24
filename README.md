@@ -44,11 +44,12 @@ It may be possible to lower the "admin" privilage levels to a "creator" level if
 Please submit any feature enhancements, bug fixes, or ideas via pull requests or issues.
 
 ### Manual Deployment
-1. Install [gcloud](https://cloud.google.com/sdk/docs/quickstarts) and configure the environment
+1. Install [gcloud](https://cloud.google.com/sdk/docs/quickstarts) and configure the workspace
     ```
     gcloud auth application-default login
     export TF_VAR_cluster_name=[cluster-name]
-    terraform init -backend-config="prefix=/terraform/state/${TF_VAR_cluster_name}"
+    terraform init"
+    terraform workspace new [your-workspace-name]
     ```
     
     1. Recreating a Previously Destroyed Cluster
