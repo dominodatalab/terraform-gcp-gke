@@ -48,7 +48,7 @@ Please submit any feature enhancements, bug fixes, or ideas via pull requests or
     ```
     gcloud auth application-default login
     export TF_VAR_cluster_name=[cluster-name]
-    terraform init"
+    terraform init
     terraform workspace new [your-workspace-name]
     ```
     
