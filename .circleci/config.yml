@@ -38,7 +38,11 @@ jobs:
 
       - run:
           name: Terraform init
-          command: terraform init -backend-config="prefix=/terraform/state/${TF_VAR_cluster_name}"
+          command: terraform init -backend-config="prefix=/terraform/state/circleci_${CIRCLE_PROJECT_USERNAME}_${CIRCLE_PROJECT_REPONAME}"
+
+      - run:
+          name: Terraform workspace
+          command: terraform workspace new ${CIRCLE_BUILD_NUM}
 
       - run:
           name: Terraform validate
