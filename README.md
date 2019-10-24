@@ -44,7 +44,7 @@ It may be possible to lower the "admin" privilage levels to a "creator" level if
 Please submit any feature enhancements, bug fixes, or ideas via pull requests or issues.
 
 ### Manual Deployment
-1. Install [gcloud](https://cloud.google.com/sdk/docs/quickstarts) and configure the workspace
+1. Install [gcloud](https://cloud.google.com/sdk/docs/quickstarts) and configure the [workspace](https://www.terraform.io/docs/state/workspaces.html)
     ```
     gcloud auth application-default login
     export TF_VAR_cluster_name=[cluster-name]
