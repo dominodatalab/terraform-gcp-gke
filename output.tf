@@ -9,7 +9,7 @@ output "dns" {
 }
 
 output "static_ip" {
-  value       = google_compute_global_address.static_ip
+  value       = google_compute_address.static_ip
   description = "The external (public) static IPv4 for the Domino UI"
 }
 
