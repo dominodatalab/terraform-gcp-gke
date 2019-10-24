@@ -41,7 +41,7 @@ jobs:
 
       - run:
           name: Terraform workspace
-          command: terraform workspace new circleci-${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BUILD_NUM}
+          command: terraform workspace new circleci-test-${CIRCLE_BUILD_NUM}
 
       - run:
           name: Terraform validate
