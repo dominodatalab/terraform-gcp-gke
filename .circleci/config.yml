@@ -36,6 +36,10 @@ jobs:
           command: terraform fmt -check
 
       - run:
+          name: Terraform init
+          command: terraform init
+
+      - run:
           name: Terraform workspace
           command: terraform workspace new circleci-${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BUILD_NUM}
 
