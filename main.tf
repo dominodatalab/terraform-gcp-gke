@@ -2,7 +2,7 @@ terraform {
   required_version = ">= 0.12.0"
   backend "gcs" {
     bucket = "domino-terraform-default" # Should specify using cli -backend-config="bucket=domino-terraform-default"
-    # Override with `terraform init -backend-config="prefix=/terraform/state/${TF_VAR_cluster_name}"`
+    # Override with `terraform init -backend-config="prefix=/terraform/state/[YOUR/PATH]"`
     prefix = "terraform/state"
   }
 }
