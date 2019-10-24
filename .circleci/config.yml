@@ -53,9 +53,5 @@ jobs:
 
       - run:
           name: Terraform destroy
-          command: terraform destroy -auto-approve
+          command: terraform destroy -auto-approve && terraform workspace delete circleci-test-${CIRCLE_BUILD_NUM}
           when: always
-
-      - run:
-          name: Terraform workspace delete
-          command: terraform workspace delete circleci-test-${CIRCLE_BUILD_NUM}
