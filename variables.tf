@@ -1,5 +1,7 @@
-variable "cluster_name" {
-  type = string
+variable "cluster" {
+  type        = string
+  default     = null
+  description = "The Domino Cluster name and must be unique in the GCP Project. Defaults to workspace name."
 }
 
 variable "project" {
@@ -85,12 +87,6 @@ variable "gke_version" {
   type        = string
   default     = "1.14.6-gke.2"
   description = "GKE K8s version for both master and node pools"
-}
-
-variable "kms_name" {
-  type        = string
-  default     = null
-  description = "KMS Ring and Crypto key name - defaults to cluster name"
 }
 
 variable "location" {

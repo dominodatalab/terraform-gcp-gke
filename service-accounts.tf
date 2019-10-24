@@ -1,26 +1,26 @@
 resource "google_service_account" "default" {
-  account_id   = "${var.cluster_name}-default"
-  display_name = "${var.cluster_name}-default"
+  account_id   = "${local.cluster}-default"
+  display_name = "${local.cluster}-default"
 }
 
 resource "google_service_account" "kube_system" {
-  account_id   = "${var.cluster_name}-system"
-  display_name = "${var.cluster_name}-system"
+  account_id   = "${local.cluster}-system"
+  display_name = "${local.cluster}-system"
 }
 
 resource "google_service_account" "kube_public" {
-  account_id   = "${var.cluster_name}-public"
-  display_name = "${var.cluster_name}-public"
+  account_id   = "${local.cluster}-public"
+  display_name = "${local.cluster}-public"
 }
 
 resource "google_service_account" "compute" {
-  account_id   = "${var.cluster_name}-compute"
-  display_name = "${var.cluster_name}-compute"
+  account_id   = "${local.cluster}-compute"
+  display_name = "${local.cluster}-compute"
 }
 
 resource "google_service_account" "platform" {
-  account_id   = "${var.cluster_name}-platform"
-  display_name = "${var.cluster_name}-platform"
+  account_id   = "${local.cluster}-platform"
+  display_name = "${local.cluster}-platform"
 }
 
 resource "google_project_iam_member" "service_account" {
