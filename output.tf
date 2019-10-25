@@ -1,6 +1,13 @@
-output "app_secrets_key" {
-  value       = google_kms_crypto_key.crypto_key.self_link
-  description = "Application-layer Secrets Encryption Key"
+output "cluster" {
+  value = {
+    "client_certificate" : google_container_cluster.domino_cluster.master_auth[0].client_certificate,
+    "client_key" : google_container_cluster.domino_cluster.master_auth[0].client_key,
+    "cluster_ca_certificate" : google_container_cluster.domino_cluster.master_auth[0].cluster_ca_certificate,
+    "cluster_ipv4_cidr" : google_container_cluster.domino_cluster.cluster_ipv4_cidr,
+    "name" : google_container_cluster.domino_cluster.name
+    "public_endpoint" : google_container_cluster.domino_cluster.private_cluster_config[0].public_endpoint
+  }
+  description = "GKE cluster information"
 }
 
 output "dns" {
@@ -9,12 +16,8 @@ output "dns" {
 }
 
 output "static_ip" {
-  value       = google_compute_address.static_ip
+  value       = google_compute_address.static_ip.address
   description = "The external (public) static IPv4 for the Domino UI"
-}
-
-output "google_container_cluster" {
-  value = google_container_cluster.domino_cluster
 }
 
 output "google_filestore_instance" {
