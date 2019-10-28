@@ -101,7 +101,7 @@ resource "google_filestore_instance" "nfs" {
   zone = local.zone
 
   file_shares {
-    capacity_gb = 2660
+    capacity_gb = var.filestore_capacity_gb
     name        = "share1"
   }
 
