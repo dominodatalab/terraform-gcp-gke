@@ -40,7 +40,7 @@ jobs:
           command: terraform init
 
       - run:
-          name: Terraform workspace
+          name: Terraform workspace create
           command: terraform workspace new circleci-test-${CIRCLE_BUILD_NUM}
 
       - run:
@@ -53,5 +53,10 @@ jobs:
 
       - run:
           name: Terraform destroy
-          command: terraform destroy -auto-approve && terraform workspace select default && terraform workspace delete circleci-test-${CIRCLE_BUILD_NUM}
+          command: terraform destroy -auto-approve
+          when: always
+
+      - run:
+          name: Terraform workspace delete
+          command: terraform workspace select default && terraform workspace delete circleci-test-${CIRCLE_BUILD_NUM}
           when: always
