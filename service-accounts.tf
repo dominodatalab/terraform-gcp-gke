@@ -64,6 +64,3 @@ resource "google_project_iam_member" "platform_object_admin" {
   role    = "roles/iam.workloadIdentityUser"
   member  = "serviceAccount:${google_service_account.platform.email}"
 }
-
-
-
