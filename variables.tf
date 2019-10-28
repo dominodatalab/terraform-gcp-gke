@@ -40,6 +40,12 @@ variable "description" {
   default = "The Domino K8s Cluster"
 }
 
+variable "filestore_capacity_gb" {
+  type        = number
+  default     = 1024
+  description = "Filestore Instance size (GB) for the cluster nfs shared storage"
+}
+
 variable "google_dns_managed_zone" {
   type = object({
     name     = string
