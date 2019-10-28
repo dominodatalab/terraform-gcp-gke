@@ -42,7 +42,7 @@ variable "description" {
 
 variable "filestore_capacity_gb" {
   type        = number
-  default     = 512
+  default     = 1024
   description = "Filestore Instance size (GB) for the cluster nfs shared storage"
 }
 
