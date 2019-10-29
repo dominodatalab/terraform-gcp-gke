@@ -17,13 +17,11 @@ locals {
 }
 
 provider "google" {
-  version = "2.17.0"
   project = var.project
   region  = local.region
 }
 
 provider "google-beta" {
-  version = "2.17.0"
   project = var.project
   region  = local.region
 }
