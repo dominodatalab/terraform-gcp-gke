@@ -83,6 +83,7 @@ resource "google_storage_bucket" "bucket" {
     enabled = true
   }
 
+  # TODO: this won't work ...
   lifecycle_rule {
     action {
       type = "Delete"
@@ -128,6 +129,7 @@ resource "google_container_cluster" "domino_cluster" {
   network    = google_compute_network.vpc_network.self_link
   subnetwork = google_compute_subnetwork.default.self_link
 
+  # TODO ??
   enable_tpu = true
 
   master_auth {
@@ -201,7 +203,6 @@ resource "google_container_node_pool" "platform" {
   timeouts {
     delete = "20m"
   }
-
 }
 
 resource "google_container_node_pool" "compute" {
@@ -221,7 +222,9 @@ resource "google_container_node_pool" "compute" {
     machine_type = var.platform_node_type
 
     labels = {
-      "dominodatalab.com/node-pool" = "compute"
+      "domino/build-node"            = "true"
+      "dominodatalab.com/build-node" = "true"
+      "dominodatalab.com/node-pool"  = "default"
     }
 
     disk_size_gb    = var.compute_nodes_ssd_gb
@@ -235,32 +238,36 @@ resource "google_container_node_pool" "compute" {
   timeouts {
     delete = "20m"
   }
-
 }
 
-resource "google_container_node_pool" "build" {
-  name     = "build"
+resource "google_container_node_pool" "gpu" {
+  provider = "google-beta"
+
+  name     = "gpu"
   location = google_container_cluster.domino_cluster.location
   cluster  = google_container_cluster.domino_cluster.name
   version  = var.gke_version
 
-  initial_node_count = max(1, var.build_nodes_min)
+  initial_node_count = min(0, var.gpu_nodes_min)
   autoscaling {
-    max_node_count = var.build_nodes_max
-    min_node_count = var.build_nodes_min
+    max_node_count = var.gpu_nodes_max
+    min_node_count = var.gpu_nodes_min
   }
 
   node_config {
-    preemptible  = var.build_nodes_preemptible
-    machine_type = var.build_node_type
+    preemptible  = var.gpu_nodes_preemptible
+    machine_type = var.gpu_node_type
 
-    labels = {
-      "domino/build-node"            = "true"
-      "dominodatalab.com/build-node" = "true"
-      "dominodatalab.com/node-pool"  = "default"
+    guest_accelerator {
+      type  = var.gpu_nodes_accelerator
+      count = 1
     }
 
-    disk_size_gb    = var.build_nodes_ssd_gb
+    labels = {
+      "dominodatalab.com/node-pool" = "default-gpu"
+    }
+
+    disk_size_gb    = var.gpu_nodes_ssd_gb
     local_ssd_count = 1
   }
 
@@ -271,7 +278,6 @@ resource "google_container_node_pool" "build" {
   timeouts {
     delete = "20m"
   }
-
 }
 
 resource "random_id" "kms" {

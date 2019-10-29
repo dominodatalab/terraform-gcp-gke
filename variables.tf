@@ -10,29 +10,34 @@ variable "project" {
   description = "GCP Project ID"
 }
 
-variable "build_nodes_max" {
+variable "gpu_nodes_max" {
   type    = number
   default = 2
 }
 
-variable "build_nodes_min" {
+variable "gpu_nodes_min" {
   type    = number
   default = 0
 }
 
-variable "build_nodes_preemptible" {
+variable "gpu_nodes_preemptible" {
   type    = bool
   default = true
 }
 
-variable "build_nodes_ssd_gb" {
+variable "gpu_nodes_ssd_gb" {
   type    = number
   default = 100
 }
 
-variable "build_node_type" {
+variable "gpu_node_type" {
   type    = string
   default = "n1-standard-8"
+}
+
+variable "gpu_nodes_accelerator" {
+  type    = string
+  default = "nvidia-tesla-p100"
 }
 
 variable "description" {
