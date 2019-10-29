@@ -9,7 +9,7 @@ terraform {
 
 locals {
   cluster                 = var.cluster == null ? terraform.workspace : var.cluster
-  enable_private_endpoint = length(var.master_authorized_networks_config.cidr_block) == 0
+  enable_private_endpoint = length(var.master_authorized_networks_config) == 0
 
   # Converts a cluster's location to a zone/region. A 'location' may be a region or zone: a region becomes the '[region]-a' zone.
   region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location) - 2)
@@ -150,9 +150,12 @@ resource "google_container_cluster" "domino_cluster" {
   ip_allocation_policy {}
 
   master_authorized_networks_config {
-    cidr_blocks {
-      cidr_block   = var.master_authorized_networks_config.cidr_block
-      display_name = var.master_authorized_networks_config.display_name
+    dynamic "cidr_blocks" {
+      for_each = var.master_authorized_networks_config
+      content {
+        cidr_block   = cidr_blocks.value.cidr_block
+        display_name = cidr_blocks.value.display_name
+      }
     }
   }
 
