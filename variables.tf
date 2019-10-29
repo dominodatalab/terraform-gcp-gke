@@ -102,14 +102,32 @@ variable "location" {
 }
 
 variable "master_authorized_networks_config" {
-  type = object({
+  type = list(object({
     cidr_block   = string
     display_name = string
-  })
-  default = {
-    cidr_block   = "12.245.82.18/32"
-    display_name = "domino-hq-for-testing"
-  }
+  }))
+  default = [
+    {
+      cidr_block   = "12.245.82.18/32"
+      display_name = "domino-hq-for-testing"
+    },
+    {
+      cidr_block   = "52.206.158.130/32"
+      display_name = "aviatrix-east"
+    },
+    {
+      cidr_block   = "52.25.178.121/32"
+      display_name = "aviatrix-west"
+    },
+    {
+      cidr_block   = "52.56.39.158/32"
+      display_name = "aviatrix-eu"
+    },
+    {
+      cidr_block   = "13.126.91.85/32"
+      display_name = "aviatrix-ap"
+    }
+  ]
   description = "Configuration options for master authorized networks. Default is for debugging only, and should be removed for production."
 }
 
