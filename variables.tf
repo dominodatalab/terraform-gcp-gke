@@ -155,3 +155,13 @@ variable "platform_node_type" {
   type    = string
   default = "n1-standard-8"
 }
+
+variable "enable_network_policy" {
+  type    = bool
+  default = true
+}
+
+variable "enable_pod_security_policy" {
+  type    = bool
+  default = false
+}
