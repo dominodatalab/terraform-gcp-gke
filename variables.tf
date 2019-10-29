@@ -10,6 +10,19 @@ variable "project" {
   description = "GCP Project ID"
 }
 
+
+variable "bucket" {
+  type        = string
+  default     = "domino-terraform-default"
+  description = "The bucket to store the terraform state file in"
+}
+
+variable "terraformprefix" {
+  type        = string
+  default     = "terraform/state"
+  description = "The prefix for the terraform state file"
+}
+
 variable "build_nodes_max" {
   type    = number
   default = 2
@@ -136,4 +149,16 @@ variable "platform_nodes_ssd_gb" {
 variable "platform_node_type" {
   type    = string
   default = "n1-standard-8"
+}
+
+variable "terraform_backend_config_file_name" {
+  type        = string
+  default     = "terraform.tf"
+  description = "name of the terraform config file"
+}
+
+variable "terraform_backend_config_file_path" {
+  type        = string
+  default     = ""
+  description = "The path to terrafrom project directory"
 }

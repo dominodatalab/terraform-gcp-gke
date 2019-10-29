@@ -1,20 +1,33 @@
-terraform {
-  required_version = ">= 0.12.0"
-  backend "gcs" {
-    bucket = "domino-terraform-default" # Should specify using cli -backend-config="bucket=domino-terraform-default"
-    # Override with `terraform init -backend-config="prefix=/terraform/state/[YOUR/PATH]"`
-    prefix = "terraform/state"
-  }
-}
-
 locals {
-  cluster                 = var.cluster == null ? terraform.workspace : var.cluster
+  terraform_backend_config_file = format("%s/%s",
+    var.terraform_backend_config_file_path,
+  var.terraform_backend_config_file_name)
+
+  cluster = var.cluster == null ? terraform.workspace : var.cluster
+
   enable_private_endpoint = length(var.master_authorized_networks_config.cidr_block) == 0
 
   # Converts a cluster's location to a zone/region. A 'location' may be a region or zone: a region becomes the '[region]-a' zone.
   region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location) - 2)
-  zone   = length(split("-", var.location)) == 3 ? var.location : format("%s-a", var.location)
+
+  zone = length(split("-", var.location)) == 3 ? var.location : format("%s-a", var.location)
 }
+
+data "template_file" "terraform_backend_config" {
+  template = file("${path.module}/templates/terraform.tf.tpl")
+
+  vars = {
+    bucket          = var.bucket
+    terraformprefix = var.terraformprefix
+  }
+}
+
+resource "local_file" "terraform_backend_config" {
+  count    = var.terraform_backend_config_file_path != "" ? 1 : 0
+  content  = data.template_file.terraform_backend_config.rendered
+  filename = local.terraform_backend_config_file
+}
+
 
 provider "google" {
   project = var.project

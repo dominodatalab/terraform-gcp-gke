@@ -14,12 +14,14 @@ module "rancher" {
 ### Create a prod GKE cluster
 ```hcl
 module "rancher" {
-  source   = "github.com/cerebrotech/terraform-gcp-gke"
+  source = "github.com/cerebrotech/terraform-gcp-gke"
 
-  cluster  = "cluster-name"
-  project  = "gcp-project"
-  location = "us-west1"
-  
+  bucket          = "domino-terraform-default" # default make sure it has been created first
+  terraformprefix = "terraform/state" # default can be overridden
+  cluster         = "cluster-name"
+  project         = "gcp-project"
+  location        = "us-west1"
+
   # Some more variables may need to be configured to meet specific needs
 }
 ```
