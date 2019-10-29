@@ -83,6 +83,16 @@ variable "compute_node_type" {
   default = "n1-standard-1"
 }
 
+variable "enable_pod_security_policy" {
+  type    = bool
+  default = false
+}
+
+variable "enable_network_policy" {
+  type    = bool
+  default = true
+}
+
 variable "enable_vertical_pod_autoscaling" {
   type        = bool
   default     = true
@@ -154,14 +164,4 @@ variable "platform_nodes_ssd_gb" {
 variable "platform_node_type" {
   type    = string
   default = "n1-standard-8"
-}
-
-variable "enable_network_policy" {
-  type    = bool
-  default = true
-}
-
-variable "enable_pod_security_policy" {
-  type    = bool
-  default = false
 }
