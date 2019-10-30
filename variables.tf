@@ -101,7 +101,7 @@ variable "enable_vertical_pod_autoscaling" {
 
 variable "gke_version" {
   type        = string
-  default     = "1.14.7-gke.14"
+  default     = ""
   description = "GKE K8s version for both master and node pools"
 }
 
