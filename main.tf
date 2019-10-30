@@ -77,7 +77,7 @@ resource "google_compute_router_nat" "nat" {
 }
 
 resource "google_storage_bucket" "bucket" {
-  name     = "dominodatalab-${local.uuid}"
+  name     = "dominodatalab-${local.cluster}"
   location = split("-", var.location)[0]
 
   versioning {
