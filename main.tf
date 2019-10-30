@@ -10,6 +10,7 @@ terraform {
 locals {
   cluster                 = var.cluster == null ? terraform.workspace : var.cluster
   enable_private_endpoint = length(var.master_authorized_networks_config) == 0
+  uuid                    = "${local.cluster}-${random_uuid.id.result}"
 
   # Converts a cluster's location to a zone/region. A 'location' may be a region or zone: a region becomes the '[region]-a' zone.
   region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location) - 2)
@@ -30,8 +31,10 @@ data "google_project" "domino" {
   project_id = var.project
 }
 
+resource "random_uuid" "id" {}
+
 resource "google_compute_address" "static_ip" {
-  name        = local.cluster
+  name        = local.uuid
   description = "External static IPv4 address for var.description"
 }
 
@@ -45,7 +48,7 @@ resource "google_dns_record_set" "a" {
 }
 
 resource "google_compute_network" "vpc_network" {
-  name        = local.cluster
+  name        = local.uuid
   description = var.description
 
   # This helps lowers our subnet quota utilization
@@ -53,7 +56,7 @@ resource "google_compute_network" "vpc_network" {
 }
 
 resource "google_compute_subnetwork" "default" {
-  name                     = local.cluster
+  name                     = local.uuid
   ip_cidr_range            = "10.138.0.0/20"
   network                  = google_compute_network.vpc_network.self_link
   private_ip_google_access = false
@@ -61,12 +64,12 @@ resource "google_compute_subnetwork" "default" {
 }
 
 resource "google_compute_router" "router" {
-  name    = local.cluster
+  name    = local.uuid
   network = google_compute_network.vpc_network.self_link
 }
 
 resource "google_compute_router_nat" "nat" {
-  name                               = local.cluster
+  name                               = local.uuid
   router                             = google_compute_router.router.name
   region                             = local.region
   nat_ip_allocate_option             = "AUTO_ONLY"
@@ -74,7 +77,7 @@ resource "google_compute_router_nat" "nat" {
 }
 
 resource "google_storage_bucket" "bucket" {
-  name     = "dominodatalab-${local.cluster}"
+  name     = "dominodatalab-${local.uuid}"
   location = split("-", var.location)[0]
 
   versioning {
@@ -94,7 +97,7 @@ resource "google_storage_bucket" "bucket" {
 }
 
 resource "google_filestore_instance" "nfs" {
-  name = local.cluster
+  name = local.uuid
   tier = "STANDARD"
   zone = local.zone
 
@@ -283,18 +286,13 @@ resource "google_container_node_pool" "build" {
 
 }
 
-resource "random_id" "kms" {
-  byte_length = 8
-  prefix      = "${local.cluster}-"
-}
-
 resource "google_kms_key_ring" "key_ring" {
-  name     = random_id.kms.b64_url
+  name     = local.uuid
   location = local.region
 }
 
 resource "google_kms_crypto_key" "crypto_key" {
-  name            = random_id.kms.b64_url
+  name            = local.uuid
   key_ring        = google_kms_key_ring.key_ring.self_link
   rotation_period = "86400s"
   purpose         = "ENCRYPT_DECRYPT"
