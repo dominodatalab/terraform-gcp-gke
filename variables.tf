@@ -99,12 +99,6 @@ variable "enable_vertical_pod_autoscaling" {
   description = "Enable GKE vertical scaling"
 }
 
-variable "gke_node_version" {
-  type        = string
-  default     = "1.14.7-gke.14"
-  description = "GKE K8s version for node pools"
-}
-
 variable "gke_release_channel" {
   type        = string
   default     = "REGULAR"

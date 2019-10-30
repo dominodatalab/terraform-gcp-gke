@@ -186,7 +186,6 @@ resource "google_container_node_pool" "platform" {
   name     = "platform"
   location = google_container_cluster.domino_cluster.location
   cluster  = google_container_cluster.domino_cluster.name
-  version  = var.gke_node_version
 
   initial_node_count = var.platform_nodes_max
   autoscaling {
@@ -220,7 +219,6 @@ resource "google_container_node_pool" "compute" {
   name     = "compute"
   location = google_container_cluster.domino_cluster.location
   cluster  = google_container_cluster.domino_cluster.name
-  version  = var.gke_node_version
 
   initial_node_count = max(1, var.compute_nodes_min)
   autoscaling {
@@ -254,7 +252,6 @@ resource "google_container_node_pool" "build" {
   name     = "build"
   location = google_container_cluster.domino_cluster.location
   cluster  = google_container_cluster.domino_cluster.name
-  version  = var.gke_node_version
 
   initial_node_count = max(1, var.build_nodes_min)
   autoscaling {
