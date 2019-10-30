@@ -169,6 +169,14 @@ resource "google_container_cluster" "domino_cluster" {
     identity_namespace = "${data.google_project.domino.project_id}.svc.id.goog"
   }
 
+  network_policy {
+    provider = "CALICO"
+    enabled  = var.enable_network_policy
+  }
+
+  pod_security_policy_config {
+    enabled = var.enable_pod_security_policy
+  }
 }
 
 resource "google_container_node_pool" "platform" {
