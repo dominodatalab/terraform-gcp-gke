@@ -200,6 +200,8 @@ resource "google_container_node_pool" "platform" {
     preemptible  = var.platform_nodes_preemptible
     machine_type = var.platform_node_type
 
+    service_account = google_service_account.platform.email
+
     labels = {
       "dominodatalab.com/node-pool" = "platform"
     }

@@ -64,3 +64,15 @@ resource "google_project_iam_member" "platform_workload_identity_user" {
   role    = "roles/iam.workloadIdentityUser"
   member  = "serviceAccount:${google_service_account.platform.email}"
 }
+
+resource "google_project_iam_member" "platform_logging" {
+  project = var.project
+  role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${google_service_account.platform.email}"
+}
+
+resource "google_project_iam_member" "platform_monitoring" {
+  project = var.project
+  role    = "roles/monitoring.metricWriter"
+  member  = "serviceAccount:${google_service_account.platform.email}"
+}
