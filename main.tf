@@ -112,9 +112,9 @@ resource "google_filestore_instance" "nfs" {
 resource "google_container_cluster" "domino_cluster" {
   provider = "google-beta"
 
-  name               = local.cluster
-  location           = var.location
-  description        = var.description
+  name        = local.cluster
+  location    = var.location
+  description = var.description
 
   release_channel {
     channel = var.gke_release_channel
