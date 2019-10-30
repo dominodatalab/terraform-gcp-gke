@@ -9,7 +9,7 @@ terraform {
 
 locals {
   cluster                 = var.cluster == null ? terraform.workspace : var.cluster
-  enable_private_endpoint = length(var.master_authorized_networks_config.cidr_block) == 0
+  enable_private_endpoint = length(var.master_authorized_networks_config) == 0
 
   # Converts a cluster's location to a zone/region. A 'location' may be a region or zone: a region becomes the '[region]-a' zone.
   region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location) - 2)
@@ -17,13 +17,11 @@ locals {
 }
 
 provider "google" {
-  version = "2.17.0"
   project = var.project
   region  = local.region
 }
 
 provider "google-beta" {
-  version = "2.17.0"
   project = var.project
   region  = local.region
 }
@@ -101,7 +99,7 @@ resource "google_filestore_instance" "nfs" {
   zone = local.zone
 
   file_shares {
-    capacity_gb = 2660
+    capacity_gb = var.filestore_capacity_gb
     name        = "share1"
   }
 
@@ -152,9 +150,12 @@ resource "google_container_cluster" "domino_cluster" {
   ip_allocation_policy {}
 
   master_authorized_networks_config {
-    cidr_blocks {
-      cidr_block   = var.master_authorized_networks_config.cidr_block
-      display_name = var.master_authorized_networks_config.display_name
+    dynamic "cidr_blocks" {
+      for_each = var.master_authorized_networks_config
+      content {
+        cidr_block   = cidr_blocks.value.cidr_block
+        display_name = cidr_blocks.value.display_name
+      }
     }
   }
 
@@ -168,6 +169,14 @@ resource "google_container_cluster" "domino_cluster" {
     identity_namespace = "${data.google_project.domino.project_id}.svc.id.goog"
   }
 
+  network_policy {
+    provider = "CALICO"
+    enabled  = var.enable_network_policy
+  }
+
+  pod_security_policy_config {
+    enabled = var.enable_pod_security_policy
+  }
 }
 
 resource "google_container_node_pool" "platform" {

@@ -52,3 +52,15 @@ resource "google_project_iam_member" "platform_service_account" {
   role    = "roles/iam.serviceAccountUser"
   member  = "serviceAccount:${google_service_account.platform.email}"
 }
+
+resource "google_project_iam_member" "platform_object_admin" {
+  project = var.project
+  role    = "roles/storage.objectAdmin"
+  member  = "serviceAccount:${google_service_account.platform.email}"
+}
+
+resource "google_project_iam_member" "platform_workload_identity_user" {
+  project = var.project
+  role    = "roles/iam.workloadIdentityUser"
+  member  = "serviceAccount:${google_service_account.platform.email}"
+}

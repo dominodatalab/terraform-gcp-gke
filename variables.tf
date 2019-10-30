@@ -40,6 +40,12 @@ variable "description" {
   default = "The Domino K8s Cluster"
 }
 
+variable "filestore_capacity_gb" {
+  type        = number
+  default     = 1024
+  description = "Filestore Instance size (GB) for the cluster nfs shared storage"
+}
+
 variable "google_dns_managed_zone" {
   type = object({
     name     = string
@@ -77,6 +83,16 @@ variable "compute_node_type" {
   default = "n1-standard-1"
 }
 
+variable "enable_pod_security_policy" {
+  type    = bool
+  default = false
+}
+
+variable "enable_network_policy" {
+  type    = bool
+  default = true
+}
+
 variable "enable_vertical_pod_autoscaling" {
   type        = bool
   default     = true
@@ -85,7 +101,7 @@ variable "enable_vertical_pod_autoscaling" {
 
 variable "gke_version" {
   type        = string
-  default     = "1.14.6-gke.2"
+  default     = "1.14.7-gke.14"
   description = "GKE K8s version for both master and node pools"
 }
 
@@ -96,14 +112,32 @@ variable "location" {
 }
 
 variable "master_authorized_networks_config" {
-  type = object({
+  type = list(object({
     cidr_block   = string
     display_name = string
-  })
-  default = {
-    cidr_block   = "12.245.82.18/32"
-    display_name = "domino-hq-for-testing"
-  }
+  }))
+  default = [
+    {
+      cidr_block   = "12.245.82.18/32"
+      display_name = "domino-hq-for-testing"
+    },
+    {
+      cidr_block   = "52.206.158.130/32"
+      display_name = "aviatrix-east"
+    },
+    {
+      cidr_block   = "52.25.178.121/32"
+      display_name = "aviatrix-west"
+    },
+    {
+      cidr_block   = "52.56.39.158/32"
+      display_name = "aviatrix-eu"
+    },
+    {
+      cidr_block   = "13.126.91.85/32"
+      display_name = "aviatrix-ap"
+    }
+  ]
   description = "Configuration options for master authorized networks. Default is for debugging only, and should be removed for production."
 }
 
