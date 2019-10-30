@@ -206,7 +206,8 @@ resource "google_container_node_pool" "platform" {
   }
 
   management {
-    auto_repair = true
+    auto_repair  = true
+    auto_upgrade = true
   }
 
   timeouts {
@@ -239,7 +240,8 @@ resource "google_container_node_pool" "compute" {
   }
 
   management {
-    auto_repair = true
+    auto_repair  = true
+    auto_upgrade = true
   }
 
   timeouts {
@@ -274,7 +276,8 @@ resource "google_container_node_pool" "build" {
   }
 
   management {
-    auto_repair = true
+    auto_repair  = true
+    auto_upgrade = true
   }
 
   timeouts {
