@@ -15,16 +15,21 @@ output "dns" {
   description = "The external (public) DNS name for the Domino UI"
 }
 
-output "static_ip" {
-  value       = google_compute_address.static_ip.address
-  description = "The external (public) static IPv4 for the Domino UI"
-}
-
 output "google_filestore_instance" {
   value = {
     file_share = google_filestore_instance.nfs.file_shares[0].name,
     ip_address = google_filestore_instance.nfs.networks[0].ip_addresses[0],
   }
+}
+
+output "uuid" {
+  value       = local.uuid
+  description = "Cluster UUID"
+}
+
+output "static_ip" {
+  value       = google_compute_address.static_ip.address
+  description = "The external (public) static IPv4 for the Domino UI"
 }
 
 output "workload_identity_service_accounts" {
