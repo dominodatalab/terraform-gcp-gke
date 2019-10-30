@@ -47,6 +47,15 @@ resource "google_dns_record_set" "a" {
   rrdatas = [google_compute_global_address.static_ip.address]
 }
 
+resource "google_dns_record_set" "caa" {
+  name         = "${local.cluster}.${var.google_dns_managed_zone.dns_name}"
+  managed_zone = var.google_dns_managed_zone.name
+  type         = "CAA"
+  ttl          = 300
+
+  rrdatas = ["0 issue \"letsencrypt.org\"", "0 issue \"pki.goog\""]
+}
+
 resource "google_compute_network" "vpc_network" {
   name        = local.uuid
   description = var.description
