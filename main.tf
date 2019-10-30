@@ -115,10 +115,13 @@ resource "google_filestore_instance" "nfs" {
 resource "google_container_cluster" "domino_cluster" {
   provider = "google-beta"
 
-  name               = local.cluster
-  location           = var.location
-  description        = var.description
-  min_master_version = var.gke_version
+  name        = local.cluster
+  location    = var.location
+  description = var.description
+
+  release_channel {
+    channel = var.gke_release_channel
+  }
 
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
@@ -186,7 +189,6 @@ resource "google_container_node_pool" "platform" {
   name     = "platform"
   location = google_container_cluster.domino_cluster.location
   cluster  = google_container_cluster.domino_cluster.name
-  version  = var.gke_version
 
   initial_node_count = var.platform_nodes_max
   autoscaling {
@@ -207,7 +209,8 @@ resource "google_container_node_pool" "platform" {
   }
 
   management {
-    auto_repair = true
+    auto_repair  = true
+    auto_upgrade = true
   }
 
   timeouts {
@@ -220,7 +223,6 @@ resource "google_container_node_pool" "compute" {
   name     = "compute"
   location = google_container_cluster.domino_cluster.location
   cluster  = google_container_cluster.domino_cluster.name
-  version  = var.gke_version
 
   initial_node_count = max(1, var.compute_nodes_min)
   autoscaling {
@@ -241,7 +243,8 @@ resource "google_container_node_pool" "compute" {
   }
 
   management {
-    auto_repair = true
+    auto_repair  = true
+    auto_upgrade = true
   }
 
   timeouts {
@@ -254,7 +257,6 @@ resource "google_container_node_pool" "build" {
   name     = "build"
   location = google_container_cluster.domino_cluster.location
   cluster  = google_container_cluster.domino_cluster.name
-  version  = var.gke_version
 
   initial_node_count = max(1, var.build_nodes_min)
   autoscaling {
@@ -277,7 +279,8 @@ resource "google_container_node_pool" "build" {
   }
 
   management {
-    auto_repair = true
+    auto_repair  = true
+    auto_upgrade = true
   }
 
   timeouts {
