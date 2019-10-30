@@ -22,14 +22,14 @@ output "google_filestore_instance" {
   }
 }
 
+output "static_ip" {
+  value       = google_compute_global_address.static_ip.address
+  description = "The external (public) static IPv4 for the Domino UI"
+}
+
 output "uuid" {
   value       = local.uuid
   description = "Cluster UUID"
-}
-
-output "static_ip" {
-  value       = google_compute_address.static_ip.address
-  description = "The external (public) static IPv4 for the Domino UI"
 }
 
 output "workload_identity_service_accounts" {

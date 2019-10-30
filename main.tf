@@ -33,8 +33,8 @@ data "google_project" "domino" {
 
 resource "random_uuid" "id" {}
 
-resource "google_compute_address" "static_ip" {
-  name        = local.uuid
+resource "google_compute_global_address" "static_ip" {
+  name        = local.cluster
   description = "External static IPv4 address for var.description"
 }
 
@@ -44,7 +44,7 @@ resource "google_dns_record_set" "a" {
   type         = "A"
   ttl          = 300
 
-  rrdatas = [google_compute_address.static_ip.address]
+  rrdatas = [google_compute_global_address.static_ip.address]
 }
 
 resource "google_compute_network" "vpc_network" {
