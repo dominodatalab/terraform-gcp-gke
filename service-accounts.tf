@@ -79,7 +79,7 @@ resource "google_project_iam_member" "platform_monitoring" {
 
 resource "google_service_account_iam_binding" "platform_docker_registry" {
   service_account_id = google_service_account.platform.name
-  role               = "roles/iam.serviceAccountUser"
+  role               = "roles/iam.workloadIdentityUser"
   members            = [
     "serviceAccount:domino-eng-platform-dev.svc.id.goog[domino-platform/docker-registry]",
   ]
