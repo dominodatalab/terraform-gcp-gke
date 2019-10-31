@@ -1,6 +1,6 @@
 variable "action_type" {
   type        = string
-  default     = null
+  default     = "Delete"
   description = "The type of the action of the Lifecyle Rule. Supported values are : Delete and SetStorageClass. If empty defaults to Delete"
 }
 
