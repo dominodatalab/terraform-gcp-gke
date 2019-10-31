@@ -201,7 +201,9 @@ resource "google_container_node_pool" "platform" {
     machine_type = var.platform_node_type
 
     service_account = google_service_account.platform.email
-    oauth_scopes = ["https://www.googleapis.com/auth/devstorage.full_control"]
+    oauth_scopes = ["https://www.googleapis.com/auth/devstorage.full_control",
+                    "https://www.googleapis.com/auth/logging.write",
+                    "https://www.googleapis.com/auth/monitoring"]
 
     labels = {
       "dominodatalab.com/node-pool" = "platform"
