@@ -86,7 +86,8 @@ resource "google_storage_bucket" "bucket" {
 
   lifecycle_rule {
     action {
-      type = "Delete"
+      type          = var.action_type == null ? "Delete" : var.action_type
+      storage_class = var.action_storage_class
     }
     condition {
       age = 365

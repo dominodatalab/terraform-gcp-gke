@@ -1,3 +1,14 @@
+variable "action_type" {
+  type        = string
+  default     = null
+  description = "The type of the action of the Lifecyle Rule. Supported values are : Delete and SetStorageClass. If empty defaults to Delete"
+}
+
+variable "action_storage_class" {
+  type        = string
+  default     = "REGIONAL"
+  description = "The target storage class of objects under this rule. We default to Regional for now"
+}
 variable "cluster" {
   type        = string
   default     = null
