@@ -84,16 +84,6 @@ resource "google_storage_bucket" "bucket" {
     enabled = true
   }
 
-  lifecycle_rule {
-    action {
-      type          = var.action_type
-      storage_class = var.action_storage_class
-    }
-    condition {
-      age = 365
-    }
-  }
-
   force_destroy = true
 }
 
