@@ -174,6 +174,10 @@ resource "google_container_cluster" "domino_cluster" {
     }
   }
 
+  resource_labels = {
+    "uuid" = local.uuid
+  }
+
   # Application-layer Secrets Encryption
   database_encryption {
     state    = "ENCRYPTED"
