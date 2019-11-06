@@ -170,3 +170,33 @@ variable "platform_namespace" {
   type    = string
   default = "domino-platform"
 }
+
+variable "gpu_nodes_preemptible" {
+  type    = bool
+  default = true
+}
+
+variable "gpu_node_type" {
+  type    = string
+  default = "n1-standard-8"
+}
+
+variable "gpu_nodes_min" {
+  type    = number
+  default = 0
+}
+
+variable "gpu_nodes_max" {
+  type    = number
+  default = 2
+}
+
+variable "gpu_nodes_ssd_gb" {
+  type    = number
+  default = 100
+}
+
+variable "gpu_nodes_accelerator" {
+  type    = string
+  default = "nvidia-tesla-p100"
+}
