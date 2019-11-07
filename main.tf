@@ -33,7 +33,7 @@ data "google_project" "domino" {
 
 resource "random_uuid" "id" {}
 
-resource "google_compute_address" "static_ip" {
+resource "google_compute_global_address" "static_ip" {
   name        = local.uuid
   description = "External static IPv4 address for var.description"
 }
@@ -44,7 +44,16 @@ resource "google_dns_record_set" "a" {
   type         = "A"
   ttl          = 300
 
-  rrdatas = [google_compute_address.static_ip.address]
+  rrdatas = [google_compute_global_address.static_ip.address]
+}
+
+resource "google_dns_record_set" "caa" {
+  name         = "${local.cluster}.${var.google_dns_managed_zone.dns_name}"
+  managed_zone = var.google_dns_managed_zone.name
+  type         = "CAA"
+  ttl          = 300
+
+  rrdatas = ["0 issue \"letsencrypt.org\"", "0 issue \"pki.goog\""]
 }
 
 resource "google_compute_network" "vpc_network" {
