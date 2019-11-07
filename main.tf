@@ -313,3 +313,44 @@ resource "google_kms_crypto_key" "crypto_key" {
   rotation_period = "86400s"
   purpose         = "ENCRYPT_DECRYPT"
 }
+
+resource "google_container_node_pool" "gpu" {
+  provider = "google-beta"
+  name     = "gpu"
+  location = google_container_cluster.domino_cluster.location
+  cluster  = google_container_cluster.domino_cluster.name
+
+  initial_node_count = max(0, var.gpu_nodes_min)
+
+  autoscaling {
+    max_node_count = var.gpu_nodes_max
+    min_node_count = var.gpu_nodes_min
+  }
+
+  node_config {
+    preemptible  = var.gpu_nodes_preemptible
+    machine_type = var.gpu_node_type
+
+    guest_accelerator {
+      type  = var.gpu_nodes_accelerator
+      count = 1
+    }
+
+    labels = {
+      "dominodatalab.com/node-pool" = "default-gpu"
+    }
+
+    disk_size_gb    = var.gpu_nodes_ssd_gb
+    local_ssd_count = 1
+  }
+
+  management {
+    auto_repair  = true
+    auto_upgrade = true
+  }
+
+  timeouts {
+    delete = "20m"
+  }
+
+}
