@@ -105,6 +105,35 @@ variable "gke_release_channel" {
   description = "GKE K8s release channel for master"
 }
 
+variable "gpu_nodes_accelerator" {
+  type    = string
+  default = "nvidia-tesla-p100"
+}
+
+variable "gpu_nodes_max" {
+  type    = number
+  default = 2
+}
+
+variable "gpu_nodes_min" {
+  type    = number
+  default = 0
+}
+
+variable "gpu_nodes_preemptible" {
+  type    = bool
+  default = true
+}
+
+variable "gpu_node_type" {
+  type    = string
+  default = "n1-standard-8"
+}
+
+variable "gpu_nodes_ssd_gb" {
+  type    = number
+  default = 100
+}
 variable "location" {
   type        = string
   default     = "us-west1-a"
@@ -170,35 +199,3 @@ variable "platform_namespace" {
   type    = string
   default = "domino-platform"
 }
-
-variable "gpu_nodes_accelerator" {
-  type    = string
-  default = "nvidia-tesla-p100"
-}
-
-variable "gpu_nodes_max" {
-  type    = number
-  default = 2
-}
-
-variable "gpu_nodes_min" {
-  type    = number
-  default = 0
-}
-
-variable "gpu_nodes_preemptible" {
-  type    = bool
-  default = true
-}
-
-variable "gpu_node_type" {
-  type    = string
-  default = "n1-standard-8"
-}
-
-variable "gpu_nodes_ssd_gb" {
-  type    = number
-  default = 100
-}
-
-
