@@ -1,3 +1,4 @@
+[![CircleCI](https://circleci.com/gh/cerebrotech/terraform-gcp-gke.svg?style=svg&circle-token=dfa46ce0cbeb40ea61fd9e96f7c6a05d5a87c3f7)](https://circleci.com/gh/cerebrotech/terraform-gcp-gke)
 # Domino GKE Terraform
 
 ## Usage
