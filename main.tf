@@ -245,7 +245,7 @@ resource "google_container_node_pool" "compute" {
 
   node_config {
     preemptible  = var.compute_nodes_preemptible
-     machine_type = var.compute_node_type
+    machine_type = var.compute_node_type
 
     labels = {
       "domino/build-node"            = "true"
