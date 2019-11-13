@@ -245,41 +245,7 @@ resource "google_container_node_pool" "compute" {
 
   node_config {
     preemptible  = var.compute_nodes_preemptible
-    machine_type = var.platform_node_type
-
-    labels = {
-      "dominodatalab.com/node-pool" = "compute"
-    }
-
-    disk_size_gb    = var.compute_nodes_ssd_gb
-    local_ssd_count = 1
-  }
-
-  management {
-    auto_repair  = true
-    auto_upgrade = true
-  }
-
-  timeouts {
-    delete = "20m"
-  }
-
-}
-
-resource "google_container_node_pool" "build" {
-  name     = "build"
-  location = google_container_cluster.domino_cluster.location
-  cluster  = google_container_cluster.domino_cluster.name
-
-  initial_node_count = max(1, var.build_nodes_min)
-  autoscaling {
-    max_node_count = var.build_nodes_max
-    min_node_count = var.build_nodes_min
-  }
-
-  node_config {
-    preemptible  = var.build_nodes_preemptible
-    machine_type = var.build_node_type
+    machine_type = var.compute_node_type
 
     labels = {
       "domino/build-node"            = "true"
@@ -287,7 +253,7 @@ resource "google_container_node_pool" "build" {
       "dominodatalab.com/node-pool"  = "default"
     }
 
-    disk_size_gb    = var.build_nodes_ssd_gb
+    disk_size_gb    = var.compute_nodes_ssd_gb
     local_ssd_count = 1
   }
 
