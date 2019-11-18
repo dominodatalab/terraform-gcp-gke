@@ -16,10 +16,7 @@ output "dns" {
 }
 
 output "google_filestore_instance" {
-  value = {
-    file_share = google_filestore_instance.nfs[0].file_shares[0].name,
-    ip_address = google_filestore_instance.nfs[0].networks[0].ip_addresses[0],
-  }
+  value = google_filestore_instance.nfs
 }
 
 output "static_ip" {
