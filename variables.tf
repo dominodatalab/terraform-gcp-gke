@@ -46,6 +46,12 @@ variable "filestore_capacity_gb" {
   description = "Filestore Instance size (GB) for the cluster nfs shared storage"
 }
 
+variable "filestore_disabled" {
+  type        = bool
+  default     = false
+  description = "Do not provision a Filestore instance (mostly to avoid GCP Filestore API issues)"
+}
+
 variable "google_dns_managed_zone" {
   type = object({
     name     = string
