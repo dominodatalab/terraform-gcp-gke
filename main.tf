@@ -119,6 +119,8 @@ resource "google_filestore_instance" "nfs" {
     network = google_compute_network.vpc_network.name
     modes   = ["MODE_IPV4"]
   }
+
+  count = filestore_disabled ? 0 : 1
 }
 
 resource "google_container_cluster" "domino_cluster" {
