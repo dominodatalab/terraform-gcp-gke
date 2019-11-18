@@ -120,7 +120,7 @@ resource "google_filestore_instance" "nfs" {
     modes   = ["MODE_IPV4"]
   }
 
-  count = filestore_disabled ? 0 : 1
+  count = var.filestore_disabled ? 0 : 1
 }
 
 resource "google_container_cluster" "domino_cluster" {
