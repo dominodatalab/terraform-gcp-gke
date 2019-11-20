@@ -124,7 +124,7 @@ resource "google_filestore_instance" "nfs" {
 }
 
 resource "google_container_cluster" "domino_cluster" {
-  provider = "google-beta"
+  provider = google-beta
 
   name        = local.cluster
   location    = var.location
@@ -283,7 +283,7 @@ resource "google_kms_crypto_key" "crypto_key" {
 }
 
 resource "google_container_node_pool" "gpu" {
-  provider = "google-beta"
+  provider = google-beta
   name     = "gpu"
   location = google_container_cluster.domino_cluster.location
   cluster  = google_container_cluster.domino_cluster.name
