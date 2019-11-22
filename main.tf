@@ -345,7 +345,7 @@ resource "google_container_node_pool" "gpu" {
 
 # https://cloud.google.com/iap/docs/using-tcp-forwarding
 resource "google_compute_firewall" "iap-tcp-forwarding" {
-  name    = "iap-tcp-forwarding"
+  name    = "${local.uuid}-iap"
   network = google_compute_network.vpc_network.name
 
   allow {
