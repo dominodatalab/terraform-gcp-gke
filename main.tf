@@ -353,6 +353,6 @@ resource "google_compute_firewall" "iap-tcp-forwarding" {
     ports    = ["22"]
   }
 
-  source_ranges = ["35.235.240.0/20"]
+  source_ranges = var.allowed_ssh_ranges
   target_tags   = ["iap-tcp-forwarding-allowed"]
 }
