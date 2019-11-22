@@ -6,6 +6,7 @@ output "cluster" {
     "cluster_ipv4_cidr", google_container_cluster.domino_cluster.cluster_ipv4_cidr,
     "name", google_container_cluster.domino_cluster.name,
     "public_endpoint", google_container_cluster.domino_cluster.private_cluster_config[0].public_endpoint,
+    "pod_cidr", google_compute_subnetwork.default.ip_cidr_range
   )
   description = "GKE cluster information"
 }
