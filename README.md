@@ -3,7 +3,7 @@
 
 ## Usage
 
-### Create a development GKE cluster
+### Create a Domino development GKE cluster
 ```hcl
 module "rancher" {
   source  = "github.com/cerebrotech/terraform-gcp-gke"
@@ -25,6 +25,24 @@ module "rancher" {
 }
 ```
 
+## Manual Deployment
+1. Install [gcloud](https://cloud.google.com/sdk/docs/quickstarts) and configure the [Terraform workspace](https://www.terraform.io/docs/state/workspaces.html)
+    ```
+    gcloud auth application-default login
+    terraform init
+    terraform workspace new [your-cluster-name]
+    ```
+
+1. With the environment setup, you can now apply the terraform module
+    ```
+    terraform apply -auto-approve
+    ```
+
+1. Be sure to cleanup the cluster after you are done working
+    ```
+    terraform destroy -auto-approve
+    ```
+
 ## IAM Permissions
 The following project [IAM permissions](https://console.cloud.google.com/iam-admin/iam) must be granted to the provisioning user/service:
 - Cloud KMS Admin
@@ -43,21 +61,3 @@ It may be possible to lower the "admin" privilage levels to a "creator" level if
 ## Development
 
 Please submit any feature enhancements, bug fixes, or ideas via pull requests or issues.
-
-## Manual Deployment
-1. Install [gcloud](https://cloud.google.com/sdk/docs/quickstarts) and configure the [Terraform workspace](https://www.terraform.io/docs/state/workspaces.html)
-    ```
-    gcloud auth application-default login
-    terraform init
-    terraform workspace new [your-cluster-name]
-    ```
-
-1. With the environment setup, you can now apply the terraform module
-    ```
-    terraform apply -auto-approve
-    ```
-
-1. Be sure to cleanup the cluster after you are done working
-    ```
-    terraform destroy -auto-approve
-    ```
