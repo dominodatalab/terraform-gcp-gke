@@ -54,7 +54,7 @@ jobs:
 
       - run:
           name: Terraform destroy
-          command: terraform destroy -auto-approve
+          command: terraform destroy -auto-approve || (sleep 1m && terraform destroy -auto-approve)
           when: always
 
       - run:
