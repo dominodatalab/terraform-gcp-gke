@@ -68,7 +68,7 @@ resource "google_compute_subnetwork" "default" {
   name                     = local.uuid
   ip_cidr_range            = "10.138.0.0/20"
   network                  = google_compute_network.vpc_network.self_link
-  private_ip_google_access = false
+  private_ip_google_access = true
   description              = "${local.cluster} default network"
 }
 
@@ -310,6 +310,10 @@ resource "google_container_node_pool" "gpu" {
 
     disk_size_gb    = var.gpu_nodes_ssd_gb
     local_ssd_count = 1
+
+    workload_metadata_config {
+      node_metadata = "GKE_METADATA_SERVER"
+    }
   }
 
   management {

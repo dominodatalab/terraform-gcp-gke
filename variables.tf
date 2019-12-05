@@ -142,7 +142,7 @@ variable "gpu_nodes_ssd_gb" {
 }
 variable "location" {
   type        = string
-  default     = "us-west1-a"
+  default     = "us-west1-b"
   description = "The location (region or zone) of the cluster. A zone creates a single master. Specifying a region creates replicated masters accross all zones"
 }
 
@@ -154,7 +154,7 @@ variable "master_authorized_networks_config" {
   default = [
     {
       cidr_block   = "12.245.82.18/32"
-      display_name = "domino-hq-for-testing"
+      display_name = "domino-hq"
     },
     {
       cidr_block   = "52.206.158.130/32"
