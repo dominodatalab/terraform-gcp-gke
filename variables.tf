@@ -142,7 +142,7 @@ variable "gpu_nodes_ssd_gb" {
 }
 variable "location" {
   type        = string
-  default     = "us-west1-a"
+  default     = "us-west1-b"
   description = "The location (region or zone) of the cluster. A zone creates a single master. Specifying a region creates replicated masters accross all zones"
 }
 
