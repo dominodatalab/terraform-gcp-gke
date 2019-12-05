@@ -53,6 +53,10 @@ jobs:
           command: terraform apply -auto-approve
 
       - run:
+          name: Terraform plan
+          command: terraform plan -detailed-exitcode
+
+      - run:
           name: Terraform destroy
           command: terraform destroy -auto-approve || (sleep 1m && terraform destroy -auto-approve)
           when: always
