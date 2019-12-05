@@ -68,7 +68,7 @@ resource "google_compute_subnetwork" "default" {
   name                     = local.uuid
   ip_cidr_range            = "10.138.0.0/20"
   network                  = google_compute_network.vpc_network.self_link
-  private_ip_google_access = false
+  private_ip_google_access = true
   description              = "${local.cluster} default network"
 }
 
