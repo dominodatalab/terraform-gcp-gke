@@ -310,6 +310,10 @@ resource "google_container_node_pool" "gpu" {
 
     disk_size_gb    = var.gpu_nodes_ssd_gb
     local_ssd_count = 1
+
+    workload_metadata_config {
+      node_metadata = "GKE_METADATA_SERVER"
+    }
   }
 
   management {
