@@ -145,6 +145,19 @@ resource "google_container_cluster" "domino_cluster" {
     }
   }
 
+  # This resource's provider has issues with reconciling the remote/local state
+  # of the `issue_client_certificate` field because we use channels to
+  # implicitly set a cluster version.
+  #
+  # We're going to ignore all changes to the `master_auth` block since we set
+  # these values statically. Hopefully, this issue will be resolved in a future
+  # version of the provider. See the following issue for more context.
+  #
+  # https://github.com/terraform-providers/terraform-provider-google/issues/3369#issuecomment-487226330
+  lifecycle {
+    ignore_changes = [master_auth]
+  }
+
   vertical_pod_autoscaling {
     enabled = var.enable_vertical_pod_autoscaling
   }
