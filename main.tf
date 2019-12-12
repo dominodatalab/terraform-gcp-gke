@@ -68,7 +68,7 @@ resource "google_compute_subnetwork" "default" {
   name                     = local.uuid
   ip_cidr_range            = "10.138.0.0/20"
   network                  = google_compute_network.vpc_network.self_link
-  private_ip_google_access = false
+  private_ip_google_access = true
   description              = "${local.cluster} default network"
 }
 
@@ -91,15 +91,6 @@ resource "google_storage_bucket" "bucket" {
 
   versioning {
     enabled = true
-  }
-
-  lifecycle_rule {
-    action {
-      type = "Delete"
-    }
-    condition {
-      age = 365
-    }
   }
 
   force_destroy = true
@@ -152,6 +143,19 @@ resource "google_container_cluster" "domino_cluster" {
     client_certificate_config {
       issue_client_certificate = true
     }
+  }
+
+  # This resource's provider has issues with reconciling the remote/local state
+  # of the `issue_client_certificate` field because we use channels to
+  # implicitly set a cluster version.
+  #
+  # We're going to ignore all changes to the `master_auth` block since we set
+  # these values statically. Hopefully, this issue will be resolved in a future
+  # version of the provider. See the following issue for more context.
+  #
+  # https://github.com/terraform-providers/terraform-provider-google/issues/3369#issuecomment-487226330
+  lifecycle {
+    ignore_changes = [master_auth]
   }
 
   vertical_pod_autoscaling {
@@ -310,6 +314,10 @@ resource "google_container_node_pool" "gpu" {
 
     disk_size_gb    = var.gpu_nodes_ssd_gb
     local_ssd_count = 1
+
+    workload_metadata_config {
+      node_metadata = "GKE_METADATA_SERVER"
+    }
   }
 
   management {

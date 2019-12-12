@@ -5,7 +5,7 @@
 
 ### Create a Domino development GKE cluster
 ```hcl
-module "rancher" {
+module "gke_cluster" {
   source  = "github.com/cerebrotech/terraform-gcp-gke"
 
   cluster = "cluster-name"
@@ -14,13 +14,13 @@ module "rancher" {
 
 ### Create a prod GKE cluster
 ```hcl
-module "rancher" {
+module "gke_cluster" {
   source   = "github.com/cerebrotech/terraform-gcp-gke"
 
   cluster  = "cluster-name"
   project  = "gcp-project"
   location = "us-west1"
-  
+
   # Some more variables may need to be configured to meet specific needs
 }
 ```

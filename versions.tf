@@ -2,8 +2,8 @@ terraform {
   required_version = ">= 0.12"
 
   required_providers {
-    google      = ">=2.20.0"
-    google-beta = ">=2.20.0"
+    google      = ">=3.1.0"
+    google-beta = ">=3.1.0"
     random      = ">=2.2"
   }
 }
