@@ -10,31 +10,6 @@ variable "project" {
   description = "GCP Project ID"
 }
 
-variable "build_nodes_max" {
-  type    = number
-  default = 2
-}
-
-variable "build_nodes_min" {
-  type    = number
-  default = 0
-}
-
-variable "build_nodes_preemptible" {
-  type    = bool
-  default = true
-}
-
-variable "build_nodes_ssd_gb" {
-  type    = number
-  default = 100
-}
-
-variable "build_node_type" {
-  type    = string
-  default = "n1-standard-8"
-}
-
 variable "description" {
   type    = string
   default = "The Domino K8s Cluster"
@@ -66,7 +41,7 @@ variable "google_dns_managed_zone" {
 
 variable "compute_nodes_max" {
   type    = number
-  default = 5
+  default = 10
 }
 
 variable "compute_nodes_min" {
@@ -81,17 +56,17 @@ variable "compute_nodes_preemptible" {
 
 variable "compute_nodes_ssd_gb" {
   type    = number
-  default = 100
+  default = 400
 }
 
 variable "compute_node_type" {
   type    = string
-  default = "n1-standard-1"
+  default = "n1-standard-8"
 }
 
 variable "enable_pod_security_policy" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "enable_network_policy" {
@@ -138,7 +113,7 @@ variable "gpu_node_type" {
 
 variable "gpu_nodes_ssd_gb" {
   type    = number
-  default = 100
+  default = 400
 }
 variable "location" {
   type        = string
