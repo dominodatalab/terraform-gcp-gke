@@ -46,6 +46,7 @@ module "gke_cluster" {
 ## IAM Permissions
 The following project [IAM permissions](https://console.cloud.google.com/iam-admin/iam) must be granted to the provisioning user/service:
 - Cloud KMS Admin
+- Compute Admin
 - Compute Instance Admin (v1)
 - Compute Network Admin
 - Kubernetes Engine Admin

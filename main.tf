@@ -219,6 +219,10 @@ resource "google_container_node_pool" "platform" {
     preemptible  = var.platform_nodes_preemptible
     machine_type = var.platform_node_type
 
+    tags = [
+      "iap-tcp-forwarding-allowed"
+    ]
+
     labels = {
       "dominodatalab.com/node-pool" = "platform"
     }
@@ -252,6 +256,10 @@ resource "google_container_node_pool" "compute" {
   node_config {
     preemptible  = var.compute_nodes_preemptible
     machine_type = var.compute_node_type
+
+    tags = [
+      "iap-tcp-forwarding-allowed"
+    ]
 
     labels = {
       "domino/build-node"            = "true"
@@ -308,6 +316,10 @@ resource "google_container_node_pool" "gpu" {
       count = 1
     }
 
+    tags = [
+      "iap-tcp-forwarding-allowed"
+    ]
+
     labels = {
       "dominodatalab.com/node-pool" = "default-gpu"
     }
@@ -329,4 +341,18 @@ resource "google_container_node_pool" "gpu" {
     delete = "20m"
   }
 
+}
+
+# https://cloud.google.com/iap/docs/using-tcp-forwarding
+resource "google_compute_firewall" "iap-tcp-forwarding" {
+  name    = "${local.uuid}-iap"
+  network = google_compute_network.vpc_network.name
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+
+  source_ranges = var.allowed_ssh_ranges
+  target_tags   = ["iap-tcp-forwarding-allowed"]
 }

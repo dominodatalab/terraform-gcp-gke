@@ -10,6 +10,12 @@ variable "project" {
   description = "GCP Project ID"
 }
 
+variable "allowed_ssh_ranges" {
+  type        = list(string)
+  default     = ["35.235.240.0/20"]
+  description = "CIDR ranges allowed to SSH to nodes in the cluster."
+}
+
 variable "description" {
   type    = string
   default = "The Domino K8s Cluster"
