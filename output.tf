@@ -28,6 +28,11 @@ output "google_filestore_instance" {
   }
 }
 
+output "region" {
+  value       = local.region
+  description = "Region where the cluster is deployed derived from 'location' input variable"
+}
+
 output "static_ip" {
   value       = google_compute_global_address.static_ip.address
   description = "The external (public) static IPv4 for the Domino UI"
