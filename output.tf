@@ -1,4 +1,4 @@
-output  "bucket_url" {
+output "bucket_url" {
   value       = google_storage_bucket.bucket.url
   description = "Base URL of the cloud storage bucket"
 }
