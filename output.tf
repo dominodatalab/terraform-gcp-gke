@@ -1,3 +1,8 @@
+output "bucket_url" {
+  value       = google_storage_bucket.bucket.url
+  description = "Base URL of the cloud storage bucket"
+}
+
 output "cluster" {
   value = map(
     "client_certificate", google_container_cluster.domino_cluster.master_auth[0].client_certificate,
@@ -21,6 +26,11 @@ output "google_filestore_instance" {
     file_share = ! var.filestore_disabled ? google_filestore_instance.nfs[0].file_shares[0].name : "",
     ip_address = ! var.filestore_disabled ? google_filestore_instance.nfs[0].networks[0].ip_addresses[0] : "",
   }
+}
+
+output "region" {
+  value       = local.region
+  description = "Region where the cluster is deployed derived from 'location' input variable"
 }
 
 output "static_ip" {
