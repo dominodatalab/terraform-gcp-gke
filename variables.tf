@@ -67,7 +67,7 @@ variable "compute_nodes_ssd_gb" {
 
 variable "compute_node_type" {
   type    = string
-  default = "n1-standard-8"
+  default = "n1-highmem-8"
 }
 
 variable "enable_pod_security_policy" {
@@ -114,7 +114,7 @@ variable "gpu_nodes_preemptible" {
 
 variable "gpu_node_type" {
   type    = string
-  default = "n1-standard-8"
+  default = "n1-highmem-8"
 }
 
 variable "gpu_nodes_ssd_gb" {
