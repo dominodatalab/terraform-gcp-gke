@@ -181,8 +181,3 @@ variable "platform_node_type" {
   type    = string
   default = "n1-standard-8"
 }
-
-variable "platform_namespace" {
-  type    = string
-  default = "domino-platform"
-}
