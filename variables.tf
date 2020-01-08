@@ -4,6 +4,12 @@ variable "cluster" {
   description = "The Domino Cluster name and must be unique in the GCP Project. Defaults to workspace name."
 }
 
+variable "kubeconfig_output_path" {
+  type        = string
+  default     = ""
+  description = "Specify where the cluster kubeconfig file should be generated. Defaults to current working directory."
+}
+
 variable "project" {
   type        = string
   default     = "domino-eng-platform-dev"
