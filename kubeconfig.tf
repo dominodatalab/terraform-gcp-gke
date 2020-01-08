@@ -45,6 +45,7 @@ resource "local_file" "kubeconfig" {
   file_permission = "0644"
 
   sensitive_content = templatefile("${path.module}/templates/kubeconfig.tpl", {
+    cluster_name       = var.cluster
     server             = local.cluster_endpoint
     ca_certificate     = local.cluster_ca_certificate
     client_certificate = google_container_cluster.domino_cluster.master_auth.0.client_certificate
