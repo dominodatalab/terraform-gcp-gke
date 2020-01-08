@@ -28,6 +28,16 @@ output "google_filestore_instance" {
   }
 }
 
+output "platform_service_account" {
+  value       = google_service_account.platform.account_id
+  description = "Platform node pool service account ID"
+}
+
+output "project" {
+  value       = var.project
+  description = "GCP project ID"
+}
+
 output "region" {
   value       = local.region
   description = "Region where the cluster is deployed derived from 'location' input variable"
