@@ -76,11 +76,3 @@ resource "google_project_iam_member" "platform_monitoring" {
   role    = "roles/monitoring.metricWriter"
   member  = "serviceAccount:${google_service_account.platform.email}"
 }
-
-resource "google_service_account_iam_binding" "platform_docker_registry" {
-  service_account_id = google_service_account.platform.name
-  role               = "roles/iam.workloadIdentityUser"
-  members = [
-    "serviceAccount:${var.project}.svc.id.goog[${var.platform_namespace}/docker-registry]",
-  ]
-}
