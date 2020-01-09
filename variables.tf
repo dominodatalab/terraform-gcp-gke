@@ -4,6 +4,12 @@ variable "cluster" {
   description = "The Domino Cluster name and must be unique in the GCP Project. Defaults to workspace name."
 }
 
+variable "kubeconfig_output_path" {
+  type        = string
+  default     = ""
+  description = "Specify where the cluster kubeconfig file should be generated. Defaults to current working directory."
+}
+
 variable "project" {
   type        = string
   default     = "domino-eng-platform-dev"
@@ -155,6 +161,12 @@ variable "master_authorized_networks_config" {
     }
   ]
   description = "Configuration options for master authorized networks. Default is for debugging only, and should be removed for production."
+}
+
+variable "allow_local_ip_access" {
+  type        = bool
+  default     = false
+  description = "Adds firewall rule to allow local access to Kubernetes cluster. This is required when executing terraform outside the master authorized networks."
 }
 
 variable "platform_nodes_max" {

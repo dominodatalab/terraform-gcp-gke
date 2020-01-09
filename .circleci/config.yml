@@ -29,6 +29,7 @@ jobs:
           command: |
             echo 'export TF_VAR_description="CircleCI Build for ${CIRCLE_PR_REPONAME}: ${CIRCLE_BUILD_URL}"' >> $BASH_ENV
             echo 'export TF_VAR_filestore_disabled="true"' >> $BASH_ENV
+            echo 'export TF_VAR_allow_local_ip_access="true"' >> $BASH_ENV
             echo 'export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp-${CIRCLE_BUILD_NUM}.json"' >> $BASH_ENV
             echo 'export WORKSPACE=gcp-gke-circleci-${CIRCLE_BUILD_NUM}' >> $BASH_ENV
             echo ${CLOUDSDK_SERVICE_KEY} > /tmp/gcp-${CIRCLE_BUILD_NUM}.json
