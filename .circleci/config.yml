@@ -8,6 +8,7 @@ jobs:
       CLOUDSDK_COMPUTE_ZONE: us-west1-a
       GOOGLE_APPLICATION_CREDENTIALS: /root/.config/gcloud/legacy_credentials/terraform-gke-test@domino-eng-platform-dev.iam.gserviceaccount.com/adc.json
       TERRAFORM_VERSION: 0.12.18
+      TF_VAR_allow_local_ip_access: true
 
     steps:
       - checkout
