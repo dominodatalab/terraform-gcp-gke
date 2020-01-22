@@ -7,7 +7,7 @@ jobs:
       CLOUDSDK_CORE_PROJECT: domino-eng-platform-dev
       CLOUDSDK_COMPUTE_ZONE: us-west1-a
       GOOGLE_APPLICATION_CREDENTIALS: /root/.config/gcloud/legacy_credentials/terraform-gke-test@domino-eng-platform-dev.iam.gserviceaccount.com/adc.json
-      TERRAFORM_VERSION: 0.12.17
+      TERRAFORM_VERSION: 0.12.18
 
     steps:
       - checkout
@@ -29,6 +29,7 @@ jobs:
           command: |
             echo 'export TF_VAR_description="CircleCI Build for ${CIRCLE_PR_REPONAME}: ${CIRCLE_BUILD_URL}"' >> $BASH_ENV
             echo 'export TF_VAR_filestore_disabled="true"' >> $BASH_ENV
+            echo 'export TF_VAR_allow_local_ip_access="true"' >> $BASH_ENV
             echo 'export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp-${CIRCLE_BUILD_NUM}.json"' >> $BASH_ENV
             echo 'export WORKSPACE=gcp-gke-circleci-${CIRCLE_BUILD_NUM}' >> $BASH_ENV
             echo ${CLOUDSDK_SERVICE_KEY} > /tmp/gcp-${CIRCLE_BUILD_NUM}.json
@@ -59,7 +60,7 @@ jobs:
 
       - run:
           name: Terraform destroy
-          command: terraform destroy -auto-approve || (sleep 1m && terraform destroy -auto-approve)
+          command: terraform destroy -auto-approve || (sleep 5m && terraform destroy -auto-approve)
           when: always
 
       - run:

@@ -7,6 +7,10 @@ terraform {
   }
 }
 
+data "http" "myip" {
+  url = "http://ipv4.icanhazip.com"
+}
+
 locals {
   cluster                 = var.cluster == null ? terraform.workspace : var.cluster
   enable_private_endpoint = length(var.master_authorized_networks_config) == 0
@@ -15,6 +19,8 @@ locals {
   # Converts a cluster's location to a zone/region. A 'location' may be a region or zone: a region becomes the '[region]-a' zone.
   region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location) - 2)
   zone   = length(split("-", var.location)) == 3 ? var.location : format("%s-a", var.location)
+
+  authorized_networks = var.allow_local_ip_access ? concat(var.master_authorized_networks_config, [{ "display_name" : "myip", "cidr_block" : "${chomp(data.http.myip.body)}/32" }]) : var.master_authorized_networks_config
 }
 
 provider "google" {
@@ -137,9 +143,6 @@ resource "google_container_cluster" "domino_cluster" {
   enable_tpu = true
 
   master_auth {
-    username = ""
-    password = ""
-
     client_certificate_config {
       issue_client_certificate = true
     }
@@ -172,7 +175,7 @@ resource "google_container_cluster" "domino_cluster" {
 
   master_authorized_networks_config {
     dynamic "cidr_blocks" {
-      for_each = var.master_authorized_networks_config
+      for_each = local.authorized_networks
       content {
         cidr_block   = cidr_blocks.value.cidr_block
         display_name = cidr_blocks.value.display_name
@@ -219,6 +222,10 @@ resource "google_container_node_pool" "platform" {
     preemptible  = var.platform_nodes_preemptible
     machine_type = var.platform_node_type
 
+    tags = [
+      "iap-tcp-forwarding-allowed"
+    ]
+
     labels = {
       "dominodatalab.com/node-pool" = "platform"
     }
@@ -252,6 +259,10 @@ resource "google_container_node_pool" "compute" {
   node_config {
     preemptible  = var.compute_nodes_preemptible
     machine_type = var.compute_node_type
+
+    tags = [
+      "iap-tcp-forwarding-allowed"
+    ]
 
     labels = {
       "domino/build-node"            = "true"
@@ -308,6 +319,10 @@ resource "google_container_node_pool" "gpu" {
       count = 1
     }
 
+    tags = [
+      "iap-tcp-forwarding-allowed"
+    ]
+
     labels = {
       "dominodatalab.com/node-pool" = "default-gpu"
     }
@@ -329,4 +344,18 @@ resource "google_container_node_pool" "gpu" {
     delete = "20m"
   }
 
+}
+
+# https://cloud.google.com/iap/docs/using-tcp-forwarding
+resource "google_compute_firewall" "iap-tcp-forwarding" {
+  name    = "${local.uuid}-iap"
+  network = google_compute_network.vpc_network.name
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+
+  source_ranges = var.allowed_ssh_ranges
+  target_tags   = ["iap-tcp-forwarding-allowed"]
 }

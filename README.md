@@ -1,6 +1,8 @@
 [![CircleCI](https://circleci.com/gh/cerebrotech/terraform-gcp-gke.svg?style=svg&circle-token=dfa46ce0cbeb40ea61fd9e96f7c6a05d5a87c3f7)](https://circleci.com/gh/cerebrotech/terraform-gcp-gke)
 # Domino GKE Terraform
 
+Terraform module which creates a Domino deployment inside of GCP's GKE.
+
 ## Usage
 
 ### Create a Domino development GKE cluster
@@ -46,6 +48,7 @@ module "gke_cluster" {
 ## IAM Permissions
 The following project [IAM permissions](https://console.cloud.google.com/iam-admin/iam) must be granted to the provisioning user/service:
 - Cloud KMS Admin
+- Compute Admin
 - Compute Instance Admin (v1)
 - Compute Network Admin
 - Kubernetes Engine Admin

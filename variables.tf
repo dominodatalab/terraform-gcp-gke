@@ -4,10 +4,22 @@ variable "cluster" {
   description = "The Domino Cluster name and must be unique in the GCP Project. Defaults to workspace name."
 }
 
+variable "kubeconfig_output_path" {
+  type        = string
+  default     = ""
+  description = "Specify where the cluster kubeconfig file should be generated. Defaults to current working directory."
+}
+
 variable "project" {
   type        = string
   default     = "domino-eng-platform-dev"
   description = "GCP Project ID"
+}
+
+variable "allowed_ssh_ranges" {
+  type        = list(string)
+  default     = ["35.235.240.0/20"]
+  description = "CIDR ranges allowed to SSH to nodes in the cluster."
 }
 
 variable "description" {
@@ -61,12 +73,12 @@ variable "compute_nodes_ssd_gb" {
 
 variable "compute_node_type" {
   type    = string
-  default = "n1-standard-8"
+  default = "n1-highmem-8"
 }
 
 variable "enable_pod_security_policy" {
   type    = bool
-  default = true
+  default = false
 }
 
 variable "enable_network_policy" {
@@ -108,7 +120,7 @@ variable "gpu_nodes_preemptible" {
 
 variable "gpu_node_type" {
   type    = string
-  default = "n1-standard-8"
+  default = "n1-highmem-8"
 }
 
 variable "gpu_nodes_ssd_gb" {
@@ -151,6 +163,12 @@ variable "master_authorized_networks_config" {
   description = "Configuration options for master authorized networks. Default is for debugging only, and should be removed for production."
 }
 
+variable "allow_local_ip_access" {
+  type        = bool
+  default     = false
+  description = "Adds firewall rule to allow local access to Kubernetes cluster. This is required when executing terraform outside the master authorized networks."
+}
+
 variable "platform_nodes_max" {
   type    = number
   default = 5
@@ -174,9 +192,4 @@ variable "platform_nodes_ssd_gb" {
 variable "platform_node_type" {
   type    = string
   default = "n1-standard-8"
-}
-
-variable "platform_namespace" {
-  type    = string
-  default = "domino-platform"
 }
