@@ -127,6 +127,7 @@ variable "gpu_nodes_ssd_gb" {
   type    = number
   default = 400
 }
+
 variable "location" {
   type        = string
   default     = "us-west1-b"
