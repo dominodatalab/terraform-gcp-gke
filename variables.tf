@@ -172,7 +172,7 @@ variable "allow_local_ip_access" {
 
 variable "platform_nodes_max" {
   type    = number
-  default = 5
+  default = 3
 }
 
 variable "platform_nodes_min" {
