@@ -298,7 +298,6 @@ resource "google_kms_crypto_key" "crypto_key" {
 }
 
 resource "google_container_node_pool" "gpu" {
-  provider = google-beta
   name     = "gpu"
   location = google_container_cluster.domino_cluster.location
   cluster  = google_container_cluster.domino_cluster.name
@@ -329,10 +328,6 @@ resource "google_container_node_pool" "gpu" {
 
     disk_size_gb    = var.gpu_nodes_ssd_gb
     local_ssd_count = 1
-
-    workload_metadata_config {
-      node_metadata = "GKE_METADATA_SERVER"
-    }
   }
 
   management {
