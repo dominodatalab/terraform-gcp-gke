@@ -226,7 +226,7 @@ resource "google_container_node_pool" "platform" {
 
     tags = [
       "iap-tcp-forwarding-allowed",
-      var.istio_network_tag
+      var.istio_admision_network_tag
     ]
 
     labels = {
@@ -264,8 +264,7 @@ resource "google_container_node_pool" "compute" {
     machine_type = var.compute_node_type
 
     tags = [
-      "iap-tcp-forwarding-allowed",
-      var.istio_network_tag
+      "iap-tcp-forwarding-allowed"
     ]
 
     labels = {
@@ -323,8 +322,7 @@ resource "google_container_node_pool" "gpu" {
     }
 
     tags = [
-      "iap-tcp-forwarding-allowed",
-      var.istio_network_tag
+      "iap-tcp-forwarding-allowed"
     ]
 
     labels = {
@@ -373,5 +371,5 @@ resource "google_compute_firewall" "master-to-istiowebhook" {
   }
 
   source_ranges = [google_container_cluster.domino_cluster.private_cluster_config[0].master_ipv4_cidr_block]
-  target_tags   = [var.istio_network_tag]
+  target_tags   = [var.istio_admision_network_tag]
 }
