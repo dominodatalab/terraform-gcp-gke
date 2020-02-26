@@ -4,6 +4,12 @@ variable "cluster" {
   description = "The Domino Cluster name and must be unique in the GCP Project. Defaults to workspace name."
 }
 
+variable "istio_network_tag" {
+  type = string
+  default = "master-istio-admission-webhook"
+  description = "VM network tag for Istio Admission Controller Webhook"
+}
+
 variable "kubeconfig_output_path" {
   type        = string
   default     = ""

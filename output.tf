@@ -3,6 +3,10 @@ output "bucket_url" {
   description = "Base URL of the cloud storage bucket"
 }
 
+output "test-cluster" {
+  value = google_container_cluster.domino_cluster
+}
+
 output "cluster" {
   value = map(
     "client_certificate", google_container_cluster.domino_cluster.master_auth[0].client_certificate,
