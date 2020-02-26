@@ -346,8 +346,8 @@ resource "google_container_node_pool" "gpu" {
 
 # https://cloud.google.com/iap/docs/using-tcp-forwarding
 resource "google_compute_firewall" "iap-tcp-forwarding" {
-  name    = "gke-${local.cluster}-iap"
-  network = google_compute_network.vpc_network.name
+  name        = "gke-${local.cluster}-iap"
+  network     = google_compute_network.vpc_network.name
   description = "Enable Identity-Aware Proxy (IAP) TCP traffic routing to instances"
 
   allow {
@@ -361,8 +361,8 @@ resource "google_compute_firewall" "iap-tcp-forwarding" {
 
 # https://github.com/istio/istio/issues/19532
 resource "google_compute_firewall" "master-to-istiowebhook" {
-  name    = "gke-${local.cluster}-master-to-istiowebhook"
-  network = google_compute_network.vpc_network.name
+  name        = "gke-${local.cluster}-master-to-istiowebhook"
+  network     = google_compute_network.vpc_network.name
   description = "Istio Admission Controller needs to communicate with GKE master"
 
   allow {

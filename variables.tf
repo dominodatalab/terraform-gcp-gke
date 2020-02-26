@@ -5,8 +5,8 @@ variable "cluster" {
 }
 
 variable "istio_admision_network_tag" {
-  type = string
-  default = "master-istio-admission-webhook-allowed"
+  type        = string
+  default     = "master-istio-admission-webhook-allowed"
   description = "VM network tag for Istio Admission Controller Webhook"
 }
 
