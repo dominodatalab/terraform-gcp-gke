@@ -17,7 +17,7 @@ output "cluster" {
 }
 
 output "dns" {
-       value       = google_dns_record_set.a.name
+  value         = google_dns_record_set.a.name
   description = "The external (public) DNS name for the Domino UI"
 }
 
