@@ -51,8 +51,8 @@ variable "google_dns_managed_zone" {
     dns_name = string
   })
   default = {
-    name     = "domino-tech"
-    dns_name = "domino-eng-platform-dev.domino.tech."
+    name     = "eng-platform-dev"
+    dns_name = "eng-platform-dev.domino.tech."
   }
   description = "Cloud DNS zone"
 }
