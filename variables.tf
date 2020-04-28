@@ -194,3 +194,9 @@ variable "platform_node_type" {
   type    = string
   default = "n1-standard-8"
 }
+
+variable "platform_namespace" {
+  type        = string
+  description = "Platform namespace that is used for generating the service account binding for docker-registry"
+  default     = "domino-platform"
+}
