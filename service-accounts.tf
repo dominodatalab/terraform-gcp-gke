@@ -36,13 +36,13 @@ resource "google_project_iam_member" "service_account" {
 
 resource "google_project_iam_member" "gke_service_account_crypto_key" {
   project = var.project
-  role    = "roles/aim.cloudkms.cryptoKeyEncrypterDecrypter"
+  role    = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
   member  = "serviceAccount:${google_service_account.gke.email}"
 }
 
 resource "google_project_iam_member" "gke_service_account_agent" {
   project = var.project
-  role    = "roles/aim.container.hostServiceAgentUser"
+  role    = "roles/container.hostServiceAgentUser"
   member  = "serviceAccount:${google_service_account.gke.email}"
 }
 
