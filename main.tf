@@ -138,9 +138,6 @@ resource "google_container_cluster" "domino_cluster" {
 
   # Workaround for https://github.com/terraform-providers/terraform-provider-google/issues/3385
   initial_node_count = max(1, var.compute_nodes_min) + max(0, var.gpu_nodes_min) + var.platform_nodes_max
-  node_config {
-    service_account = google_service_account.gke.name
-  }
 
   network    = google_compute_network.vpc_network.self_link
   subnetwork = google_compute_subnetwork.default.self_link
