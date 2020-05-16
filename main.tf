@@ -210,9 +210,9 @@ resource "google_container_cluster" "domino_cluster" {
 }
 
 resource "google_container_node_pool" "platform" {
-  name            = "platform"
-  location        = google_container_cluster.domino_cluster.location
-  cluster         = google_container_cluster.domino_cluster.name
+  name     = "platform"
+  location = google_container_cluster.domino_cluster.location
+  cluster  = google_container_cluster.domino_cluster.name
 
   initial_node_count = var.platform_nodes_max
   autoscaling {
@@ -250,9 +250,9 @@ resource "google_container_node_pool" "platform" {
 }
 
 resource "google_container_node_pool" "compute" {
-  name            = "compute"
-  location        = google_container_cluster.domino_cluster.location
-  cluster         = google_container_cluster.domino_cluster.name
+  name     = "compute"
+  location = google_container_cluster.domino_cluster.location
+  cluster  = google_container_cluster.domino_cluster.name
 
   initial_node_count = max(1, var.compute_nodes_min)
   autoscaling {
@@ -261,8 +261,8 @@ resource "google_container_node_pool" "compute" {
   }
 
   node_config {
-    preemptible  = var.compute_nodes_preemptible
-    machine_type = var.compute_node_type
+    preemptible     = var.compute_nodes_preemptible
+    machine_type    = var.compute_node_type
     service_account = google_service_account.gke.email
 
     tags = [
@@ -303,9 +303,9 @@ resource "google_kms_crypto_key" "crypto_key" {
 }
 
 resource "google_container_node_pool" "gpu" {
-  name            = "gpu"
-  location        = google_container_cluster.domino_cluster.location
-  cluster         = google_container_cluster.domino_cluster.name
+  name     = "gpu"
+  location = google_container_cluster.domino_cluster.location
+  cluster  = google_container_cluster.domino_cluster.name
 
   initial_node_count = max(0, var.gpu_nodes_min)
 
@@ -315,8 +315,8 @@ resource "google_container_node_pool" "gpu" {
   }
 
   node_config {
-    preemptible  = var.gpu_nodes_preemptible
-    machine_type = var.gpu_node_type
+    preemptible     = var.gpu_nodes_preemptible
+    machine_type    = var.gpu_node_type
     service_account = google_service_account.gke.email
 
     guest_accelerator {
