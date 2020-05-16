@@ -195,8 +195,6 @@ resource "google_container_cluster" "domino_cluster" {
     key_name = google_kms_crypto_key.crypto_key.self_link
   }
 
-  service_account = google_service_account.gke.name
-
   workload_identity_config {
     identity_namespace = "${data.google_project.domino.project_id}.svc.id.goog"
   }
@@ -212,9 +210,10 @@ resource "google_container_cluster" "domino_cluster" {
 }
 
 resource "google_container_node_pool" "platform" {
-  name     = "platform"
-  location = google_container_cluster.domino_cluster.location
-  cluster  = google_container_cluster.domino_cluster.name
+  name            = "platform"
+  location        = google_container_cluster.domino_cluster.location
+  cluster         = google_container_cluster.domino_cluster.name
+  service_account = google_service_account.gke.email
 
   initial_node_count = var.platform_nodes_max
   autoscaling {
@@ -223,8 +222,9 @@ resource "google_container_node_pool" "platform" {
   }
 
   node_config {
-    preemptible  = var.platform_nodes_preemptible
-    machine_type = var.platform_node_type
+    preemptible     = var.platform_nodes_preemptible
+    machine_type    = var.platform_node_type
+    service_account = google_service_account.gke.email
 
     tags = [
       "iap-tcp-forwarding-allowed",
@@ -251,9 +251,10 @@ resource "google_container_node_pool" "platform" {
 }
 
 resource "google_container_node_pool" "compute" {
-  name     = "compute"
-  location = google_container_cluster.domino_cluster.location
-  cluster  = google_container_cluster.domino_cluster.name
+  name            = "compute"
+  location        = google_container_cluster.domino_cluster.location
+  cluster         = google_container_cluster.domino_cluster.name
+  service_account = google_service_account.gke.email
 
   initial_node_count = max(1, var.compute_nodes_min)
   autoscaling {
@@ -303,9 +304,10 @@ resource "google_kms_crypto_key" "crypto_key" {
 }
 
 resource "google_container_node_pool" "gpu" {
-  name     = "gpu"
-  location = google_container_cluster.domino_cluster.location
-  cluster  = google_container_cluster.domino_cluster.name
+  name            = "gpu"
+  location        = google_container_cluster.domino_cluster.location
+  cluster         = google_container_cluster.domino_cluster.name
+  service_account = google_service_account.gke.email
 
   initial_node_count = max(0, var.gpu_nodes_min)
 
