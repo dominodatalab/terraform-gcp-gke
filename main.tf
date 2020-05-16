@@ -131,10 +131,6 @@ resource "google_container_cluster" "domino_cluster" {
     channel = var.gke_release_channel
   }
 
-  auto_provisioning_defaults {
-    service_account = google_service_account.gke.name
-  }
-
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
   # node pool and immediately delete it.
