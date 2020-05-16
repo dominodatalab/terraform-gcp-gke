@@ -42,7 +42,7 @@ resource "google_project_iam_member" "gke_service_account_crypto_key" {
 
 resource "google_project_iam_member" "gke_service_account_agent" {
   project = var.project
-  role    = "roles/roles/container.hostServiceAgentUser"
+  role    = "roles/aim.container.hostServiceAgentUser"
   member  = "serviceAccount:${google_service_account.gke.email}"
 }
 
