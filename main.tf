@@ -131,12 +131,6 @@ resource "google_container_cluster" "domino_cluster" {
     channel = var.gke_release_channel
   }
 
-  lifecycle {
-    ignore_changes = [
-      node_config
-    ]
-  }
-
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
   # node pool and immediately delete it.
@@ -169,7 +163,10 @@ resource "google_container_cluster" "domino_cluster" {
   #
   # https://github.com/terraform-providers/terraform-provider-google/issues/3369#issuecomment-487226330
   lifecycle {
-    ignore_changes = [master_auth]
+    ignore_changes = [
+      master_auth,
+      node_config
+    ]
   }
 
   vertical_pod_autoscaling {
