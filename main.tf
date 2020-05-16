@@ -195,6 +195,8 @@ resource "google_container_cluster" "domino_cluster" {
     key_name = google_kms_crypto_key.crypto_key.self_link
   }
 
+  service_account = google_service_account.gke.name
+
   workload_identity_config {
     identity_namespace = "${data.google_project.domino.project_id}.svc.id.goog"
   }

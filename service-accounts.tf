@@ -3,6 +3,11 @@ resource "google_service_account" "default" {
   display_name = "${local.cluster}-default"
 }
 
+resource "google_service_account" "gke" {
+  account_id   = "${local.cluster}-gke"
+  display_name = "${local.cluster}-gke"
+}
+
 resource "google_service_account" "kube_system" {
   account_id   = "${local.cluster}-system"
   display_name = "${local.cluster}-system"
@@ -27,6 +32,18 @@ resource "google_project_iam_member" "service_account" {
   project = var.project
   role    = "roles/iam.serviceAccountUser"
   member  = "serviceAccount:${google_service_account.default.email}"
+}
+
+resource "google_project_iam_member" "gke_service_account_crypto_key" {
+  project = var.project
+  role    = "roles/aim.cloudkms.cryptoKeyEncrypterDecrypter"
+  member  = "serviceAccount:${google_service_account.gke.email}"
+}
+
+resource "google_project_iam_member" "gke_service_account_agent" {
+  project = var.project
+  role    = "roles/roles/container.hostServiceAgentUser"
+  member  = "serviceAccount:${google_service_account.gke.email}"
 }
 
 resource "google_project_iam_member" "kube_system_service_account" {
