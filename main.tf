@@ -190,10 +190,10 @@ resource "google_container_cluster" "domino_cluster" {
   }
 
   # Application-layer Secrets Encryption
-  # database_encryption {
-  #   state    = "ENCRYPTED"
-  #   key_name = google_kms_crypto_key.crypto_key.self_link
-  # }
+  database_encryption {
+    state    = "ENCRYPTED"
+    key_name = google_kms_crypto_key.crypto_key.self_link
+  }
 
   workload_identity_config {
     identity_namespace = "${data.google_project.domino.project_id}.svc.id.goog"
