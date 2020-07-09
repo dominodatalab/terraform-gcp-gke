@@ -63,7 +63,7 @@ variable "compute_nodes_min" {
 
 variable "compute_nodes_preemptible" {
   type    = bool
-  default = true
+  default = false
 }
 
 variable "compute_nodes_ssd_gb" {
@@ -115,7 +115,7 @@ variable "gpu_nodes_min" {
 
 variable "gpu_nodes_preemptible" {
   type    = bool
-  default = true
+  default = false
 }
 
 variable "gpu_node_type" {
@@ -182,7 +182,7 @@ variable "platform_nodes_min" {
 
 variable "platform_nodes_preemptible" {
   type    = bool
-  default = true
+  default = false
 }
 
 variable "platform_nodes_ssd_gb" {
