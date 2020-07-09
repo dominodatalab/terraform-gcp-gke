@@ -24,11 +24,13 @@ locals {
 }
 
 provider "google" {
+  version = "~> 3.20, != 3.29.0"
   project = var.project
   region  = local.region
 }
 
 provider "google-beta" {
+  version = "~> 3.20, != 3.29.0"
   project = var.project
   region  = local.region
 }
