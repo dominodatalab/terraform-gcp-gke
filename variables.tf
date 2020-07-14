@@ -78,7 +78,7 @@ variable "compute_node_type" {
 
 variable "enable_pod_security_policy" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "enable_network_policy" {
