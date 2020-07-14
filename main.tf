@@ -144,7 +144,7 @@ resource "google_container_cluster" "domino_cluster" {
   network    = google_compute_network.vpc_network.self_link
   subnetwork = google_compute_subnetwork.default.self_link
 
-  enable_tpu = true
+  enable_tpu = false
 
   master_auth {
     client_certificate_config {
