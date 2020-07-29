@@ -77,10 +77,12 @@ resource "google_project_iam_member" "platform_monitoring" {
   member  = "serviceAccount:${google_service_account.platform.email}"
 }
 
-resource "google_service_account_iam_binding" "platform_docker_registry" {
+resource "google_service_account_iam_binding" "platform_gcs" {
   service_account_id = google_service_account.platform.name
   role               = "roles/iam.workloadIdentityUser"
   members = [
     "serviceAccount:${var.project}.svc.id.goog[${var.platform_namespace}/docker-registry]",
+    "serviceAccount:${var.project}.svc.id.goog[${var.platform_namespace}/git]",
+    "serviceAccount:${var.project}.svc.id.goog[${var.platform_namespace}/nucleus]",
   ]
 }
