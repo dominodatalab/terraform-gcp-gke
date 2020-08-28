@@ -374,7 +374,7 @@ resource "google_compute_firewall" "master-to-istiowebhook" {
 
   allow {
     protocol = "tcp"
-    ports    = ["9443", "15017"]
+    ports    = ["443", "9443", "15017"]
   }
 
   source_ranges = [google_container_cluster.domino_cluster.private_cluster_config[0].master_ipv4_cidr_block]
