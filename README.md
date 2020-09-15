@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/cerebrotech/terraform-gcp-gke.svg?style=svg&circle-token=dfa46ce0cbeb40ea61fd9e96f7c6a05d5a87c3f7)](https://circleci.com/gh/cerebrotech/terraform-gcp-gke)
+[![CircleCI](https://circleci.com/gh/dominodatalab/terraform-gcp-gke.svg?style=svg&circle-token=dfa46ce0cbeb40ea61fd9e96f7c6a05d5a87c3f7)](https://circleci.com/gh/dominodatalab/terraform-gcp-gke)
 # Domino GKE Terraform
 
 Terraform module which creates a Domino deployment inside of GCP's GKE.
@@ -8,7 +8,7 @@ Terraform module which creates a Domino deployment inside of GCP's GKE.
 ### Create a Domino development GKE cluster
 ```hcl
 module "gke_cluster" {
-  source  = "github.com/cerebrotech/terraform-gcp-gke"
+  source  = "github.com/dominodatalab/terraform-gcp-gke"
 
   cluster = "cluster-name"
 }
@@ -17,7 +17,7 @@ module "gke_cluster" {
 ### Create a prod GKE cluster
 ```hcl
 module "gke_cluster" {
-  source   = "github.com/cerebrotech/terraform-gcp-gke"
+  source   = "github.com/dominodatalab/terraform-gcp-gke"
 
   cluster  = "cluster-name"
   project  = "gcp-project"
