@@ -191,12 +191,6 @@ resource "google_container_cluster" "domino_cluster" {
     "uuid" = local.uuid
   }
 
-  # Application-layer Secrets Encryption
-  database_encryption {
-    state    = "ENCRYPTED"
-    key_name = google_kms_crypto_key.crypto_key.self_link
-  }
-
   workload_identity_config {
     identity_namespace = "${data.google_project.domino.project_id}.svc.id.goog"
   }
@@ -287,18 +281,6 @@ resource "google_container_node_pool" "compute" {
     delete = "20m"
   }
 
-}
-
-resource "google_kms_key_ring" "key_ring" {
-  name     = local.uuid
-  location = local.region
-}
-
-resource "google_kms_crypto_key" "crypto_key" {
-  name            = local.uuid
-  key_ring        = google_kms_key_ring.key_ring.self_link
-  rotation_period = "86400s"
-  purpose         = "ENCRYPT_DECRYPT"
 }
 
 resource "google_container_node_pool" "gpu" {
