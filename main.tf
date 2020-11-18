@@ -227,7 +227,8 @@ resource "google_container_node_pool" "platform" {
     machine_type = var.platform_node_type
 
     tags = [
-      "iap-tcp-forwarding-allowed"
+      "iap-tcp-forwarding-allowed",
+      "domino-platform-node"
     ]
 
     labels = {
@@ -357,4 +358,20 @@ resource "google_compute_firewall" "iap-tcp-forwarding" {
 
   source_ranges = var.allowed_ssh_ranges
   target_tags   = ["iap-tcp-forwarding-allowed"]
+}
+
+# https://github.com/istio/istio/issues/19532
+# https://github.com/istio/istio/issues/21991
+resource "google_compute_firewall" "master-to-istiowebhook" {
+  name        = "gke-${local.cluster}-master-to-istiowebhook"
+  network     = google_compute_network.vpc_network.name
+  description = "Istio Admission Controller needs to communicate with GKE master"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["443", "9443", "15017"]
+  }
+
+  source_ranges = [google_container_cluster.domino_cluster.private_cluster_config[0].master_ipv4_cidr_block]
+  target_tags   = ["domino-platform-node"]
 }
