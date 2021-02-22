@@ -298,7 +298,7 @@ resource "google_kms_key_ring" "key_ring" {
 resource "google_kms_crypto_key" "crypto_key" {
   name            = local.uuid
   key_ring        = google_kms_key_ring.key_ring.self_link
-  rotation_period = "86400s"
+  rotation_period = "2592000s" # 30 days
   purpose         = "ENCRYPT_DECRYPT"
 }
 
