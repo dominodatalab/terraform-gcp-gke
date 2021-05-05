@@ -144,7 +144,8 @@ resource "google_container_cluster" "domino_cluster" {
   remove_default_node_pool = true
 
   # Workaround for https://github.com/terraform-providers/terraform-provider-google/issues/3385
-  initial_node_count = max(1, var.compute_nodes_min) + max(0, var.gpu_nodes_min) + var.platform_nodes_max
+  # 0 compute nodes, 0 GPU nodes, 1 platform node per zone
+  initial_node_count = length(local.zones)
 
   network    = google_compute_network.vpc_network.self_link
   subnetwork = google_compute_subnetwork.default.self_link
@@ -260,7 +261,7 @@ resource "google_container_node_pool" "compute" {
   location = google_container_cluster.domino_cluster.location
   cluster  = google_container_cluster.domino_cluster.name
 
-  initial_node_count = max(1, var.compute_nodes_min)
+  initial_node_count = 0
   autoscaling {
     max_node_count = var.compute_nodes_max
     min_node_count = var.compute_nodes_min
@@ -312,8 +313,7 @@ resource "google_container_node_pool" "gpu" {
   location = google_container_cluster.domino_cluster.location
   cluster  = google_container_cluster.domino_cluster.name
 
-  initial_node_count = max(0, var.gpu_nodes_min)
-
+  initial_node_count = 0
   autoscaling {
     max_node_count = var.gpu_nodes_max
     min_node_count = var.gpu_nodes_min
