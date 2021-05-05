@@ -1,13 +1,17 @@
-version: 2
+version: 2.1
+
 jobs:
-  build:
+  integration-test:
     docker:
       - image: google/cloud-sdk
+    parameters:
+      terraform_version:
+        type: string
     environment:
       CLOUDSDK_CORE_PROJECT: domino-eng-platform-dev
       CLOUDSDK_COMPUTE_ZONE: us-west1-a
       GOOGLE_APPLICATION_CREDENTIALS: /root/.config/gcloud/legacy_credentials/terraform-gke-test@domino-eng-platform-dev.iam.gserviceaccount.com/adc.json
-      TERRAFORM_VERSION: 0.12.28
+      TERRAFORM_VERSION: << parameters.terraform_version >>
 
     steps:
       - checkout
@@ -17,7 +21,6 @@ jobs:
           command: |
             apt-get install -y wget zip
             wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-            unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
             unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin
 
       - run:
@@ -48,7 +51,7 @@ jobs:
 
       - run:
           name: Terraform validate
-          command: terraform validate -json
+          command: terraform validate
 
       - run:
           name: Terraform apply
@@ -67,3 +70,11 @@ jobs:
           name: Terraform workspace delete
           command: terraform workspace select default && terraform workspace delete ${WORKSPACE}
           when: always
+
+workflows:
+  test:
+    jobs:
+      - integration-test:
+          matrix:
+            parameters:
+              terraform_version: ["0.12.30", "0.15.1"]

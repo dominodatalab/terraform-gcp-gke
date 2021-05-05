@@ -105,7 +105,7 @@ variable "gpu_nodes_accelerator" {
 
 variable "gpu_nodes_max" {
   type    = number
-  default = 2
+  default = 3
 }
 
 variable "gpu_nodes_min" {
@@ -130,7 +130,7 @@ variable "gpu_nodes_ssd_gb" {
 
 variable "location" {
   type        = string
-  default     = "us-west1-b"
+  default     = "us-west1"
   description = "The location (region or zone) of the cluster. A zone creates a single master. Specifying a region creates replicated masters accross all zones"
 }
 
@@ -177,7 +177,7 @@ variable "platform_nodes_max" {
 
 variable "platform_nodes_min" {
   type    = number
-  default = 1
+  default = 0
 }
 
 variable "platform_nodes_preemptible" {
@@ -199,4 +199,10 @@ variable "platform_namespace" {
   type        = string
   description = "Platform namespace that is used for generating the service account binding for docker-registry"
   default     = "domino-platform"
+}
+
+variable "zones" {
+  type        = list(string)
+  default     = []
+  description = "The useable zones of the cluster. An empty list will use all available zones."
 }

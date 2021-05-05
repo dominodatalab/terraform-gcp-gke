@@ -11,6 +11,9 @@ data "http" "myip" {
   url = "http://ipv4.icanhazip.com"
 }
 
+data "google_compute_zones" "available" {
+}
+
 locals {
   cluster                 = var.cluster == null ? terraform.workspace : var.cluster
   enable_private_endpoint = length(var.master_authorized_networks_config) == 0
@@ -18,7 +21,8 @@ locals {
 
   # Converts a cluster's location to a zone/region. A 'location' may be a region or zone: a region becomes the '[region]-a' zone.
   region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location) - 2)
-  zone   = length(split("-", var.location)) == 3 ? var.location : format("%s-a", var.location)
+  zones  = length(split("-", var.location)) == 3 ? [var.location] : (length(var.zones) > 0 ? var.zones : data.google_compute_zones.available.names)
+  zone   = local.zones[0]
 
   authorized_networks = var.allow_local_ip_access ? concat(var.master_authorized_networks_config, [{ "display_name" : "myip", "cidr_block" : "${chomp(data.http.myip.body)}/32" }]) : var.master_authorized_networks_config
 }
@@ -125,9 +129,10 @@ resource "google_filestore_instance" "nfs" {
 resource "google_container_cluster" "domino_cluster" {
   provider = google-beta
 
-  name        = local.cluster
-  location    = var.location
-  description = var.description
+  name           = local.cluster
+  location       = var.location
+  node_locations = local.zones
+  description    = var.description
 
   release_channel {
     channel = var.gke_release_channel
