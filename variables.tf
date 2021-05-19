@@ -73,7 +73,7 @@ variable "compute_nodes_ssd_gb" {
 
 variable "compute_node_type" {
   type    = string
-  default = "n1-highmem-8"
+  default = "n2-highmem-8"
 }
 
 variable "enable_pod_security_policy" {
@@ -192,7 +192,7 @@ variable "platform_nodes_ssd_gb" {
 
 variable "platform_node_type" {
   type    = string
-  default = "n1-standard-8"
+  default = "n2-standard-8"
 }
 
 variable "platform_namespace" {
