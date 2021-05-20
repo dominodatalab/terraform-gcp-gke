@@ -24,13 +24,6 @@ locals {
 }
 
 provider "google" {
-  version = "~> 3.20, != 3.29.0"
-  project = var.project
-  region  = local.region
-}
-
-provider "google-beta" {
-  version = "~> 3.20, != 3.29.0"
   project = var.project
   region  = local.region
 }
@@ -123,8 +116,6 @@ resource "google_filestore_instance" "nfs" {
 }
 
 resource "google_container_cluster" "domino_cluster" {
-  provider = google-beta
-
   name        = local.cluster
   location    = var.location
   description = var.description
@@ -318,9 +309,12 @@ resource "google_container_node_pool" "gpu" {
     preemptible  = var.gpu_nodes_preemptible
     machine_type = var.gpu_node_type
 
-    guest_accelerator {
-      type  = var.gpu_nodes_accelerator
-      count = 1
+    dynamic "guest_accelerator" {
+      for_each = [var.gpu_nodes_accelerator]
+      content {
+        type  = guest_accelerator.value
+        count = 1
+      }
     }
 
     tags = [
