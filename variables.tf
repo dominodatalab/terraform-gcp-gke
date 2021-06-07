@@ -73,7 +73,7 @@ variable "compute_nodes_ssd_gb" {
 
 variable "compute_node_type" {
   type    = string
-  default = "n1-highmem-8"
+  default = "n2-highmem-8"
 }
 
 variable "enable_pod_security_policy" {
@@ -141,33 +141,11 @@ variable "master_authorized_networks_config" {
   }))
   default = [
     {
-      cidr_block   = "12.245.82.18/32"
-      display_name = "domino-hq"
-    },
-    {
-      cidr_block   = "52.206.158.130/32"
-      display_name = "aviatrix-east"
-    },
-    {
-      cidr_block   = "52.25.178.121/32"
-      display_name = "aviatrix-west"
-    },
-    {
-      cidr_block   = "52.56.39.158/32"
-      display_name = "aviatrix-eu"
-    },
-    {
-      cidr_block   = "13.126.91.85/32"
-      display_name = "aviatrix-ap"
+      cidr_block   = "0.0.0.0/0"
+      display_name = "global-access"
     }
   ]
   description = "Configuration options for master authorized networks. Default is for debugging only, and should be removed for production."
-}
-
-variable "allow_local_ip_access" {
-  type        = bool
-  default     = false
-  description = "Adds firewall rule to allow local access to Kubernetes cluster. This is required when executing terraform outside the master authorized networks."
 }
 
 variable "platform_nodes_max" {
@@ -192,7 +170,7 @@ variable "platform_nodes_ssd_gb" {
 
 variable "platform_node_type" {
   type    = string
-  default = "n1-standard-8"
+  default = "n2-standard-8"
 }
 
 variable "platform_namespace" {

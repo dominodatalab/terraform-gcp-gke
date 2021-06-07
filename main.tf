@@ -7,10 +7,6 @@ terraform {
   }
 }
 
-data "http" "myip" {
-  url = "http://ipv4.icanhazip.com"
-}
-
 locals {
   cluster                 = var.cluster == null ? terraform.workspace : var.cluster
   enable_private_endpoint = length(var.master_authorized_networks_config) == 0
@@ -20,17 +16,10 @@ locals {
   region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location) - 2)
   zone   = length(split("-", var.location)) == 3 ? var.location : format("%s-a", var.location)
 
-  authorized_networks = var.allow_local_ip_access ? concat(var.master_authorized_networks_config, [{ "display_name" : "myip", "cidr_block" : "${chomp(data.http.myip.body)}/32" }]) : var.master_authorized_networks_config
+  authorized_networks = var.master_authorized_networks_config
 }
 
 provider "google" {
-  version = "~> 3.20, != 3.29.0"
-  project = var.project
-  region  = local.region
-}
-
-provider "google-beta" {
-  version = "~> 3.20, != 3.29.0"
   project = var.project
   region  = local.region
 }
@@ -123,8 +112,6 @@ resource "google_filestore_instance" "nfs" {
 }
 
 resource "google_container_cluster" "domino_cluster" {
-  provider = google-beta
-
   name        = local.cluster
   location    = var.location
   description = var.description
@@ -318,9 +305,12 @@ resource "google_container_node_pool" "gpu" {
     preemptible  = var.gpu_nodes_preemptible
     machine_type = var.gpu_node_type
 
-    guest_accelerator {
-      type  = var.gpu_nodes_accelerator
-      count = 1
+    dynamic "guest_accelerator" {
+      for_each = [var.gpu_nodes_accelerator]
+      content {
+        type  = guest_accelerator.value
+        count = 1
+      }
     }
 
     tags = [
