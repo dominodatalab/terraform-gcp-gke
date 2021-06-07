@@ -7,10 +7,6 @@ terraform {
   }
 }
 
-data "http" "myip" {
-  url = "http://ipv4.icanhazip.com"
-}
-
 locals {
   cluster                 = var.cluster == null ? terraform.workspace : var.cluster
   enable_private_endpoint = length(var.master_authorized_networks_config) == 0
@@ -20,7 +16,7 @@ locals {
   region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location) - 2)
   zone   = length(split("-", var.location)) == 3 ? var.location : format("%s-a", var.location)
 
-  authorized_networks = var.allow_local_ip_access ? concat(var.master_authorized_networks_config, [{ "display_name" : "myip", "cidr_block" : "${chomp(data.http.myip.body)}/32" }]) : var.master_authorized_networks_config
+  authorized_networks = var.master_authorized_networks_config
 }
 
 provider "google" {
