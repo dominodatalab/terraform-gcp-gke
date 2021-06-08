@@ -99,7 +99,7 @@ variable "enable_vertical_pod_autoscaling" {
 
 variable "gke_release_channel" {
   type        = string
-  default     = "REGULAR"
+  default     = "STABLE"
   description = "GKE K8s release channel for master"
 }
 
