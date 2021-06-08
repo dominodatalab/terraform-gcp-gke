@@ -71,6 +71,11 @@ variable "compute_nodes_ssd_gb" {
   default = 400
 }
 
+variable "compute_node_image_type" {
+  type    = string
+  default = "COS"
+}
+
 variable "compute_node_type" {
   type    = string
   default = "n2-highmem-8"
@@ -94,7 +99,7 @@ variable "enable_vertical_pod_autoscaling" {
 
 variable "gke_release_channel" {
   type        = string
-  default     = "REGULAR"
+  default     = "STABLE"
   description = "GKE K8s release channel for master"
 }
 
@@ -116,6 +121,11 @@ variable "gpu_nodes_min" {
 variable "gpu_nodes_preemptible" {
   type    = bool
   default = false
+}
+
+variable "gpu_node_image_type" {
+  type    = string
+  default = "COS"
 }
 
 variable "gpu_node_type" {
@@ -166,6 +176,11 @@ variable "platform_nodes_preemptible" {
 variable "platform_nodes_ssd_gb" {
   type    = number
   default = 100
+}
+
+variable "platform_node_image_type" {
+  type    = string
+  default = "COS"
 }
 
 variable "platform_node_type" {
