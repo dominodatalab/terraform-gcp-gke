@@ -210,6 +210,7 @@ resource "google_container_node_pool" "platform" {
   }
 
   node_config {
+    image_type   = var.platform_node_image_type
     preemptible  = var.platform_nodes_preemptible
     machine_type = var.platform_node_type
 
@@ -235,12 +236,16 @@ resource "google_container_node_pool" "platform" {
     delete = "20m"
   }
 
+  lifecycle {
+    ignore_changes = [autoscaling]
+  }
 }
 
 resource "google_container_node_pool" "compute" {
   name     = "compute"
   location = google_container_cluster.domino_cluster.location
   cluster  = google_container_cluster.domino_cluster.name
+
 
   initial_node_count = max(1, var.compute_nodes_min)
   autoscaling {
@@ -249,6 +254,7 @@ resource "google_container_node_pool" "compute" {
   }
 
   node_config {
+    image_type   = var.compute_node_image_type
     preemptible  = var.compute_nodes_preemptible
     machine_type = var.compute_node_type
 
@@ -275,6 +281,9 @@ resource "google_container_node_pool" "compute" {
     delete = "20m"
   }
 
+  lifecycle {
+    ignore_changes = [autoscaling]
+  }
 }
 
 resource "google_kms_key_ring" "key_ring" {
@@ -296,12 +305,14 @@ resource "google_container_node_pool" "gpu" {
 
   initial_node_count = max(0, var.gpu_nodes_min)
 
+
   autoscaling {
     max_node_count = var.gpu_nodes_max
     min_node_count = var.gpu_nodes_min
   }
 
   node_config {
+    image_type   = var.gpu_node_image_type
     preemptible  = var.gpu_nodes_preemptible
     machine_type = var.gpu_node_type
 
@@ -334,6 +345,9 @@ resource "google_container_node_pool" "gpu" {
     delete = "20m"
   }
 
+  lifecycle {
+    ignore_changes = [autoscaling]
+  }
 }
 
 # https://cloud.google.com/iap/docs/using-tcp-forwarding
