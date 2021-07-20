@@ -315,6 +315,11 @@ resource "google_container_node_pool" "gpu" {
     image_type   = var.gpu_node_image_type
     preemptible  = var.gpu_nodes_preemptible
     machine_type = var.gpu_node_type
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring"
+    ]
 
     dynamic "guest_accelerator" {
       for_each = [var.gpu_nodes_accelerator]
