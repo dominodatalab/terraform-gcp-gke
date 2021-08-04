@@ -14,6 +14,11 @@ provider "google" {
   region  = local.region
 }
 
+provider "google-beta" {
+  project = var.project
+  region  = local.region
+}
+
 data "google_project" "domino" {
   project_id = var.project
 }

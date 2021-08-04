@@ -45,4 +45,5 @@ module "gke" {
   project            = "domino-eng-platform-dev"
   description        = var.description
   filestore_disabled = var.filestore_disabled
+  namespaces         = { platform = "domino-platform", compute = "domino-compute" }
 }
