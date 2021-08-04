@@ -1,19 +1,18 @@
-variable "cluster" {
+variable "project" {
   type        = string
-  default     = null
-  description = "The Domino Cluster name and must be unique in the GCP Project. Defaults to workspace name."
+  default     = "domino-eng-platform-dev"
+  description = "GCP Project ID"
+}
+
+variable "cluster_name" {
+  type        = string
+  description = "The Domino Cluster name and must be unique in the GCP Project."
 }
 
 variable "kubeconfig_output_path" {
   type        = string
   default     = ""
   description = "Specify where the cluster kubeconfig file should be generated. Defaults to current working directory."
-}
-
-variable "project" {
-  type        = string
-  default     = "domino-eng-platform-dev"
-  description = "GCP Project ID"
 }
 
 variable "allowed_ssh_ranges" {
