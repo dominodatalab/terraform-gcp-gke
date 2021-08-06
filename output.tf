@@ -28,11 +28,6 @@ output "google_filestore_instance" {
   }
 }
 
-output "platform_service_account" {
-  value       = google_service_account.accounts["platform"].account_id
-  description = "Platform node pool service account ID"
-}
-
 output "project" {
   value       = var.project
   description = "GCP project ID"
@@ -53,7 +48,11 @@ output "uuid" {
   description = "Cluster UUID"
 }
 
-output "workload_identity_service_accounts" {
-  value       = { for sa in local.service_accounts : sa => google_service_account.accounts[sa].email }
+output "service_accounts" {
+  value       = { for sa in local.service_accounts : sa => google_service_account.accounts[sa] }
   description = "GKE cluster Workload Identity namespace IAM service accounts"
+}
+
+output "domino_artifact_repository" {
+  value = google_artifact_registry_repository.domino
 }

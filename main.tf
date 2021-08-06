@@ -210,6 +210,10 @@ resource "google_container_node_pool" "platform" {
     preemptible  = var.platform_nodes_preemptible
     machine_type = var.platform_node_type
 
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ]
+
     tags = [
       "iap-tcp-forwarding-allowed",
       "domino-platform-node"
@@ -253,6 +257,10 @@ resource "google_container_node_pool" "compute" {
     image_type   = var.compute_node_image_type
     preemptible  = var.compute_nodes_preemptible
     machine_type = var.compute_node_type
+
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ]
 
     tags = [
       "iap-tcp-forwarding-allowed"
@@ -311,10 +319,9 @@ resource "google_container_node_pool" "gpu" {
     image_type   = var.gpu_node_image_type
     preemptible  = var.gpu_nodes_preemptible
     machine_type = var.gpu_node_type
+
     oauth_scopes = [
-      "https://www.googleapis.com/auth/devstorage.read_only",
-      "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring"
+      "https://www.googleapis.com/auth/cloud-platform"
     ]
 
     dynamic "guest_accelerator" {
