@@ -1,19 +1,18 @@
-variable "cluster" {
+variable "project" {
   type        = string
-  default     = null
-  description = "The Domino Cluster name and must be unique in the GCP Project. Defaults to workspace name."
+  default     = "domino-eng-platform-dev"
+  description = "GCP Project ID"
+}
+
+variable "cluster_name" {
+  type        = string
+  description = "The Domino Cluster name and must be unique in the GCP Project."
 }
 
 variable "kubeconfig_output_path" {
   type        = string
   default     = ""
   description = "Specify where the cluster kubeconfig file should be generated. Defaults to current working directory."
-}
-
-variable "project" {
-  type        = string
-  default     = "domino-eng-platform-dev"
-  description = "GCP Project ID"
 }
 
 variable "allowed_ssh_ranges" {
@@ -73,7 +72,7 @@ variable "compute_nodes_ssd_gb" {
 
 variable "compute_node_image_type" {
   type    = string
-  default = "COS"
+  default = "COS_CONTAINERD"
 }
 
 variable "compute_node_type" {
@@ -125,7 +124,7 @@ variable "gpu_nodes_preemptible" {
 
 variable "gpu_node_image_type" {
   type    = string
-  default = "COS"
+  default = "COS_CONTAINERD"
 }
 
 variable "gpu_node_type" {
@@ -180,7 +179,7 @@ variable "platform_nodes_ssd_gb" {
 
 variable "platform_node_image_type" {
   type    = string
-  default = "COS"
+  default = "COS_CONTAINERD"
 }
 
 variable "platform_node_type" {
@@ -188,8 +187,8 @@ variable "platform_node_type" {
   default = "n2-standard-8"
 }
 
-variable "platform_namespace" {
-  type        = string
-  description = "Platform namespace that is used for generating the service account binding for docker-registry"
-  default     = "domino-platform"
+variable "namespaces" {
+  type        = object({ platform = string, compute = string })
+  description = "Namespace that are used for generating the service account bindings"
 }
+

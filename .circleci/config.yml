@@ -17,7 +17,6 @@ jobs:
           command: |
             apt-get install -y wget zip
             wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-            unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
             unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin
 
       - run:
@@ -29,7 +28,6 @@ jobs:
           command: |
             echo 'export TF_VAR_description="CircleCI Build for ${CIRCLE_PR_REPONAME}: ${CIRCLE_BUILD_URL}"' >> $BASH_ENV
             echo 'export TF_VAR_filestore_disabled="true"' >> $BASH_ENV
-            echo 'export TF_VAR_allow_local_ip_access="true"' >> $BASH_ENV
             echo 'export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp-${CIRCLE_BUILD_NUM}.json"' >> $BASH_ENV
             echo 'export WORKSPACE=gcp-gke-circleci-${CIRCLE_BUILD_NUM}' >> $BASH_ENV
             echo ${CLOUDSDK_SERVICE_KEY} > /tmp/gcp-${CIRCLE_BUILD_NUM}.json
@@ -40,30 +38,32 @@ jobs:
 
       - run:
           name: Terraform init
-          command: terraform init
-
-      - run:
-          name: Terraform workspace create
-          command: terraform workspace new ${WORKSPACE}
+          command: terraform init ./tests
 
       - run:
           name: Terraform validate
-          command: terraform validate -json
+          command: terraform validate ./tests
+
+      - run:
+          name: Terraform workspace create
+          command: terraform workspace new ${WORKSPACE} ./tests
 
       - run:
           name: Terraform apply
-          command: terraform apply -auto-approve
+          command: terraform apply -auto-approve ./tests
 
       - run:
           name: Terraform plan
-          command: terraform plan -detailed-exitcode
+          command: terraform plan -detailed-exitcode ./tests
 
       - run:
           name: Terraform destroy
-          command: terraform destroy -auto-approve || (sleep 5m && terraform destroy -auto-approve)
+          command: terraform destroy -auto-approve ./tests || (sleep 5m && terraform destroy -auto-approve ./tests)
           when: always
 
       - run:
           name: Terraform workspace delete
-          command: terraform workspace select default && terraform workspace delete ${WORKSPACE}
+          command: |
+            terraform workspace select default ./tests
+            terraform workspace delete ${WORKSPACE} ./tests
           when: always

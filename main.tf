@@ -1,16 +1,6 @@
-terraform {
-  required_version = ">= 0.12.0"
-  backend "gcs" {
-    bucket = "domino-terraform-default" # Should specify using cli -backend-config="bucket=domino-terraform-default"
-    # Override with `terraform init -backend-config="prefix=/terraform/state/[YOUR/PATH]"`
-    prefix = "terraform/state"
-  }
-}
-
 locals {
-  cluster                 = var.cluster == null ? terraform.workspace : var.cluster
   enable_private_endpoint = length(var.master_authorized_networks_config) == 0
-  uuid                    = "${local.cluster}-${random_uuid.id.result}"
+  uuid                    = "${var.cluster_name}-${random_uuid.id.result}"
 
   # Converts a cluster's location to a zone/region. A 'location' may be a region or zone: a region becomes the '[region]-a' zone.
   region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location) - 2)
@@ -20,6 +10,11 @@ locals {
 }
 
 provider "google" {
+  project = var.project
+  region  = local.region
+}
+
+provider "google-beta" {
   project = var.project
   region  = local.region
 }
@@ -36,7 +31,7 @@ resource "google_compute_global_address" "static_ip" {
 }
 
 resource "google_dns_record_set" "a" {
-  name         = "${local.cluster}.${var.google_dns_managed_zone.dns_name}"
+  name         = "${var.cluster_name}.${var.google_dns_managed_zone.dns_name}"
   managed_zone = var.google_dns_managed_zone.name
   type         = "A"
   ttl          = 300
@@ -45,7 +40,7 @@ resource "google_dns_record_set" "a" {
 }
 
 resource "google_dns_record_set" "caa" {
-  name         = "${local.cluster}.${var.google_dns_managed_zone.dns_name}"
+  name         = "${var.cluster_name}.${var.google_dns_managed_zone.dns_name}"
   managed_zone = var.google_dns_managed_zone.name
   type         = "CAA"
   ttl          = 300
@@ -66,7 +61,7 @@ resource "google_compute_subnetwork" "default" {
   ip_cidr_range            = "10.138.0.0/20"
   network                  = google_compute_network.vpc_network.self_link
   private_ip_google_access = true
-  description              = "${local.cluster} default network"
+  description              = "${var.cluster_name} default network"
 }
 
 resource "google_compute_router" "router" {
@@ -83,7 +78,7 @@ resource "google_compute_router_nat" "nat" {
 }
 
 resource "google_storage_bucket" "bucket" {
-  name     = "dominodatalab-${local.cluster}"
+  name     = "dominodatalab-${var.cluster_name}"
   location = split("-", var.location)[0]
 
   versioning {
@@ -94,6 +89,8 @@ resource "google_storage_bucket" "bucket" {
 }
 
 resource "google_filestore_instance" "nfs" {
+  count = var.filestore_disabled ? 0 : 1
+
   name = local.uuid
   tier = "STANDARD"
   zone = local.zone
@@ -107,12 +104,10 @@ resource "google_filestore_instance" "nfs" {
     network = google_compute_network.vpc_network.name
     modes   = ["MODE_IPV4"]
   }
-
-  count = var.filestore_disabled ? 0 : 1
 }
 
 resource "google_container_cluster" "domino_cluster" {
-  name        = local.cluster
+  name        = var.cluster_name
   location    = var.location
   description = var.description
 
@@ -193,6 +188,7 @@ resource "google_container_cluster" "domino_cluster" {
     enabled  = var.enable_network_policy
   }
 
+  # deprecated
   pod_security_policy_config {
     enabled = var.enable_pod_security_policy
   }
@@ -213,6 +209,10 @@ resource "google_container_node_pool" "platform" {
     image_type   = var.platform_node_image_type
     preemptible  = var.platform_nodes_preemptible
     machine_type = var.platform_node_type
+
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ]
 
     tags = [
       "iap-tcp-forwarding-allowed",
@@ -257,6 +257,10 @@ resource "google_container_node_pool" "compute" {
     image_type   = var.compute_node_image_type
     preemptible  = var.compute_nodes_preemptible
     machine_type = var.compute_node_type
+
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ]
 
     tags = [
       "iap-tcp-forwarding-allowed"
@@ -315,10 +319,9 @@ resource "google_container_node_pool" "gpu" {
     image_type   = var.gpu_node_image_type
     preemptible  = var.gpu_nodes_preemptible
     machine_type = var.gpu_node_type
+
     oauth_scopes = [
-      "https://www.googleapis.com/auth/devstorage.read_only",
-      "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring"
+      "https://www.googleapis.com/auth/cloud-platform"
     ]
 
     dynamic "guest_accelerator" {
@@ -372,7 +375,7 @@ resource "google_compute_firewall" "iap-tcp-forwarding" {
 # https://github.com/istio/istio/issues/19532
 # https://github.com/istio/istio/issues/21991
 resource "google_compute_firewall" "master-to-istiowebhook" {
-  name        = "gke-${local.cluster}-master-to-istiowebhook"
+  name        = "gke-${var.cluster_name}-master-to-istiowebhook"
   network     = google_compute_network.vpc_network.name
   description = "Istio Admission Controller needs to communicate with GKE master"
 
