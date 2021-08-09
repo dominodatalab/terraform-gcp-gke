@@ -72,7 +72,7 @@ variable "compute_nodes_ssd_gb" {
 
 variable "compute_node_image_type" {
   type    = string
-  default = "COS"
+  default = "COS_CONTAINERD"
 }
 
 variable "compute_node_type" {
@@ -124,7 +124,7 @@ variable "gpu_nodes_preemptible" {
 
 variable "gpu_node_image_type" {
   type    = string
-  default = "COS"
+  default = "COS_CONTAINERD"
 }
 
 variable "gpu_node_type" {
@@ -179,7 +179,7 @@ variable "platform_nodes_ssd_gb" {
 
 variable "platform_node_image_type" {
   type    = string
-  default = "COS"
+  default = "COS_CONTAINERD"
 }
 
 variable "platform_node_type" {
