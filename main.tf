@@ -7,6 +7,12 @@ locals {
   zone   = length(split("-", var.location)) == 3 ? var.location : format("%s-a", var.location)
 
   authorized_networks = var.master_authorized_networks_config
+
+  node_pools = {
+    for node_pool, attrs in var.node_pools :
+    node_pool => merge(attrs, lookup(var.node_pool_overrides, node_pool, {}))
+  }
+  taint_effects = { "NoSchedule" : "NO_SCHEDULE", "PreferNoSchedule" : "PREFER_NO_SCHEDULE", "NoExecute" : "NO_EXECUTE" }
 }
 
 provider "google" {
@@ -107,6 +113,7 @@ resource "google_filestore_instance" "nfs" {
 }
 
 resource "google_container_cluster" "domino_cluster" {
+  provider    = google-beta
   name        = var.cluster_name
   location    = var.location
   description = var.description
@@ -121,7 +128,8 @@ resource "google_container_cluster" "domino_cluster" {
   remove_default_node_pool = true
 
   # Workaround for https://github.com/terraform-providers/terraform-provider-google/issues/3385
-  initial_node_count = max(1, var.compute_nodes_min) + max(0, var.gpu_nodes_min) + var.platform_nodes_max
+  # sum function introduced in 0.13
+  initial_node_count = local.node_pools.platform.initial_count + local.node_pools.compute.initial_count + local.node_pools.gpu.initial_count
 
   network    = google_compute_network.vpc_network.self_link
   subnetwork = google_compute_subnetwork.default.self_link
@@ -194,102 +202,6 @@ resource "google_container_cluster" "domino_cluster" {
   }
 }
 
-resource "google_container_node_pool" "platform" {
-  name     = "platform"
-  location = google_container_cluster.domino_cluster.location
-  cluster  = google_container_cluster.domino_cluster.name
-
-  initial_node_count = var.platform_nodes_max
-  autoscaling {
-    max_node_count = var.platform_nodes_max
-    min_node_count = var.platform_nodes_min
-  }
-
-  node_config {
-    image_type   = var.platform_node_image_type
-    preemptible  = var.platform_nodes_preemptible
-    machine_type = var.platform_node_type
-
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/cloud-platform"
-    ]
-
-    tags = [
-      "iap-tcp-forwarding-allowed",
-      "domino-platform-node"
-    ]
-
-    labels = {
-      "dominodatalab.com/node-pool" = "platform"
-    }
-
-    disk_size_gb    = var.platform_nodes_ssd_gb
-    local_ssd_count = 1
-  }
-
-  management {
-    auto_repair  = true
-    auto_upgrade = true
-  }
-
-  timeouts {
-    delete = "20m"
-  }
-
-  lifecycle {
-    ignore_changes = [autoscaling]
-  }
-}
-
-resource "google_container_node_pool" "compute" {
-  name     = "compute"
-  location = google_container_cluster.domino_cluster.location
-  cluster  = google_container_cluster.domino_cluster.name
-
-
-  initial_node_count = max(1, var.compute_nodes_min)
-  autoscaling {
-    max_node_count = var.compute_nodes_max
-    min_node_count = var.compute_nodes_min
-  }
-
-  node_config {
-    image_type   = var.compute_node_image_type
-    preemptible  = var.compute_nodes_preemptible
-    machine_type = var.compute_node_type
-
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/cloud-platform"
-    ]
-
-    tags = [
-      "iap-tcp-forwarding-allowed"
-    ]
-
-    labels = {
-      "domino/build-node"            = "true"
-      "dominodatalab.com/build-node" = "true"
-      "dominodatalab.com/node-pool"  = "default"
-    }
-
-    disk_size_gb    = var.compute_nodes_ssd_gb
-    local_ssd_count = 1
-  }
-
-  management {
-    auto_repair  = true
-    auto_upgrade = true
-  }
-
-  timeouts {
-    delete = "20m"
-  }
-
-  lifecycle {
-    ignore_changes = [autoscaling]
-  }
-}
-
 resource "google_kms_key_ring" "key_ring" {
   name     = local.uuid
   location = local.region
@@ -302,30 +214,32 @@ resource "google_kms_crypto_key" "crypto_key" {
   purpose         = "ENCRYPT_DECRYPT"
 }
 
-resource "google_container_node_pool" "gpu" {
-  name     = "gpu"
+resource "google_container_node_pool" "node_pools" {
+  for_each = local.node_pools
+
+  name     = each.key
   location = google_container_cluster.domino_cluster.location
   cluster  = google_container_cluster.domino_cluster.name
 
-  initial_node_count = max(0, var.gpu_nodes_min)
-
+  initial_node_count = each.value.initial_count
+  max_pods_per_node  = each.value.max_pods
 
   autoscaling {
-    max_node_count = var.gpu_nodes_max
-    min_node_count = var.gpu_nodes_min
+    max_node_count = each.value.max_count
+    min_node_count = each.value.min_count
   }
 
   node_config {
-    image_type   = var.gpu_node_image_type
-    preemptible  = var.gpu_nodes_preemptible
-    machine_type = var.gpu_node_type
+    image_type   = each.value.image_type
+    preemptible  = each.value.preemptible
+    machine_type = each.value.instance_type
 
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
 
     dynamic "guest_accelerator" {
-      for_each = [var.gpu_nodes_accelerator]
+      for_each = compact([each.value.gpu_accelerator])
       content {
         type  = guest_accelerator.value
         count = 1
@@ -333,14 +247,21 @@ resource "google_container_node_pool" "gpu" {
     }
 
     tags = [
-      "iap-tcp-forwarding-allowed"
+      "iap-tcp-forwarding-allowed",
+      "domino-${each.key}-node"
     ]
 
-    labels = {
-      "dominodatalab.com/node-pool" = "default-gpu"
+    labels = each.value.labels
+    dynamic "taint" {
+      for_each = each.value.taints
+      content {
+        key    = split("=", taint.value)[0]
+        value  = split(":", split("=", taint.value)[1])[0]
+        effect = local.taint_effects[reverse(split(":", taint.value))[0]]
+      }
     }
 
-    disk_size_gb    = var.gpu_nodes_ssd_gb
+    disk_size_gb    = each.value.disk_size_gb
     local_ssd_count = 1
   }
 
@@ -354,7 +275,7 @@ resource "google_container_node_pool" "gpu" {
   }
 
   lifecycle {
-    ignore_changes = [autoscaling]
+    ignore_changes = [autoscaling, node_config[0].taint]
   }
 }
 

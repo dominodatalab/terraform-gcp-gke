@@ -50,36 +50,6 @@ variable "google_dns_managed_zone" {
   description = "Cloud DNS zone"
 }
 
-variable "compute_nodes_max" {
-  type    = number
-  default = 10
-}
-
-variable "compute_nodes_min" {
-  type    = number
-  default = 0
-}
-
-variable "compute_nodes_preemptible" {
-  type    = bool
-  default = false
-}
-
-variable "compute_nodes_ssd_gb" {
-  type    = number
-  default = 400
-}
-
-variable "compute_node_image_type" {
-  type    = string
-  default = "COS_CONTAINERD"
-}
-
-variable "compute_node_type" {
-  type    = string
-  default = "n2-highmem-8"
-}
-
 variable "enable_pod_security_policy" {
   type    = bool
   default = true
@@ -102,41 +72,6 @@ variable "gke_release_channel" {
   description = "GKE K8s release channel for master"
 }
 
-variable "gpu_nodes_accelerator" {
-  type    = string
-  default = "nvidia-tesla-p100"
-}
-
-variable "gpu_nodes_max" {
-  type    = number
-  default = 2
-}
-
-variable "gpu_nodes_min" {
-  type    = number
-  default = 0
-}
-
-variable "gpu_nodes_preemptible" {
-  type    = bool
-  default = false
-}
-
-variable "gpu_node_image_type" {
-  type    = string
-  default = "COS_CONTAINERD"
-}
-
-variable "gpu_node_type" {
-  type    = string
-  default = "n1-highmem-8"
-}
-
-variable "gpu_nodes_ssd_gb" {
-  type    = number
-  default = 400
-}
-
 variable "location" {
   type        = string
   default     = "us-west1-b"
@@ -157,34 +92,75 @@ variable "master_authorized_networks_config" {
   description = "Configuration options for master authorized networks. Default is for debugging only, and should be removed for production."
 }
 
-variable "platform_nodes_max" {
-  type    = number
-  default = 3
+variable "node_pools" {
+  type = map(object({
+    min_count       = number
+    max_count       = number
+    max_pods        = number
+    initial_count   = number
+    preemptible     = bool
+    disk_size_gb    = number
+    image_type      = string
+    instance_type   = string
+    gpu_accelerator = string
+    labels          = map(string)
+    taints          = list(string)
+  }))
+  default = {
+    compute = {
+      min_count       = 0
+      max_count       = 10
+      initial_count   = 1
+      max_pods        = 30
+      preemptible     = false
+      image_type      = "COS_CONTAINERD"
+      disk_size_gb    = 400
+      instance_type   = "n2-highmem-8"
+      gpu_accelerator = ""
+      labels = {
+        "dominodatalab.com/node-pool" = "default"
+      }
+      taints = []
+    }
+    gpu = {
+      min_count       = 0
+      max_count       = 2
+      initial_count   = 0
+      max_pods        = 30
+      preemptible     = false
+      image_type      = "COS_CONTAINERD"
+      disk_size_gb    = 400
+      instance_type   = "n1-highmem-8"
+      gpu_accelerator = "nvidia-tesla-p100"
+      labels = {
+        "dominodatalab.com/node-pool" = "default-gpu"
+        "nvidia.com/gpu"              = "true"
+      }
+      taints = [
+        "nvidia.com/gpu=true:NoExecute"
+      ]
+    }
+    platform = {
+      min_count       = 1
+      max_count       = 3
+      initial_count   = 1
+      max_pods        = 60
+      preemptible     = false
+      image_type      = "COS_CONTAINERD"
+      disk_size_gb    = 100
+      instance_type   = "n2-standard-8"
+      gpu_accelerator = ""
+      labels = {
+        "dominodatalab.com/node-pool" = "platform"
+      }
+      taints = []
+    }
+  }
 }
 
-variable "platform_nodes_min" {
-  type    = number
-  default = 1
-}
-
-variable "platform_nodes_preemptible" {
-  type    = bool
-  default = false
-}
-
-variable "platform_nodes_ssd_gb" {
-  type    = number
-  default = 100
-}
-
-variable "platform_node_image_type" {
-  type    = string
-  default = "COS_CONTAINERD"
-}
-
-variable "platform_node_type" {
-  type    = string
-  default = "n2-standard-8"
+variable "node_pool_overrides" {
+  type    = map(map(any))
+  default = {}
 }
 
 variable "namespaces" {
