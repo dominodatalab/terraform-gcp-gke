@@ -7,7 +7,7 @@ jobs:
       CLOUDSDK_CORE_PROJECT: domino-eng-platform-dev
       CLOUDSDK_COMPUTE_ZONE: us-west1-a
       GOOGLE_APPLICATION_CREDENTIALS: /root/.config/gcloud/legacy_credentials/terraform-gke-test@domino-eng-platform-dev.iam.gserviceaccount.com/adc.json
-      TERRAFORM_VERSION: 0.12.31
+      TERRAFORM_VERSION: 1.0.5
 
     steps:
       - checkout
@@ -37,33 +37,26 @@ jobs:
           command: terraform fmt -check
 
       - run:
-          name: Terraform init
-          command: terraform init ./tests
-
-      - run:
-          name: Terraform validate
-          command: terraform validate ./tests
-
-      - run:
-          name: Terraform workspace create
-          command: terraform workspace new ${WORKSPACE} ./tests
-
-      - run:
-          name: Terraform apply
-          command: terraform apply -auto-approve ./tests
-
-      - run:
-          name: Terraform plan
-          command: terraform plan -detailed-exitcode ./tests
+          name: Test Terraform
+          command: |
+            cd tests
+            terraform init
+            terraform validate
+            terraform workspace new ${WORKSPACE}
+            terraform apply -auto-approve
+            terraform plan -detailed-exitcode
 
       - run:
           name: Terraform destroy
-          command: terraform destroy -auto-approve ./tests || (sleep 5m && terraform destroy -auto-approve ./tests)
+          command: |
+            cd tests
+            terraform destroy -auto-approve || (sleep 5m && terraform destroy -auto-approve)
           when: always
 
       - run:
           name: Terraform workspace delete
           command: |
-            terraform workspace select default ./tests
-            terraform workspace delete ${WORKSPACE} ./tests
+            cd tests
+            terraform workspace select default
+            terraform workspace delete ${WORKSPACE}
           when: always

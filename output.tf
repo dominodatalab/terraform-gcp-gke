@@ -4,15 +4,15 @@ output "bucket_name" {
 }
 
 output "cluster" {
-  value = map(
-    "client_certificate", google_container_cluster.domino_cluster.master_auth[0].client_certificate,
-    "client_key", google_container_cluster.domino_cluster.master_auth[0].client_key,
-    "cluster_ca_certificate", google_container_cluster.domino_cluster.master_auth[0].cluster_ca_certificate,
-    "cluster_ipv4_cidr", google_container_cluster.domino_cluster.cluster_ipv4_cidr,
-    "name", google_container_cluster.domino_cluster.name,
-    "public_endpoint", google_container_cluster.domino_cluster.private_cluster_config[0].public_endpoint,
-    "pod_cidr", google_compute_subnetwork.default.ip_cidr_range
-  )
+  value = {
+    "client_certificate"     = google_container_cluster.domino_cluster.master_auth[0].client_certificate,
+    "client_key"             = google_container_cluster.domino_cluster.master_auth[0].client_key,
+    "cluster_ca_certificate" = google_container_cluster.domino_cluster.master_auth[0].cluster_ca_certificate,
+    "cluster_ipv4_cidr"      = google_container_cluster.domino_cluster.cluster_ipv4_cidr,
+    "name"                   = google_container_cluster.domino_cluster.name,
+    "public_endpoint"        = google_container_cluster.domino_cluster.private_cluster_config[0].public_endpoint,
+    "pod_cidr"               = google_compute_subnetwork.default.ip_cidr_range
+  }
   description = "GKE cluster information"
 }
 
@@ -23,8 +23,8 @@ output "dns" {
 
 output "google_filestore_instance" {
   value = {
-    file_share = ! var.filestore_disabled ? google_filestore_instance.nfs[0].file_shares[0].name : "",
-    ip_address = ! var.filestore_disabled ? google_filestore_instance.nfs[0].networks[0].ip_addresses[0] : "",
+    file_share = !var.filestore_disabled ? google_filestore_instance.nfs[0].file_shares[0].name : "",
+    ip_address = !var.filestore_disabled ? google_filestore_instance.nfs[0].networks[0].ip_addresses[0] : "",
   }
 }
 
