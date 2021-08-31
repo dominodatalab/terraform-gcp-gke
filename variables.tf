@@ -78,6 +78,12 @@ variable "location" {
   description = "The location (region or zone) of the cluster. A zone creates a single master. Specifying a region creates replicated masters accross all zones"
 }
 
+variable "master_firewall_ports" {
+  type        = list(string)
+  default     = []
+  description = "Firewall ports to open from the master, e.g., webhooks"
+}
+
 variable "master_authorized_networks_config" {
   type = list(object({
     cidr_block   = string

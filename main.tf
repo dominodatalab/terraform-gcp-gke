@@ -298,14 +298,13 @@ resource "google_compute_firewall" "iap-tcp-forwarding" {
 
 # https://github.com/istio/istio/issues/19532
 # https://github.com/istio/istio/issues/21991
-resource "google_compute_firewall" "master-to-istiowebhook" {
-  name        = "gke-${var.cluster_name}-master-to-istiowebhook"
-  network     = google_compute_network.vpc_network.name
-  description = "Istio Admission Controller needs to communicate with GKE master"
+resource "google_compute_firewall" "master-webhooks" {
+  name    = "gke-${var.cluster_name}-master-to-webhook"
+  network = google_compute_network.vpc_network.name
 
   allow {
     protocol = "tcp"
-    ports    = ["443", "9443", "15017"]
+    ports    = var.master_firewall_ports
   }
 
   source_ranges = [google_container_cluster.domino_cluster.private_cluster_config[0].master_ipv4_cidr_block]
