@@ -8,12 +8,6 @@ terraform {
     google-beta = {
       version = ">=3.68"
     }
-    kubernetes = {
-      version = "~> 2.4"
-    }
-    local = {
-      version = ">=2.1"
-    }
     random = {
       version = ">=3.1"
     }
@@ -41,9 +35,10 @@ variable "filestore_disabled" {
 module "gke" {
   source = "./.."
 
-  cluster_name       = terraform.workspace
-  project            = "domino-eng-platform-dev"
-  description        = var.description
-  filestore_disabled = var.filestore_disabled
-  namespaces         = { platform = "domino-platform", compute = "domino-compute" }
+  cluster_name           = terraform.workspace
+  project                = "domino-eng-platform-dev"
+  description            = var.description
+  filestore_disabled     = var.filestore_disabled
+  namespaces             = { platform = "domino-platform", compute = "domino-compute" }
+  kubeconfig_output_path = "${path.cwd}/kubeconfig"
 }

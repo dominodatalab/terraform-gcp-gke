@@ -11,8 +11,7 @@ variable "cluster_name" {
 
 variable "kubeconfig_output_path" {
   type        = string
-  default     = ""
-  description = "Specify where the cluster kubeconfig file should be generated. Defaults to current working directory."
+  description = "Specify where the cluster kubeconfig file should be generated."
 }
 
 variable "allowed_ssh_ranges" {
