@@ -6,8 +6,6 @@ locals {
   region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location) - 2)
   zone   = length(split("-", var.location)) == 3 ? var.location : format("%s-a", var.location)
 
-  authorized_networks = var.master_authorized_networks_config
-
   node_pools = {
     for node_pool, attrs in var.node_pools :
     node_pool => merge(attrs, lookup(var.node_pool_overrides, node_pool, {}))
@@ -16,11 +14,6 @@ locals {
 }
 
 provider "google" {
-  project = var.project
-  region  = local.region
-}
-
-provider "google-beta" {
   project = var.project
   region  = local.region
 }
@@ -135,25 +128,6 @@ resource "google_container_cluster" "domino_cluster" {
 
   enable_tpu = false
 
-  master_auth {
-    client_certificate_config {
-      issue_client_certificate = true
-    }
-  }
-
-  # This resource's provider has issues with reconciling the remote/local state
-  # of the `issue_client_certificate` field because we use channels to
-  # implicitly set a cluster version.
-  #
-  # We're going to ignore all changes to the `master_auth` block since we set
-  # these values statically. Hopefully, this issue will be resolved in a future
-  # version of the provider. See the following issue for more context.
-  #
-  # https://github.com/terraform-providers/terraform-provider-google/issues/3369#issuecomment-487226330
-  lifecycle {
-    ignore_changes = [master_auth]
-  }
-
   vertical_pod_autoscaling {
     enabled = var.enable_vertical_pod_autoscaling
   }
@@ -168,7 +142,7 @@ resource "google_container_cluster" "domino_cluster" {
 
   master_authorized_networks_config {
     dynamic "cidr_blocks" {
-      for_each = local.authorized_networks
+      for_each = var.master_authorized_networks_config
       content {
         cidr_block   = cidr_blocks.value.cidr_block
         display_name = cidr_blocks.value.display_name
@@ -198,6 +172,18 @@ resource "google_container_cluster" "domino_cluster" {
   # deprecated
   pod_security_policy_config {
     enabled = var.enable_pod_security_policy
+  }
+
+  provisioner "local-exec" {
+    environment = {
+      KUBECONFIG = var.kubeconfig_output_path
+    }
+    command = <<-EOF
+      if ! gcloud auth print-identity-token 2>/dev/null; then
+        printf "%s" "$GOOGLE_CREDENTIALS" | gcloud auth activate-service-account --project="${var.project}" --key-file=-
+      fi
+      gcloud container clusters get-credentials ${var.cluster_name} --zone ${local.zone}
+    EOF
   }
 }
 
