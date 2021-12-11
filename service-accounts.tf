@@ -30,6 +30,7 @@ resource "google_service_account_iam_binding" "platform_gcs" {
   role               = "roles/iam.workloadIdentityUser"
   members = [
     "serviceAccount:${var.project}.svc.id.goog[${var.namespaces.platform}/docker-registry]",
+    "serviceAccount:${var.project}.svc.id.goog[${var.namespaces.platform}/domino-data-importer]",
     "serviceAccount:${var.project}.svc.id.goog[${var.namespaces.platform}/git]",
     "serviceAccount:${var.project}.svc.id.goog[${var.namespaces.platform}/nucleus]",
   ]
