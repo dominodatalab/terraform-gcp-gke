@@ -92,7 +92,7 @@ resource "google_filestore_instance" "nfs" {
 
   name = local.uuid
   tier = "STANDARD"
-  zone = local.zone
+  zone = var.location
 
   file_shares {
     capacity_gb = var.filestore_capacity_gb
@@ -194,7 +194,7 @@ resource "google_kms_key_ring" "key_ring" {
 
 resource "google_kms_crypto_key" "crypto_key" {
   name            = local.uuid
-  key_ring        = google_kms_key_ring.key_ring.self_link
+  key_ring        = google_kms_key_ring.key_ring.id
   rotation_period = "86400s"
   purpose         = "ENCRYPT_DECRYPT"
 }
