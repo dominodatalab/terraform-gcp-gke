@@ -3,13 +3,13 @@ terraform {
 
   required_providers {
     google = {
-      version = ">=3.68"
+      version = "~>3.68"
     }
     google-beta = {
-      version = ">=3.68"
+      version = "~>3.68"
     }
     random = {
-      version = ">=3.1"
+      version = "~>3.1"
     }
   }
 

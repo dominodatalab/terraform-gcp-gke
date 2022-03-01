@@ -3,12 +3,13 @@ locals {
   uuid                    = "${var.cluster_name}-${random_uuid.id.result}"
 
   # Converts a cluster's location to a zone/region. A 'location' may be a region or zone: a region becomes the '[region]-a' zone.
-  region = length(split("-", var.location)) == 2 ? var.location : substr(var.location, 0, length(var.location) - 2)
-  zone   = length(split("-", var.location)) == 3 ? var.location : format("%s-a", var.location)
+  is_regional = length(split("-", var.location)) == 2
+  region      = local.is_regional ? var.location : substr(var.location, 0, length(var.location) - 2)
+  zone        = local.is_regional ? format("%s-a", var.location) : var.location
 
   node_pools = {
     for node_pool, attrs in var.node_pools :
-    node_pool => merge(attrs, lookup(var.node_pool_overrides, node_pool, {}))
+    node_pool => merge(attrs, lookup(var.node_pool_overrides, node_pool, null))
   }
   taint_effects = { "NoSchedule" : "NO_SCHEDULE", "PreferNoSchedule" : "PREFER_NO_SCHEDULE", "NoExecute" : "NO_EXECUTE" }
 }
@@ -182,7 +183,7 @@ resource "google_container_cluster" "domino_cluster" {
       if ! gcloud auth print-identity-token 2>/dev/null; then
         printf "%s" "$GOOGLE_CREDENTIALS" | gcloud auth activate-service-account --project="${var.project}" --key-file=-
       fi
-      gcloud container clusters get-credentials ${var.cluster_name} --zone ${local.zone}
+      gcloud container clusters get-credentials ${var.cluster_name} ${local.is_regional ? "--region" : "--zone"} ${var.location}
     EOF
   }
 }
@@ -202,9 +203,10 @@ resource "google_kms_crypto_key" "crypto_key" {
 resource "google_container_node_pool" "node_pools" {
   for_each = local.node_pools
 
-  name     = each.key
-  location = google_container_cluster.domino_cluster.location
-  cluster  = google_container_cluster.domino_cluster.name
+  name           = each.key
+  location       = google_container_cluster.domino_cluster.location
+  cluster        = google_container_cluster.domino_cluster.name
+  node_locations = length(each.value.node_locations) != 0 ? each.value.node_locations : google_container_cluster.domino_cluster.node_locations
 
   initial_node_count = each.value.initial_count
   max_pods_per_node  = each.value.max_pods
@@ -264,7 +266,7 @@ resource "google_container_node_pool" "node_pools" {
   }
 
   lifecycle {
-    ignore_changes = [autoscaling, node_config[0].taint]
+    ignore_changes = [autoscaling, node_config[0].taint, node_locations]
   }
 }
 
