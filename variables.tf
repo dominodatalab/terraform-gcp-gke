@@ -110,6 +110,7 @@ variable "node_pools" {
     gpu_accelerator = string
     labels          = map(string)
     taints          = list(string)
+    node_locations  = list(string)
   }))
   default = {
     compute = {
@@ -125,7 +126,8 @@ variable "node_pools" {
       labels = {
         "dominodatalab.com/node-pool" = "default"
       }
-      taints = []
+      taints         = []
+      node_locations = []
     }
     gpu = {
       min_count       = 0
@@ -144,6 +146,7 @@ variable "node_pools" {
       taints = [
         "nvidia.com/gpu=true:NoExecute"
       ]
+      node_locations = []
     }
     platform = {
       min_count       = 1
@@ -158,13 +161,13 @@ variable "node_pools" {
       labels = {
         "dominodatalab.com/node-pool" = "platform"
       }
-      taints = []
+      taints         = []
+      node_locations = []
     }
   }
 }
 
 variable "node_pool_overrides" {
-  type    = map(map(any))
   default = {}
 }
 
