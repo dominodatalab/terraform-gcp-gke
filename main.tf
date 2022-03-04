@@ -189,6 +189,8 @@ resource "google_container_cluster" "domino_cluster" {
       gcloud container clusters get-credentials ${var.cluster_name} ${local.is_regional ? "--region" : "--zone"} ${var.location}
     EOF
   }
+
+  min_master_version = var.kubernetes_version
 }
 
 resource "google_kms_key_ring" "key_ring" {
