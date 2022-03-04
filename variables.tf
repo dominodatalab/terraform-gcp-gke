@@ -187,4 +187,5 @@ variable "namespaces" {
 variable "kubernetes_version" {
   type        = string
   description = "Desired Kubernetes version of the cluster"
+  default     = ""
 }
