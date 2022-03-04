@@ -39,12 +39,14 @@ variable "filestore_disabled" {
 
 variable "google_dns_managed_zone" {
   type = object({
+    enabled  = bool
     name     = string
     dns_name = string
   })
   default = {
-    name     = "eng-platform-dev"
-    dns_name = "eng-platform-dev.domino.tech."
+    enabled  = false
+    name     = ""
+    dns_name = ""
   }
   description = "Cloud DNS zone"
 }

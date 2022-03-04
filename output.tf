@@ -17,7 +17,7 @@ output "cluster" {
 }
 
 output "dns" {
-  value       = google_dns_record_set.a.name
+  value       = var.google_dns_managed_zone.enabled ? google_dns_record_set.a[0].name : ""
   description = "The external (public) DNS name for the Domino UI"
 }
 

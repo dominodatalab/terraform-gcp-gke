@@ -31,6 +31,7 @@ resource "google_compute_global_address" "static_ip" {
 }
 
 resource "google_dns_record_set" "a" {
+  count        = var.google_dns_managed_zone.enabled ? 0 : 1
   name         = "${var.cluster_name}.${var.google_dns_managed_zone.dns_name}"
   managed_zone = var.google_dns_managed_zone.name
   type         = "A"
@@ -40,6 +41,7 @@ resource "google_dns_record_set" "a" {
 }
 
 resource "google_dns_record_set" "caa" {
+  count        = var.google_dns_managed_zone.enabled ? 0 : 1
   name         = "${var.cluster_name}.${var.google_dns_managed_zone.dns_name}"
   managed_zone = var.google_dns_managed_zone.name
   type         = "CAA"
