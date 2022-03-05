@@ -26,7 +26,7 @@ data "google_project" "domino" {
 resource "random_uuid" "id" {}
 
 resource "google_compute_global_address" "static_ip" {
-  count = var.static_ip_disabled ? 0 : 1
+  count = var.static_ip_enabled ? 1 : 0
   name        = local.uuid
   description = "External static IPv4 address for var.description"
 }

@@ -39,7 +39,7 @@ output "region" {
 }
 
 output "static_ip" {
-  value       = !var.static_ip_disabled ? google_compute_global_address.static_ip[0].address : ""
+  value       = var.static_ip_enabled ? google_compute_global_address.static_ip[0].address : ""
   description = "The external (public) static IPv4 for the Domino UI"
 }
 
