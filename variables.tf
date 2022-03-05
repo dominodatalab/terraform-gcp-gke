@@ -37,6 +37,12 @@ variable "filestore_disabled" {
   description = "Do not provision a Filestore instance (mostly to avoid GCP Filestore API issues)"
 }
 
+variable "static_ip_disabled" {
+  type        = bool
+  default     = true
+  description = "Do not provision a static ip address"
+}
+
 variable "google_dns_managed_zone" {
   type = object({
     enabled  = bool
