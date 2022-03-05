@@ -26,20 +26,23 @@ data "google_project" "domino" {
 resource "random_uuid" "id" {}
 
 resource "google_compute_global_address" "static_ip" {
+  count       = var.static_ip_enabled ? 1 : 0
   name        = local.uuid
   description = "External static IPv4 address for var.description"
 }
 
 resource "google_dns_record_set" "a" {
+  count        = var.google_dns_managed_zone.enabled ? 1 : 0
   name         = "${var.cluster_name}.${var.google_dns_managed_zone.dns_name}"
   managed_zone = var.google_dns_managed_zone.name
   type         = "A"
   ttl          = 300
 
-  rrdatas = [google_compute_global_address.static_ip.address]
+  rrdatas = [google_compute_global_address.static_ip[0].address]
 }
 
 resource "google_dns_record_set" "caa" {
+  count        = var.google_dns_managed_zone.enabled ? 1 : 0
   name         = "${var.cluster_name}.${var.google_dns_managed_zone.dns_name}"
   managed_zone = var.google_dns_managed_zone.name
   type         = "CAA"

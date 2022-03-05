@@ -37,14 +37,22 @@ variable "filestore_disabled" {
   description = "Do not provision a Filestore instance (mostly to avoid GCP Filestore API issues)"
 }
 
+variable "static_ip_enabled" {
+  type        = bool
+  default     = false
+  description = "Provision a static ip for use with managed zones/ingress"
+}
+
 variable "google_dns_managed_zone" {
   type = object({
+    enabled  = bool
     name     = string
     dns_name = string
   })
   default = {
-    name     = "eng-platform-dev"
-    dns_name = "eng-platform-dev.domino.tech."
+    enabled  = false
+    name     = ""
+    dns_name = ""
   }
   description = "Cloud DNS zone"
 }

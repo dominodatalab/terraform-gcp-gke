@@ -17,7 +17,7 @@ output "cluster" {
 }
 
 output "dns" {
-  value       = google_dns_record_set.a.name
+  value       = var.google_dns_managed_zone.enabled ? google_dns_record_set.a[0].name : ""
   description = "The external (public) DNS name for the Domino UI"
 }
 
@@ -39,7 +39,7 @@ output "region" {
 }
 
 output "static_ip" {
-  value       = google_compute_global_address.static_ip.address
+  value       = var.static_ip_enabled ? google_compute_global_address.static_ip[0].address : ""
   description = "The external (public) static IPv4 for the Domino UI"
 }
 
