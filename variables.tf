@@ -184,3 +184,8 @@ variable "namespaces" {
   description = "Namespace that are used for generating the service account bindings"
 }
 
+variable "kubernetes_version" {
+  type        = string
+  description = "Desired Kubernetes version of the cluster"
+  default     = ""
+}

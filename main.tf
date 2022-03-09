@@ -114,6 +114,10 @@ resource "google_container_cluster" "domino_cluster" {
   location    = var.location
   description = var.description
 
+  # min_master_version sets the desired Kubernetes version of the cluster. If it is not set, GCP will default to latest stable release of GKE engine.
+  # GKE releases can be found in  https://cloud.google.com/kubernetes-engine/docs/release-notes
+  min_master_version = var.kubernetes_version
+
   release_channel {
     channel = var.gke_release_channel
   }
@@ -189,6 +193,7 @@ resource "google_container_cluster" "domino_cluster" {
       gcloud container clusters get-credentials ${var.cluster_name} ${local.is_regional ? "--region" : "--zone"} ${var.location}
     EOF
   }
+
 }
 
 resource "google_kms_key_ring" "key_ring" {
