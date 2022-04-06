@@ -165,7 +165,7 @@ resource "google_container_cluster" "domino_cluster" {
   # Application-layer Secrets Encryption
   database_encryption {
     state    = "ENCRYPTED"
-    key_name = google_kms_crypto_key.crypto_key.self_link
+    key_name = google_kms_crypto_key.crypto_key.id
   }
 
   workload_identity_config {
@@ -203,7 +203,7 @@ resource "google_kms_key_ring" "key_ring" {
 
 resource "google_kms_crypto_key" "crypto_key" {
   name            = local.uuid
-  key_ring        = google_kms_key_ring.key_ring.self_link
+  key_ring        = google_kms_key_ring.key_ring.id
   rotation_period = "86400s"
   purpose         = "ENCRYPT_DECRYPT"
 }
@@ -279,7 +279,7 @@ resource "google_container_node_pool" "node_pools" {
 }
 
 # https://cloud.google.com/iap/docs/using-tcp-forwarding
-resource "google_compute_firewall" "iap-tcp-forwarding" {
+resource "google_compute_firewall" "iap_tcp_forwarding" {
   name    = "${local.uuid}-iap"
   network = google_compute_network.vpc_network.name
 
@@ -294,7 +294,7 @@ resource "google_compute_firewall" "iap-tcp-forwarding" {
 
 # https://github.com/istio/istio/issues/19532
 # https://github.com/istio/istio/issues/21991
-resource "google_compute_firewall" "master-webhooks" {
+resource "google_compute_firewall" "master_webhooks" {
   name    = "gke-${var.cluster_name}-master-to-webhook"
   network = google_compute_network.vpc_network.name
 
