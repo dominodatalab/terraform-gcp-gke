@@ -1,0 +1,87 @@
+name: Lint-Format-Scan
+on: [push]
+jobs:
+  terraform_fmt:
+    name: Run terraform fmt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - uses: actions/setup-python@v3
+      - name: Terraform fmt
+        uses: pre-commit/action@v2.0.3
+        with:
+          extra_args: terraform_fmt --all-files
+      - name: Wrong formatting found
+        if: ${{ failure() && steps.fmt-check.outputs.failure-reason == 'check-failed' }}
+        run: echo "terraform formatting check failed"
+  terraform_lint:
+    name: Run tflint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@master
+      - uses: actions/setup-python@v3
+      - name: Install tflint
+        run: >-
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+      - uses: pre-commit/action@v2.0.3
+        with:
+          extra_args: terraform_tflint --all-files
+  terraform_validate:
+    name: Run terraform validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - uses: actions/setup-python@v3
+      - name: Terraform validate
+        uses: pre-commit/action@v2.0.3
+        with:
+          extra_args: terraform_validate --all-files
+      - name: Validate failed
+        if: ${{ failure() && steps.validate.outputs.failure-reason == 'validate-failed' }}
+        run: echo "terraform validate failed"
+  checkov:
+    name: Run checkov scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@master
+      - uses: actions/setup-python@v3
+      - name: Install checkov
+        run: pip3 install checkov
+      - name: Run Checkov scan
+        uses: pre-commit/action@v2.0.3
+        with:
+          extra_args: checkov --all-files
+  tfsec:
+    name: Run tfsec scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@master
+      - uses: actions/setup-python@v3
+      - name: Instal tfsec
+        run: >-
+          curl -sL "https://github.com/$(curl -sL https://github.com/aquasecurity/tfsec/releases/latest | grep -o -E "/.+?_linux_amd64.tar.gz")" > tfsec.tar.gz &&
+          tar -xf tfsec.tar.gz tfsec && rm tfsec.tar.gz && install tfsec /usr/local/bin && rm tfsec
+      - name: Run tfsec scan
+        uses: pre-commit/action@v2.0.3
+        with:
+          extra_args: terraform_tfsec --all-files
+  terrascan_job:
+    runs-on: ubuntu-latest
+    name: Run terrascan
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@master
+      - uses: actions/setup-python@v3
+      - name: Install terrascan
+        run: >-
+          curl -sL "$(curl -s https://api.github.com/repos/accurics/terrascan/releases/latest | grep -o -E "https://.+?_Linux_x86_64.tar.gz")" > terrascan.tar.gz &&
+          tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz && install terrascan /usr/local/bin && rm terrascan
+      - name: Run Terrascan
+        uses: pre-commit/action@v2.0.3
+        with:
+          extra_args: terrascan --all-files
