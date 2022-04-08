@@ -1,0 +1,106 @@
+name: Lint-Format-Scan
+on: [push]
+jobs:
+  terraform_fmt:
+    name: Run terraform fmt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: terraform fmt
+        uses: dflook/terraform-fmt-check@v1
+        id: fmt-check
+      - name: Wrong formatting found
+        if: ${{ failure() && steps.fmt-check.outputs.failure-reason == 'check-failed' }}
+        run: echo "terraform formatting check failed"
+  terraform_lint:
+    name: Run terraform lint
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@master
+    - name: Setup TFLint
+      uses: terraform-linters/setup-tflint@v1
+      with:
+        tflint_version: v0.35.0
+    - name: Init TFLint
+      run: tflint --init
+    - name: Run TFLint
+      run: >
+        tflint
+        --only=terraform_deprecated_interpolation
+        --only=terraform_deprecated_index
+        --only=terraform_unused_declarations
+        --only=terraform_comment_syntax
+        --only=terraform_documented_outputs
+        --only=terraform_documented_variables
+        --only=terraform_typed_variables
+        --only=terraform_module_pinned_source
+        --only=terraform_naming_convention
+        --only=terraform_required_version
+        --only=terraform_required_providers
+        --only=terraform_standard_module_structure
+        --only=terraform_workspace_remote
+        --only=google_composer_environment_invalid_machine_type
+        --only=google_compute_instance_invalid_machine_type
+        --only=google_compute_instance_template_invalid_machine_type
+        --only=google_compute_reservation_invalid_machine_type
+        --only=google_container_cluster_invalid_machine_type
+        --only=google_container_node_pool_invalid_machine_type
+        --only=google_dataflow_job_invalid_machine_type
+        --only=google_project_iam_audit_config_invalid_member
+        --only=google_project_iam_binding_invalid_member
+        --only=google_project_iam_member_invalid_member
+        --only=google_project_iam_policy_invalid_member
+  terraform_validate:
+    name: Run terraform validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: terraform validate
+        uses: dflook/terraform-validate@v1
+        id: validate
+      - name: Validate failed
+        if: ${{ failure() && steps.validate.outputs.failure-reason == 'validate-failed' }}
+        run: echo "terraform validate failed"
+  checkov:
+    name: Run checkov scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@master
+      - name: Run Checkov action
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          skip_check: "CKV_GCP_49,CKV_GCP_41,CKV_GCP_68,CKV_GCP_22,CKV_GCP_82,CKV_GCP_69,CKV_GCP_66,CKV_GCP_65,CKV_GCP_71,CKV_GCP_13,CKV_GCP_19,CKV_GCP_67,CKV_GCP_61,CKV_GCP_29,CKV_GCP_62,CKV_GCP_76,CKV_GCP_26,CKV_GCP_84"
+          quiet: true
+          framework: terraform
+          output_format: sarif
+          download_external_modules: true
+  tfsec:
+    name: Run tfsec scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@master
+      - name: tfsec
+        uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          additional_args: '--exclude google-compute-enable-vpc-flow-logs,google-compute-no-public-ingress,google-gke-metadata-endpoints-disabled,google-gke-no-public-control-plane,google-gke-node-metadata-security,google-gke-use-service-account,google-storage-enable-ubla,google-iam-no-project-level-service-account-impersonation,google-gke-use-cluster-labels'
+  terrascan_job:
+    runs-on: ubuntu-latest
+    name: Run terrascan
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@master
+    - name: Run Terrascan
+      id: terrascan
+      uses: accurics/terrascan-action@main
+      with:
+        iac_type: 'terraform'
+        iac_version: 'v14'
+        policy_type: 'gcp'
+        skip_rules: ",AC_GCP_0234,AC_GCP_0016,AC_GCP_0006,"
+        verbose: true
