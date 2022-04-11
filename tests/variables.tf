@@ -1,6 +1,7 @@
 variable "description" {
-  type    = string
-  default = "The Domino K8s Cluster"
+  description = "GKE cluster description"
+  type        = string
+  default     = "The Domino K8s Cluster"
 }
 
 variable "filestore_disabled" {

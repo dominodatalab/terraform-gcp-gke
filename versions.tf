@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 1.0"
   required_providers {
     google-beta = {
       source  = "registry.terraform.io/hashicorp/google-beta"

@@ -181,22 +181,12 @@ variable "node_pools" {
 
 variable "node_pool_overrides" {
   description = "Param override for var.node_pools"
-  type = map(
-    object({
-      compute  = map(string)
-      gpu      = map(string)
-      platform = map(string)
-    })
-  )
-  default = {}
+  type        = map(map(map(string)))
+  default     = {}
 }
 
 variable "namespaces" {
-  type = object(
-    {
-      platform = string
-      compute  = string
-  })
+  type        = object({ platform = string, compute = string })
   description = "Namespace that are used for generating the service account bindings"
 }
 
