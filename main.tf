@@ -94,9 +94,9 @@ resource "google_storage_bucket" "bucket" {
 resource "google_filestore_instance" "nfs" {
   count = var.filestore_disabled ? 0 : 1
 
-  name = local.uuid
-  tier = "STANDARD"
-  zone = local.zone
+  name     = local.uuid
+  tier     = "STANDARD"
+  location = local.zone
 
   file_shares {
     capacity_gb = var.filestore_capacity_gb
@@ -110,6 +110,10 @@ resource "google_filestore_instance" "nfs" {
 }
 
 resource "google_container_cluster" "domino_cluster" {
+  # Pining google-beta provider for support of the pod_security_policy_config block, since it has been removed from the GA provider.
+  # https://github.com/hashicorp/terraform-provider-google/pull/10410
+  provider = google-beta
+
   name        = var.cluster_name
   location    = var.location
   description = var.description
@@ -169,7 +173,7 @@ resource "google_container_cluster" "domino_cluster" {
   }
 
   workload_identity_config {
-    identity_namespace = "${data.google_project.domino.project_id}.svc.id.goog"
+    workload_pool = "${data.google_project.domino.project_id}.svc.id.goog"
   }
 
   network_policy {
@@ -177,7 +181,8 @@ resource "google_container_cluster" "domino_cluster" {
     enabled  = var.enable_network_policy
   }
 
-  # deprecated
+  # Removed from the google provider v4.0 # https://github.com/hashicorp/terraform-provider-google/pull/10410.
+  # Pining provider to google-beta to support the pod_security_policy_config block.
   pod_security_policy_config {
     enabled = var.enable_pod_security_policy
   }

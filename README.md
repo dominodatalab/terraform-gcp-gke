@@ -72,16 +72,16 @@ Please submit any feature enhancements, bug fixes, or ideas via pull requests or
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_google"></a> [google](#requirement\_google) | ~> 3.68 |
-| <a name="requirement_google-beta"></a> [google-beta](#requirement\_google-beta) | ~> 3.68 |
+| <a name="requirement_google"></a> [google](#requirement\_google) | >= 4.0, < 5.0 |
+| <a name="requirement_google-beta"></a> [google-beta](#requirement\_google-beta) | >= 4.0, < 5.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | 3.90.1 |
-| <a name="provider_google-beta"></a> [google-beta](#provider\_google-beta) | 3.90.1 |
+| <a name="provider_google"></a> [google](#provider\_google) | 4.17.0 |
+| <a name="provider_google-beta"></a> [google-beta](#provider\_google-beta) | 4.17.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | 3.1.2 |
 
 ## Modules
@@ -92,30 +92,30 @@ No modules.
 
 | Name | Type |
 |------|------|
-| google-beta_google_artifact_registry_repository.domino | resource |
-| google-beta_google_artifact_registry_repository_iam_member.gcr | resource |
-| google_compute_firewall.iap_tcp_forwarding | resource |
-| google_compute_firewall.master_webhooks | resource |
-| google_compute_global_address.static_ip | resource |
-| google_compute_network.vpc_network | resource |
-| google_compute_router.router | resource |
-| google_compute_router_nat.nat | resource |
-| google_compute_subnetwork.default | resource |
-| google_container_cluster.domino_cluster | resource |
-| google_container_node_pool.node_pools | resource |
-| google_dns_record_set.a | resource |
-| google_dns_record_set.caa | resource |
-| google_filestore_instance.nfs | resource |
-| google_kms_crypto_key.crypto_key | resource |
-| google_kms_key_ring.key_ring | resource |
-| google_project_iam_member.platform_roles | resource |
-| google_project_iam_member.service_account | resource |
-| google_service_account.accounts | resource |
-| google_service_account_iam_binding.gcr | resource |
-| google_service_account_iam_binding.platform_gcs | resource |
-| google_storage_bucket.bucket | resource |
-| random_uuid.id | resource |
-| google_project.domino | data source |
+| [google-beta_google_artifact_registry_repository.domino](https://registry.terraform.io/providers/hashicorp/google-beta/latest/docs/resources/google_artifact_registry_repository) | resource |
+| [google-beta_google_artifact_registry_repository_iam_member.gcr](https://registry.terraform.io/providers/hashicorp/google-beta/latest/docs/resources/google_artifact_registry_repository_iam_member) | resource |
+| [google-beta_google_container_cluster.domino_cluster](https://registry.terraform.io/providers/hashicorp/google-beta/latest/docs/resources/google_container_cluster) | resource |
+| [google_compute_firewall.iap_tcp_forwarding](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) | resource |
+| [google_compute_firewall.master_webhooks](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) | resource |
+| [google_compute_global_address.static_ip](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) | resource |
+| [google_compute_network.vpc_network](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network) | resource |
+| [google_compute_router.router](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router) | resource |
+| [google_compute_router_nat.nat](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router_nat) | resource |
+| [google_compute_subnetwork.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork) | resource |
+| [google_container_node_pool.node_pools](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_node_pool) | resource |
+| [google_dns_record_set.a](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_record_set) | resource |
+| [google_dns_record_set.caa](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_record_set) | resource |
+| [google_filestore_instance.nfs](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/filestore_instance) | resource |
+| [google_kms_crypto_key.crypto_key](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/kms_crypto_key) | resource |
+| [google_kms_key_ring.key_ring](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/kms_key_ring) | resource |
+| [google_project_iam_member.platform_roles](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
+| [google_project_iam_member.service_account](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
+| [google_service_account.accounts](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account) | resource |
+| [google_service_account_iam_binding.gcr](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_binding) | resource |
+| [google_service_account_iam_binding.platform_gcs](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_binding) | resource |
+| [google_storage_bucket.bucket](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket) | resource |
+| [random_uuid.id](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) | resource |
+| [google_project.domino](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/project) | data source |
 
 ## Inputs
 
