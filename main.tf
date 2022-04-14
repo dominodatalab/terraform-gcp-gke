@@ -1,6 +1,7 @@
 locals {
   enable_private_endpoint = length(var.master_authorized_networks_config) == 0
-  uuid                    = "${var.cluster_name}-${random_uuid.id.result}"
+  # 'resource.name'  Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'"."
+  uuid = substr("${var.cluster_name}-${random_string.id.result}", 0, 55)
 
   # Converts a cluster's location to a zone/region. A 'location' may be a region or zone: a region becomes the '[region]-a' zone.
   is_regional = length(split("-", var.location)) == 2
@@ -23,8 +24,11 @@ data "google_project" "domino" {
   project_id = var.project
 }
 
-resource "random_uuid" "id" {}
-
+resource "random_string" "id" {
+  length      = 16
+  special     = false
+  min_numeric = 8
+}
 resource "google_compute_global_address" "static_ip" {
   count       = var.static_ip_enabled ? 1 : 0
   name        = local.uuid
@@ -92,9 +96,11 @@ resource "google_storage_bucket" "bucket" {
 }
 
 resource "google_filestore_instance" "nfs" {
-  count = var.filestore_disabled ? 0 : 1
+  count    = var.filestore_disabled ? 0 : 1
+  provider = google
 
-  name     = local.uuid
+  name     = substr(local.uuid, 0, 53)
+  project  = var.project
   tier     = "STANDARD"
   location = local.zone
 
@@ -182,7 +188,7 @@ resource "google_container_cluster" "domino_cluster" {
   }
 
   # Removed from the google provider v4.0 # https://github.com/hashicorp/terraform-provider-google/pull/10410.
-  # Pining provider to google-beta to support the pod_security_policy_config block.
+  # Pining provider to google-beta to support the pod_security_policy_config block. This option does not seem to have the desired effect on the GKE configuration #TODO
   pod_security_policy_config {
     enabled = var.enable_pod_security_policy
   }

@@ -7,6 +7,11 @@ variable "project" {
 variable "cluster_name" {
   type        = string
   description = "The Domino Cluster name and must be unique in the GCP Project."
+
+  validation {
+    condition     = can(regex("^[a-z-0-9]{3,32}$", var.cluster_name))
+    error_message = "Argument cluster_name must: start with a letter, contain lowercase alphanumeric characters(can contain hyphens[-]) with length between 3 and 32 characters."
+  }
 }
 
 variable "kubeconfig_output_path" {
