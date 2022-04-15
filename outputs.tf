@@ -44,7 +44,7 @@ output "static_ip" {
   description = "The external (public) static IPv4 for the Domino UI"
 }
 
-output "deployment_id" {
+output "uuid" {
   value       = local.deployment_id
   description = "Cluster UUID"
 }

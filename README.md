@@ -148,7 +148,6 @@ No modules.
 |------|-------------|
 | <a name="output_bucket_name"></a> [bucket\_name](#output\_bucket\_name) | Name of the cloud storage bucket |
 | <a name="output_cluster"></a> [cluster](#output\_cluster) | GKE cluster information |
-| <a name="output_deployment_id"></a> [deployment\_id](#output\_deployment\_id) | Cluster UUID |
 | <a name="output_dns"></a> [dns](#output\_dns) | The external (public) DNS name for the Domino UI |
 | <a name="output_domino_artifact_repository"></a> [domino\_artifact\_repository](#output\_domino\_artifact\_repository) | Domino Google artifact repository |
 | <a name="output_google_filestore_instance"></a> [google\_filestore\_instance](#output\_google\_filestore\_instance) | Domino Google Cloud Filestore instance, name and ip\_address |
@@ -156,4 +155,5 @@ No modules.
 | <a name="output_region"></a> [region](#output\_region) | Region where the cluster is deployed derived from 'location' input variable |
 | <a name="output_service_accounts"></a> [service\_accounts](#output\_service\_accounts) | GKE cluster Workload Identity namespace IAM service accounts |
 | <a name="output_static_ip"></a> [static\_ip](#output\_static\_ip) | The external (public) static IPv4 for the Domino UI |
+| <a name="output_uuid"></a> [uuid](#output\_uuid) | Cluster UUID |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
