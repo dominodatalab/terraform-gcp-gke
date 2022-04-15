@@ -1,7 +1,7 @@
 locals {
   enable_private_endpoint = length(var.master_authorized_networks_config) == 0
   # 'resource.name'  Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'"."
-  uuid = substr("${var.cluster_name}-${random_string.id.result}", 0, 55)
+  deployment_id = "${var.cluster_name}-${random_string.id.result}"
 
   # Converts a cluster's location to a zone/region. A 'location' may be a region or zone: a region becomes the '[region]-a' zone.
   is_regional = length(split("-", var.location)) == 2
@@ -32,7 +32,7 @@ resource "random_string" "id" {
 }
 resource "google_compute_global_address" "static_ip" {
   count       = var.static_ip_enabled ? 1 : 0
-  name        = local.uuid
+  name        = local.deployment_id
   description = "External static IPv4 address for var.description"
 }
 
@@ -57,7 +57,7 @@ resource "google_dns_record_set" "caa" {
 }
 
 resource "google_compute_network" "vpc_network" {
-  name        = local.uuid
+  name        = local.deployment_id
   description = var.description
 
   # This helps lowers our subnet quota utilization
@@ -65,7 +65,7 @@ resource "google_compute_network" "vpc_network" {
 }
 
 resource "google_compute_subnetwork" "default" {
-  name                     = local.uuid
+  name                     = local.deployment_id
   ip_cidr_range            = "10.138.0.0/20"
   network                  = google_compute_network.vpc_network.self_link
   private_ip_google_access = true
@@ -73,12 +73,12 @@ resource "google_compute_subnetwork" "default" {
 }
 
 resource "google_compute_router" "router" {
-  name    = local.uuid
+  name    = local.deployment_id
   network = google_compute_network.vpc_network.self_link
 }
 
 resource "google_compute_router_nat" "nat" {
-  name                               = local.uuid
+  name                               = local.deployment_id
   router                             = google_compute_router.router.name
   region                             = local.region
   nat_ip_allocate_option             = "AUTO_ONLY"
@@ -100,7 +100,7 @@ resource "google_filestore_instance" "nfs" {
   count    = var.filestore_disabled ? 0 : 1
   provider = google
 
-  name     = substr(local.uuid, 0, 53)
+  name     = local.deployment_id
   project  = var.project
   tier     = "STANDARD"
   location = local.zone
@@ -170,7 +170,7 @@ resource "google_container_cluster" "domino_cluster" {
   }
 
   resource_labels = {
-    "uuid" = local.uuid
+    "deployment_id" = local.deployment_id
   }
 
   # Application-layer Secrets Encryption
@@ -189,7 +189,8 @@ resource "google_container_cluster" "domino_cluster" {
   }
 
   # Removed from the google provider v4.0 # https://github.com/hashicorp/terraform-provider-google/pull/10410.
-  # Pining provider to google-beta to support the pod_security_policy_config block. This option does not seem to have the desired effect on the GKE configuration #TODO
+  # Pining provider to google-beta to support the pod_security_policy_config block.
+  # This option does not seem to have the desired effect on the GKE configuration #TODO
   pod_security_policy_config {
     enabled = var.enable_pod_security_policy
   }
@@ -209,12 +210,12 @@ resource "google_container_cluster" "domino_cluster" {
 }
 
 resource "google_kms_key_ring" "key_ring" {
-  name     = local.uuid
+  name     = local.deployment_id
   location = local.region
 }
 
 resource "google_kms_crypto_key" "crypto_key" {
-  name            = local.uuid
+  name            = local.deployment_id
   key_ring        = google_kms_key_ring.key_ring.id
   rotation_period = "86400s"
   purpose         = "ENCRYPT_DECRYPT"
@@ -292,7 +293,7 @@ resource "google_container_node_pool" "node_pools" {
 
 # https://cloud.google.com/iap/docs/using-tcp-forwarding
 resource "google_compute_firewall" "iap_tcp_forwarding" {
-  name    = "${local.uuid}-iap"
+  name    = "${local.deployment_id}-iap"
   network = google_compute_network.vpc_network.name
 
   allow {
