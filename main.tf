@@ -27,6 +27,7 @@ data "google_project" "domino" {
 resource "random_string" "id" {
   length      = 16
   special     = false
+  upper       = false
   min_numeric = 8
 }
 resource "google_compute_global_address" "static_ip" {
