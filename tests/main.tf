@@ -1,17 +1,5 @@
 terraform {
-  required_version = ">= 0.12"
-
-  required_providers {
-    google = {
-      version = "~>3.68"
-    }
-    google-beta = {
-      version = "~>3.68"
-    }
-    random = {
-      version = "~>3.1"
-    }
-  }
+  required_version = ">= 1.0"
 
   backend "gcs" {
     bucket = "domino-terraform-default" # Should specify using cli -backend-config="bucket=domino-terraform-default"
@@ -20,17 +8,6 @@ terraform {
   }
 }
 
-
-variable "description" {
-  type    = string
-  default = "The Domino K8s Cluster"
-}
-
-variable "filestore_disabled" {
-  type        = bool
-  default     = false
-  description = "Do not provision a Filestore instance (mostly to avoid GCP Filestore API issues)"
-}
 
 module "gke" {
   source = "./.."

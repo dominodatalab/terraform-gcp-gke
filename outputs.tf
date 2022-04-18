@@ -26,6 +26,7 @@ output "google_filestore_instance" {
     file_share = !var.filestore_disabled ? google_filestore_instance.nfs[0].file_shares[0].name : "",
     ip_address = !var.filestore_disabled ? google_filestore_instance.nfs[0].networks[0].ip_addresses[0] : "",
   }
+  description = "Domino Google Cloud Filestore instance, name and ip_address"
 }
 
 output "project" {
@@ -44,7 +45,7 @@ output "static_ip" {
 }
 
 output "uuid" {
-  value       = local.uuid
+  value       = local.deployment_id
   description = "Cluster UUID"
 }
 
@@ -54,5 +55,6 @@ output "service_accounts" {
 }
 
 output "domino_artifact_repository" {
-  value = google_artifact_registry_repository.domino
+  value       = google_artifact_registry_repository.domino
+  description = "Domino Google artifact repository"
 }

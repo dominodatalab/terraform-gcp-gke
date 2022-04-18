@@ -7,6 +7,11 @@ variable "project" {
 variable "cluster_name" {
   type        = string
   description = "The Domino Cluster name and must be unique in the GCP Project."
+
+  validation {
+    condition     = can(regex("^[a-z-0-9]{3,32}$", var.cluster_name))
+    error_message = "Argument cluster_name must: start with a letter, contain lowercase alphanumeric characters(can contain hyphens[-]) with length between 3 and 32 characters."
+  }
 }
 
 variable "kubeconfig_output_path" {
@@ -21,8 +26,9 @@ variable "allowed_ssh_ranges" {
 }
 
 variable "description" {
-  type    = string
-  default = "The Domino K8s Cluster"
+  description = "GKE cluster description"
+  type        = string
+  default     = "The Domino K8s Cluster"
 }
 
 variable "filestore_capacity_gb" {
@@ -58,13 +64,15 @@ variable "google_dns_managed_zone" {
 }
 
 variable "enable_pod_security_policy" {
-  type    = bool
-  default = true
+  description = "Enable pod security policy switch"
+  type        = bool
+  default     = true
 }
 
 variable "enable_network_policy" {
-  type    = bool
-  default = true
+  description = "Enable network policy switch"
+  type        = bool
+  default     = true
 }
 
 variable "enable_vertical_pod_autoscaling" {
@@ -106,6 +114,7 @@ variable "master_authorized_networks_config" {
 }
 
 variable "node_pools" {
+  description = "GKE node pool params"
   type = map(object({
     min_count       = number
     max_count       = number
@@ -176,7 +185,9 @@ variable "node_pools" {
 }
 
 variable "node_pool_overrides" {
-  default = {}
+  description = "Param override for var.node_pools"
+  type        = map(map(map(string)))
+  default     = {}
 }
 
 variable "namespaces" {
