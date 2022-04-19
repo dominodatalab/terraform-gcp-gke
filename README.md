@@ -80,8 +80,8 @@ Please submit any feature enhancements, bug fixes, or ideas via pull requests or
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | 4.17.0 |
-| <a name="provider_google-beta"></a> [google-beta](#provider\_google-beta) | 4.17.0 |
+| <a name="provider_google"></a> [google](#provider\_google) | 4.18.0 |
+| <a name="provider_google-beta"></a> [google-beta](#provider\_google-beta) | 4.18.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | 3.1.2 |
 
 ## Modules
@@ -137,7 +137,7 @@ No modules.
 | <a name="input_master_authorized_networks_config"></a> [master\_authorized\_networks\_config](#input\_master\_authorized\_networks\_config) | Configuration options for master authorized networks. Default is for debugging only, and should be removed for production. | <pre>list(object({<br>    cidr_block   = string<br>    display_name = string<br>  }))</pre> | <pre>[<br>  {<br>    "cidr_block": "0.0.0.0/0",<br>    "display_name": "global-access"<br>  }<br>]</pre> | no |
 | <a name="input_master_firewall_ports"></a> [master\_firewall\_ports](#input\_master\_firewall\_ports) | Firewall ports to open from the master, e.g., webhooks | `list(string)` | `[]` | no |
 | <a name="input_namespaces"></a> [namespaces](#input\_namespaces) | Namespace that are used for generating the service account bindings | `object({ platform = string, compute = string })` | n/a | yes |
-| <a name="input_node_pool_overrides"></a> [node\_pool\_overrides](#input\_node\_pool\_overrides) | Param override for var.node\_pools | `map(map(map(string)))` | `{}` | no |
+| <a name="input_node_pool_overrides"></a> [node\_pool\_overrides](#input\_node\_pool\_overrides) | Param override for var.node\_pools | `any` | `{}` | no |
 | <a name="input_node_pools"></a> [node\_pools](#input\_node\_pools) | GKE node pool params | <pre>map(object({<br>    min_count       = number<br>    max_count       = number<br>    max_pods        = number<br>    initial_count   = number<br>    preemptible     = bool<br>    disk_size_gb    = number<br>    image_type      = string<br>    instance_type   = string<br>    gpu_accelerator = string<br>    labels          = map(string)<br>    taints          = list(string)<br>    node_locations  = list(string)<br>  }))</pre> | <pre>{<br>  "compute": {<br>    "disk_size_gb": 400,<br>    "gpu_accelerator": "",<br>    "image_type": "COS_CONTAINERD",<br>    "initial_count": 1,<br>    "instance_type": "n2-highmem-8",<br>    "labels": {<br>      "dominodatalab.com/node-pool": "default"<br>    },<br>    "max_count": 10,<br>    "max_pods": 30,<br>    "min_count": 0,<br>    "node_locations": [],<br>    "preemptible": false,<br>    "taints": []<br>  },<br>  "gpu": {<br>    "disk_size_gb": 400,<br>    "gpu_accelerator": "nvidia-tesla-p100",<br>    "image_type": "COS_CONTAINERD",<br>    "initial_count": 0,<br>    "instance_type": "n1-highmem-8",<br>    "labels": {<br>      "dominodatalab.com/node-pool": "default-gpu",<br>      "nvidia.com/gpu": "true"<br>    },<br>    "max_count": 2,<br>    "max_pods": 30,<br>    "min_count": 0,<br>    "node_locations": [],<br>    "preemptible": false,<br>    "taints": [<br>      "nvidia.com/gpu=true:NoExecute"<br>    ]<br>  },<br>  "platform": {<br>    "disk_size_gb": 100,<br>    "gpu_accelerator": "",<br>    "image_type": "COS_CONTAINERD",<br>    "initial_count": 1,<br>    "instance_type": "n2-standard-8",<br>    "labels": {<br>      "dominodatalab.com/node-pool": "platform"<br>    },<br>    "max_count": 3,<br>    "max_pods": 60,<br>    "min_count": 1,<br>    "node_locations": [],<br>    "preemptible": false,<br>    "taints": []<br>  }<br>}</pre> | no |
 | <a name="input_project"></a> [project](#input\_project) | GCP Project ID | `string` | `"domino-eng-platform-dev"` | no |
 | <a name="input_static_ip_enabled"></a> [static\_ip\_enabled](#input\_static\_ip\_enabled) | Provision a static ip for use with managed zones/ingress | `bool` | `false` | no |

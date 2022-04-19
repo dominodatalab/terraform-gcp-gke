@@ -186,7 +186,7 @@ variable "node_pools" {
 
 variable "node_pool_overrides" {
   description = "Param override for var.node_pools"
-  type        = map(map(map(string)))
+  type        = any
   default     = {}
 }
 
