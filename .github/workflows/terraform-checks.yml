@@ -54,7 +54,7 @@ jobs:
       - name: Run Checkov scan
         uses: pre-commit/action@v2.0.3
         with:
-          extra_args: checkov --all-files
+          extra_args: terraform_checkov --all-files
   tfsec:
     name: Run tfsec scan
     runs-on: ubuntu-latest
