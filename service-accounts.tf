@@ -41,5 +41,6 @@ resource "google_service_account_iam_binding" "gcr" {
   role               = "roles/iam.workloadIdentityUser"
   members = [
     "serviceAccount:${var.project}.svc.id.goog[${var.namespaces.compute}/forge]",
+    "serviceAccount:${var.project}.svc.id.goog[${var.namespaces.platform}/hephaestus]"
   ]
 }
