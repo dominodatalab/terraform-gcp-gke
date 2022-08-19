@@ -198,6 +198,7 @@ resource "google_container_cluster" "domino_cluster" {
   provisioner "local-exec" {
     environment = {
       KUBECONFIG = var.kubeconfig_output_path
+      USE_GKE_GCLOUD_AUTH_PLUGIN = "True"
     }
     command = <<-EOF
       if ! gcloud auth print-identity-token 2>/dev/null; then
