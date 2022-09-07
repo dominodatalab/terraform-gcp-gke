@@ -45,7 +45,7 @@ output "static_ip" {
 }
 
 output "uuid" {
-  value       = local.deployment_id
+  value       = var.deploy_id
   description = "Cluster UUID"
 }
 

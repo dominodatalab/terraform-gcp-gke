@@ -4,13 +4,20 @@ variable "project" {
   description = "GCP Project ID"
 }
 
-variable "cluster_name" {
+variable "deploy_id" {
   type        = string
-  description = "The Domino Cluster name and must be unique in the GCP Project."
+  description = "Domino Deployment ID."
+  nullable    = false
 
   validation {
-    condition     = can(regex("^[a-z-0-9]{3,32}$", var.cluster_name))
-    error_message = "Argument cluster_name must: start with a letter, contain lowercase alphanumeric characters(can contain hyphens[-]) with length between 3 and 32 characters."
+    condition     = length(var.deploy_id) >= 3 && length(var.deploy_id) <= 20 && can(regex("^([a-z][-a-z0-9]*[a-z0-9])$", var.deploy_id))
+    error_message = <<EOT
+      Variable deploy_id must:
+      1. Length must be between 3 and 20 characters.
+      2. Start with a letter.
+      3. End with a letter or digit.
+      4. May contain lowercase Alphanumeric characters and hyphens.
+    EOT
   }
 }
 

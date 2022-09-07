@@ -12,7 +12,7 @@ terraform {
 module "gke" {
   source = "./.."
 
-  cluster_name           = terraform.workspace
+  deploy_id              = terraform.workspace
   project                = "domino-eng-platform-dev"
   description            = var.description
   filestore_disabled     = var.filestore_disabled

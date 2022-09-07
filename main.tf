@@ -1,7 +1,5 @@
 locals {
   enable_private_endpoint = length(var.master_authorized_networks_config) == 0
-  # 'resource.name'  Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)'"."
-  deployment_id = "${var.cluster_name}-${random_string.id.result}"
 
   # Converts a cluster's location to a zone/region. A 'location' may be a region or zone: a region becomes the '[region]-a' zone.
   is_regional = length(split("-", var.location)) == 2
@@ -24,21 +22,15 @@ data "google_project" "domino" {
   project_id = var.project
 }
 
-resource "random_string" "id" {
-  length      = 16
-  special     = false
-  upper       = false
-  min_numeric = 8
-}
 resource "google_compute_global_address" "static_ip" {
   count       = var.static_ip_enabled ? 1 : 0
-  name        = local.deployment_id
+  name        = var.deploy_id
   description = "External static IPv4 address for var.description"
 }
 
 resource "google_dns_record_set" "a" {
   count        = var.google_dns_managed_zone.enabled ? 1 : 0
-  name         = "${var.cluster_name}.${var.google_dns_managed_zone.dns_name}"
+  name         = "${var.deploy_id}.${var.google_dns_managed_zone.dns_name}"
   managed_zone = var.google_dns_managed_zone.name
   type         = "A"
   ttl          = 300
@@ -48,7 +40,7 @@ resource "google_dns_record_set" "a" {
 
 resource "google_dns_record_set" "caa" {
   count        = var.google_dns_managed_zone.enabled ? 1 : 0
-  name         = "${var.cluster_name}.${var.google_dns_managed_zone.dns_name}"
+  name         = "${var.deploy_id}.${var.google_dns_managed_zone.dns_name}"
   managed_zone = var.google_dns_managed_zone.name
   type         = "CAA"
   ttl          = 300
@@ -57,7 +49,7 @@ resource "google_dns_record_set" "caa" {
 }
 
 resource "google_compute_network" "vpc_network" {
-  name        = local.deployment_id
+  name        = var.deploy_id
   description = var.description
 
   # This helps lowers our subnet quota utilization
@@ -65,20 +57,20 @@ resource "google_compute_network" "vpc_network" {
 }
 
 resource "google_compute_subnetwork" "default" {
-  name                     = local.deployment_id
+  name                     = var.deploy_id
   ip_cidr_range            = "10.138.0.0/20"
   network                  = google_compute_network.vpc_network.self_link
   private_ip_google_access = true
-  description              = "${var.cluster_name} default network"
+  description              = "${var.deploy_id} default network"
 }
 
 resource "google_compute_router" "router" {
-  name    = local.deployment_id
+  name    = var.deploy_id
   network = google_compute_network.vpc_network.self_link
 }
 
 resource "google_compute_router_nat" "nat" {
-  name                               = local.deployment_id
+  name                               = var.deploy_id
   router                             = google_compute_router.router.name
   region                             = local.region
   nat_ip_allocate_option             = "AUTO_ONLY"
@@ -86,7 +78,7 @@ resource "google_compute_router_nat" "nat" {
 }
 
 resource "google_storage_bucket" "bucket" {
-  name     = "dominodatalab-${var.cluster_name}"
+  name     = "dominodatalab-${var.deploy_id}"
   location = split("-", var.location)[0]
 
   versioning {
@@ -100,7 +92,7 @@ resource "google_filestore_instance" "nfs" {
   count    = var.filestore_disabled ? 0 : 1
   provider = google
 
-  name     = local.deployment_id
+  name     = var.deploy_id
   project  = var.project
   tier     = "STANDARD"
   location = local.zone
@@ -121,7 +113,7 @@ resource "google_container_cluster" "domino_cluster" {
   # https://github.com/hashicorp/terraform-provider-google/pull/10410
   provider = google-beta
 
-  name        = var.cluster_name
+  name        = var.deploy_id
   location    = var.location
   description = var.description
 
@@ -170,7 +162,7 @@ resource "google_container_cluster" "domino_cluster" {
   }
 
   resource_labels = {
-    "deployment_id" = local.deployment_id
+    "deploy_id" = var.deploy_id
   }
 
   # Application-layer Secrets Encryption
@@ -204,19 +196,19 @@ resource "google_container_cluster" "domino_cluster" {
       if ! gcloud auth print-identity-token 2>/dev/null; then
         printf "%s" "$GOOGLE_CREDENTIALS" | gcloud auth activate-service-account --project="${var.project}" --key-file=-
       fi
-      gcloud container clusters get-credentials ${var.cluster_name} ${local.is_regional ? "--region" : "--zone"} ${var.location}
+      gcloud container clusters get-credentials ${var.deploy_id} ${local.is_regional ? "--region" : "--zone"} ${var.location}
     EOF
   }
 
 }
 
 resource "google_kms_key_ring" "key_ring" {
-  name     = local.deployment_id
+  name     = var.deploy_id
   location = local.region
 }
 
 resource "google_kms_crypto_key" "crypto_key" {
-  name            = local.deployment_id
+  name            = var.deploy_id
   key_ring        = google_kms_key_ring.key_ring.id
   rotation_period = "86400s"
   purpose         = "ENCRYPT_DECRYPT"
@@ -294,7 +286,7 @@ resource "google_container_node_pool" "node_pools" {
 
 # https://cloud.google.com/iap/docs/using-tcp-forwarding
 resource "google_compute_firewall" "iap_tcp_forwarding" {
-  name    = "${local.deployment_id}-iap"
+  name    = "${var.deploy_id}-iap"
   network = google_compute_network.vpc_network.name
 
   allow {
@@ -309,7 +301,7 @@ resource "google_compute_firewall" "iap_tcp_forwarding" {
 # https://github.com/istio/istio/issues/19532
 # https://github.com/istio/istio/issues/21991
 resource "google_compute_firewall" "master_webhooks" {
-  name    = "gke-${var.cluster_name}-master-to-webhook"
+  name    = "gke-${var.deploy_id}-master-to-webhook"
   network = google_compute_network.vpc_network.name
 
   allow {
