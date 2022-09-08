@@ -70,18 +70,19 @@ jobs:
         uses: pre-commit/action@v3.0.0
         with:
           extra_args: terraform_tfsec --all-files
-  terrascan:
-    runs-on: ubuntu-latest
-    name: Run terrascan
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@master
-      - uses: actions/setup-python@v3
-      - name: Install terrascan
-        run: >-
-          curl -sL "$(curl -sL https://api.github.com/repos/accurics/terrascan/releases/latest | grep -o -E "https://.+?_Linux_x86_64.tar.gz")" > terrascan.tar.gz &&
-          tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz && install terrascan /usr/local/bin && rm terrascan
-      - name: Run Terrascan
-        uses: pre-commit/action@v3.0.0
-        with:
-          extra_args: terrascan --all-files
+  ## Merge back when terrascan updates upstream
+  # terrascan:
+  #   runs-on: ubuntu-latest
+  #   name: Run terrascan
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@master
+  #     - uses: actions/setup-python@v3
+  #     - name: Install terrascan
+  #       run: >-
+  #         curl -sL "$(curl -sL https://api.github.com/repos/accurics/terrascan/releases/latest | grep -o -E "https://.+?_Linux_x86_64.tar.gz")" > terrascan.tar.gz &&
+  #         tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz && install terrascan /usr/local/bin && rm terrascan
+  #     - name: Run Terrascan
+  #       uses: pre-commit/action@v3.0.0
+  #       with:
+  #         extra_args: terrascan --all-files
