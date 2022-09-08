@@ -70,7 +70,7 @@ jobs:
         uses: pre-commit/action@v3.0.0
         with:
           extra_args: terraform_tfsec --all-files
-  terrascan_job:
+  terrascan:
     runs-on: ubuntu-latest
     name: Run terrascan
     steps:
