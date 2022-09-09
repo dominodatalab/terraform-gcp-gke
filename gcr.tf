@@ -7,7 +7,7 @@ resource "google_artifact_registry_repository" "domino" {
   provider = google-beta
 
   location      = local.region
-  repository_id = "${var.cluster_name}-domino"
+  repository_id = "${var.deploy_id}-domino"
   format        = "DOCKER"
 }
 

@@ -5,8 +5,8 @@ locals {
 resource "google_service_account" "accounts" {
   for_each = local.service_accounts
 
-  account_id   = "${var.cluster_name}-${each.value}"
-  display_name = "${var.cluster_name}-${each.value}"
+  account_id   = "${var.deploy_id}-${each.value}"
+  display_name = "${var.deploy_id}-${each.value}"
 }
 
 

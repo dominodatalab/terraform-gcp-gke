@@ -7,7 +7,7 @@ repos:
       - id: no-commit-to-branch
       - id: check-case-conflict
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.68.0
+    rev: v1.75.0
     hooks:
       - id: terraform_docs
         args:
@@ -49,7 +49,9 @@ repos:
       - id: terraform_tfsec
         args:
           - '--args=--exclude google-compute-enable-vpc-flow-logs,google-compute-no-public-ingress,google-gke-metadata-endpoints-disabled,google-gke-no-public-control-plane,google-gke-node-metadata-security,google-gke-use-service-account,google-storage-enable-ubla,google-iam-no-project-level-service-account-impersonation,google-gke-use-cluster-labels'
-      - id: terrascan
-        args:
-          - '--args=--verbose'
-          - '--args=--skip-rules=AC_GCP_0016,AC_GCP_0234,AC_GCP_0006'
+      ## Merge back the terrascan id when the following error is merged:
+      ## Unsupported argument; An argument named "nullable" is not expected here.
+      # - id: terrascan ## Merge back when there is a new version upstream
+      #   args:
+      #     - '--args=--verbose'
+      #     - '--args=--skip-rules=AC_GCP_0016,AC_GCP_0234,AC_GCP_0006'

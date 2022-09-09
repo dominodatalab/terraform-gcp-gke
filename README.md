@@ -71,7 +71,7 @@ Please submit any feature enhancements, bug fixes, or ideas via pull requests or
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.2 |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >= 4.0, < 5.0 |
 | <a name="requirement_google-beta"></a> [google-beta](#requirement\_google-beta) | >= 4.0, < 5.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.1 |
@@ -82,7 +82,6 @@ Please submit any feature enhancements, bug fixes, or ideas via pull requests or
 |------|---------|
 | <a name="provider_google"></a> [google](#provider\_google) | 4.18.0 |
 | <a name="provider_google-beta"></a> [google-beta](#provider\_google-beta) | 4.18.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | 3.1.2 |
 
 ## Modules
 
@@ -114,7 +113,6 @@ No modules.
 | [google_service_account_iam_binding.gcr](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_binding) | resource |
 | [google_service_account_iam_binding.platform_gcs](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_binding) | resource |
 | [google_storage_bucket.bucket](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket) | resource |
-| [random_string.id](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 | [google_project.domino](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/project) | data source |
 
 ## Inputs
@@ -122,7 +120,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_allowed_ssh_ranges"></a> [allowed\_ssh\_ranges](#input\_allowed\_ssh\_ranges) | CIDR ranges allowed to SSH to nodes in the cluster. | `list(string)` | <pre>[<br>  "35.235.240.0/20"<br>]</pre> | no |
-| <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | The Domino Cluster name and must be unique in the GCP Project. | `string` | n/a | yes |
+| <a name="input_deploy_id"></a> [deploy\_id](#input\_deploy\_id) | Domino Deployment ID. | `string` | n/a | yes |
 | <a name="input_description"></a> [description](#input\_description) | GKE cluster description | `string` | `"The Domino K8s Cluster"` | no |
 | <a name="input_enable_network_policy"></a> [enable\_network\_policy](#input\_enable\_network\_policy) | Enable network policy switch | `bool` | `true` | no |
 | <a name="input_enable_pod_security_policy"></a> [enable\_pod\_security\_policy](#input\_enable\_pod\_security\_policy) | Enable pod security policy switch | `bool` | `true` | no |
