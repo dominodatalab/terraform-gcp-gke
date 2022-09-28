@@ -122,79 +122,84 @@ variable "master_authorized_networks_config" {
 
 variable "node_pools" {
   description = "GKE node pool params"
-  type = map(object({
-    min_count       = number
-    max_count       = number
-    max_pods        = number
-    initial_count   = number
-    preemptible     = bool
-    disk_size_gb    = number
-    image_type      = string
-    instance_type   = string
-    gpu_accelerator = string
-    labels          = map(string)
-    taints          = list(string)
-    node_locations  = list(string)
-  }))
+  type = object(
+    {
+      compute = object({
+        min_count       = optional(number, 0)
+        max_count       = optional(number, 10)
+        initial_count   = optional(number, 1)
+        max_pods        = optional(number, 30)
+        preemptible     = optional(bool, false)
+        disk_size_gb    = optional(number, 400)
+        image_type      = optional(string, "COS_CONTAINERD")
+        instance_type   = optional(string, "n2-highmem-8")
+        gpu_accelerator = optional(string, "")
+        labels = optional(map(string), {
+          "dominodatalab.com/node-pool" = "default"
+        })
+        taints         = optional(list(string), [])
+        node_locations = optional(list(string), [])
+      }),
+      platform = object({
+        min_count       = optional(number, 1)
+        max_count       = optional(number, 3)
+        initial_count   = optional(number, 1)
+        max_pods        = optional(number, 60)
+        preemptible     = optional(bool, false)
+        disk_size_gb    = optional(number, 100)
+        image_type      = optional(string, "COS_CONTAINERD")
+        instance_type   = optional(string, "n2-standard-8")
+        gpu_accelerator = optional(string, "")
+        labels = optional(map(string), {
+          "dominodatalab.com/node-pool" = "platform"
+        })
+        taints         = optional(list(string), [])
+        node_locations = optional(list(string), [])
+      }),
+      gpu = object({
+        min_count       = optional(number, 0)
+        max_count       = optional(number, 2)
+        initial_count   = optional(number, 0)
+        max_pods        = optional(number, 30)
+        preemptible     = optional(bool, false)
+        disk_size_gb    = optional(number, 400)
+        image_type      = optional(string, "COS_CONTAINERD")
+        instance_type   = optional(string, "n1-highmem-8")
+        gpu_accelerator = optional(string, "nvidia-tesla-p100")
+        labels = optional(map(string), {
+          "dominodatalab.com/node-pool" = "default-gpu"
+          "nvidia.com/gpu"              = "true"
+        })
+        taints = optional(list(string), [
+          "nvidia.com/gpu=true:NoExecute"
+        ])
+        node_locations = optional(list(string), [])
+      })
+  })
   default = {
-    compute = {
-      min_count       = 0
-      max_count       = 10
-      initial_count   = 1
-      max_pods        = 30
-      preemptible     = false
-      image_type      = "COS_CONTAINERD"
-      disk_size_gb    = 400
-      instance_type   = "n2-highmem-8"
-      gpu_accelerator = ""
-      labels = {
-        "dominodatalab.com/node-pool" = "default"
-      }
-      taints         = []
-      node_locations = []
-    }
-    gpu = {
-      min_count       = 0
-      max_count       = 2
-      initial_count   = 0
-      max_pods        = 30
-      preemptible     = false
-      image_type      = "COS_CONTAINERD"
-      disk_size_gb    = 400
-      instance_type   = "n1-highmem-8"
-      gpu_accelerator = "nvidia-tesla-p100"
-      labels = {
-        "dominodatalab.com/node-pool" = "default-gpu"
-        "nvidia.com/gpu"              = "true"
-      }
-      taints = [
-        "nvidia.com/gpu=true:NoExecute"
-      ]
-      node_locations = []
-    }
-    platform = {
-      min_count       = 1
-      max_count       = 3
-      initial_count   = 1
-      max_pods        = 60
-      preemptible     = false
-      image_type      = "COS_CONTAINERD"
-      disk_size_gb    = 100
-      instance_type   = "n2-standard-8"
-      gpu_accelerator = ""
-      labels = {
-        "dominodatalab.com/node-pool" = "platform"
-      }
-      taints         = []
-      node_locations = []
-    }
+    compute  = {}
+    platform = {}
+    gpu      = {}
   }
 }
 
-variable "node_pool_overrides" {
-  description = "Param override for var.node_pools"
-  type        = any
-  default     = {}
+variable "additional_node_pools" {
+  description = "additional node pool definitions"
+  type = map(object({
+    min_count       = optional(number, 0)
+    max_count       = optional(number, 10)
+    initial_count   = optional(number, 1)
+    max_pods        = optional(number, 30)
+    preemptible     = optional(bool, false)
+    disk_size_gb    = optional(number, 400)
+    image_type      = optional(string, "COS_CONTAINERD")
+    instance_type   = optional(string, "n2-standard-8")
+    gpu_accelerator = optional(string, "")
+    labels          = optional(map(string), {})
+    taints          = optional(list(string), [])
+    node_locations  = optional(list(string), [])
+  }))
+  default = {}
 }
 
 variable "namespaces" {

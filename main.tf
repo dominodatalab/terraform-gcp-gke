@@ -6,10 +6,7 @@ locals {
   region      = local.is_regional ? var.location : substr(var.location, 0, length(var.location) - 2)
   zone        = local.is_regional ? format("%s-a", var.location) : var.location
 
-  node_pools = {
-    for node_pool, attrs in var.node_pools :
-    node_pool => merge(attrs, lookup(var.node_pool_overrides, node_pool, null))
-  }
+  node_pools    = merge(var.node_pools, var.additional_node_pools)
   taint_effects = { "NoSchedule" : "NO_SCHEDULE", "PreferNoSchedule" : "PREFER_NO_SCHEDULE", "NoExecute" : "NO_EXECUTE" }
 }
 
