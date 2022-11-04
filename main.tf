@@ -106,10 +106,6 @@ resource "google_filestore_instance" "nfs" {
 }
 
 resource "google_container_cluster" "domino_cluster" {
-  # Pining google-beta provider for support of the pod_security_policy_config block, since it has been removed from the GA provider.
-  # https://github.com/hashicorp/terraform-provider-google/pull/10410
-  provider = google-beta
-
   name        = var.deploy_id
   location    = var.location
   description = var.description
@@ -175,13 +171,6 @@ resource "google_container_cluster" "domino_cluster" {
   network_policy {
     provider = "CALICO"
     enabled  = var.enable_network_policy
-  }
-
-  # Removed from the google provider v4.0 # https://github.com/hashicorp/terraform-provider-google/pull/10410.
-  # Pining provider to google-beta to support the pod_security_policy_config block.
-  # This option does not seem to have the desired effect on the GKE configuration #TODO
-  pod_security_policy_config {
-    enabled = var.enable_pod_security_policy
   }
 
   provisioner "local-exec" {
