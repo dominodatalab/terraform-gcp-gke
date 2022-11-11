@@ -70,12 +70,6 @@ variable "google_dns_managed_zone" {
   description = "Cloud DNS zone"
 }
 
-variable "enable_pod_security_policy" {
-  description = "Enable pod security policy switch"
-  type        = bool
-  default     = true
-}
-
 variable "enable_network_policy" {
   description = "Enable network policy switch"
   type        = bool

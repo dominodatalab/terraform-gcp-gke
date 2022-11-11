@@ -1,19 +1,10 @@
-provider "google-beta" {
-  project = var.project
-  region  = local.region
-}
-
 resource "google_artifact_registry_repository" "domino" {
-  provider = google-beta
-
   location      = local.region
   repository_id = "${var.deploy_id}-domino"
   format        = "DOCKER"
 }
 
 resource "google_artifact_registry_repository_iam_member" "gcr" {
-  provider = google-beta
-
   repository = google_artifact_registry_repository.domino.name
   location   = google_artifact_registry_repository.domino.location
 
