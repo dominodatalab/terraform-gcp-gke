@@ -136,7 +136,7 @@ variable "node_pools" {
       }),
       platform = object({
         min_count       = optional(number, 1)
-        max_count       = optional(number, 3)
+        max_count       = optional(number, 5)
         initial_count   = optional(number, 1)
         max_pods        = optional(number, 60)
         preemptible     = optional(bool, false)
