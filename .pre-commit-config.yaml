@@ -7,16 +7,16 @@ repos:
       - id: no-commit-to-branch
       - id: check-case-conflict
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.75.0
+    rev: v1.77.0
     hooks:
       - id: terraform_docs
         args:
+          - '--args=--lockfile=false'
           - '--hook-config=--path-to-file=README.md'
           - '--hook-config=--add-to-existing-file=true'
           - '--hook-config=--create-file-if-not-exist=true'
           - '--hook-config=--recursive.enabled=true'
           - '--hook-config=--recursive.path=submodules'
-          - '--hook-config=--lockfile=false'
       - id: terraform_fmt
       - id: terraform_tflint
         args:

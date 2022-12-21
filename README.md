@@ -79,7 +79,7 @@ Please submit any feature enhancements, bug fixes, or ideas via pull requests or
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | 4.38.0 |
+| <a name="provider_google"></a> [google](#provider\_google) | >= 4.0, < 5.0 |
 
 ## Modules
 
