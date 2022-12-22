@@ -206,3 +206,9 @@ variable "kubernetes_version" {
   description = "Desired Kubernetes version of the cluster"
   default     = ""
 }
+
+variable "database_encryption_key_name" {
+  type        = string
+  description = "Use an existing KMS key for the Application-layer Secrets Encryption settings. (Optional)"
+  default     = null
+}

@@ -105,6 +105,20 @@ resource "google_filestore_instance" "nfs" {
   }
 }
 
+resource "google_kms_key_ring" "key_ring" {
+  count    = var.database_encryption_key_name == null ? 1 : 0
+  name     = var.deploy_id
+  location = local.region
+}
+
+resource "google_kms_crypto_key" "crypto_key" {
+  count           = var.database_encryption_key_name == null ? 1 : 0
+  name            = var.deploy_id
+  key_ring        = google_kms_key_ring.key_ring[0].id
+  rotation_period = "86400s"
+  purpose         = "ENCRYPT_DECRYPT"
+}
+
 resource "google_container_cluster" "domino_cluster" {
   name        = var.deploy_id
   location    = var.location
@@ -161,7 +175,7 @@ resource "google_container_cluster" "domino_cluster" {
   # Application-layer Secrets Encryption
   database_encryption {
     state    = "ENCRYPTED"
-    key_name = google_kms_crypto_key.crypto_key.id
+    key_name = var.database_encryption_key_name == null ? google_kms_crypto_key.crypto_key[0].id : var.database_encryption_key_name
   }
 
   workload_identity_config {
@@ -186,18 +200,6 @@ resource "google_container_cluster" "domino_cluster" {
     EOF
   }
 
-}
-
-resource "google_kms_key_ring" "key_ring" {
-  name     = var.deploy_id
-  location = local.region
-}
-
-resource "google_kms_crypto_key" "crypto_key" {
-  name            = var.deploy_id
-  key_ring        = google_kms_key_ring.key_ring.id
-  rotation_period = "86400s"
-  purpose         = "ENCRYPT_DECRYPT"
 }
 
 resource "google_container_node_pool" "node_pools" {
