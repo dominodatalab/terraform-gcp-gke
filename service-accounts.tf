@@ -19,7 +19,7 @@ resource "google_project_iam_member" "service_account" {
 }
 
 resource "google_project_iam_member" "platform_roles" {
-  for_each = toset(["roles/storage.objectAdmin", "roles/logging.logWriter", "roles/monitoring.metricWriter"])
+  for_each = toset(["roles/logging.logWriter", "roles/monitoring.metricWriter"])
   project  = var.project
   role     = each.value
   member   = "serviceAccount:${google_service_account.accounts["platform"].email}"

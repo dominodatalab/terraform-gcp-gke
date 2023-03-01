@@ -76,13 +76,28 @@ resource "google_compute_router_nat" "nat" {
 
 resource "google_storage_bucket" "bucket" {
   name     = "dominodatalab-${var.deploy_id}"
-  location = split("-", var.location)[0]
+  location = local.region
+
+  uniform_bucket_level_access = true
+  public_access_prevention    = "enforced"
+
+  encryption {
+    default_kms_key_name = var.database_encryption_key_name == null ? google_kms_crypto_key.crypto_key[0].id : var.database_encryption_key_name
+  }
 
   versioning {
     enabled = true
   }
 
   force_destroy = true
+}
+
+resource "google_storage_bucket_iam_binding" "bucket" {
+  bucket = google_storage_bucket.bucket.name
+  role   = "roles/storage.admin"
+  members = [
+    "serviceAccount:${google_service_account.accounts["platform"].email}"
+  ]
 }
 
 resource "google_filestore_instance" "nfs" {
