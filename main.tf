@@ -8,6 +8,8 @@ locals {
 
   node_pools    = merge(var.node_pools, var.additional_node_pools)
   taint_effects = { "NoSchedule" : "NO_SCHEDULE", "PreferNoSchedule" : "PREFER_NO_SCHEDULE", "NoExecute" : "NO_EXECUTE" }
+
+  crypto_key_id = var.database_encryption_key_name == null ? google_kms_crypto_key.crypto_key[0].id : var.database_encryption_key_name
 }
 
 provider "google" {
@@ -74,6 +76,17 @@ resource "google_compute_router_nat" "nat" {
   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
 }
 
+data "google_storage_project_service_account" "gcs_account" {
+}
+
+resource "google_kms_crypto_key_iam_binding" "binding" {
+  count         = var.database_encryption_key_name == null ? 1 : 0
+  crypto_key_id = google_kms_crypto_key.crypto_key[0].id
+  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+
+  members = ["serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}"]
+}
+
 resource "google_storage_bucket" "bucket" {
   name     = "dominodatalab-${var.deploy_id}"
   location = local.region
@@ -82,7 +95,7 @@ resource "google_storage_bucket" "bucket" {
   public_access_prevention    = "enforced"
 
   encryption {
-    default_kms_key_name = var.database_encryption_key_name == null ? google_kms_crypto_key.crypto_key[0].id : var.database_encryption_key_name
+    default_kms_key_name = local.crypto_key_id
   }
 
   versioning {
@@ -90,6 +103,8 @@ resource "google_storage_bucket" "bucket" {
   }
 
   force_destroy = true
+
+  depends_on = [google_kms_crypto_key_iam_binding.binding]
 }
 
 resource "google_storage_bucket_iam_binding" "bucket" {
@@ -190,7 +205,7 @@ resource "google_container_cluster" "domino_cluster" {
   # Application-layer Secrets Encryption
   database_encryption {
     state    = "ENCRYPTED"
-    key_name = var.database_encryption_key_name == null ? google_kms_crypto_key.crypto_key[0].id : var.database_encryption_key_name
+    key_name = local.crypto_key_id
   }
 
   workload_identity_config {
