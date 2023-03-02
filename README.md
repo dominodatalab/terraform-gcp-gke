@@ -73,14 +73,14 @@ Please submit any feature enhancements, bug fixes, or ideas via pull requests or
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >= 4.0, < 5.0 |
-| <a name="requirement_time"></a> [time](#requirement\_time) | 0.9.1 |
+| <a name="requirement_google-beta"></a> [google-beta](#requirement\_google-beta) | >= 4.0, < 5.0 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_google"></a> [google](#provider\_google) | >= 4.0, < 5.0 |
-| <a name="provider_time"></a> [time](#provider\_time) | 0.9.1 |
 
 ## Modules
 
@@ -112,7 +112,6 @@ No modules.
 | [google_service_account_iam_binding.gcr](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_binding) | resource |
 | [google_service_account_iam_binding.platform_gcs](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_binding) | resource |
 | [google_storage_bucket.bucket](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket) | resource |
-| [time_static.creation](https://registry.terraform.io/providers/hashicorp/time/0.9.1/docs/resources/static) | resource |
 | [google_project.domino](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/project) | data source |
 
 ## Inputs
