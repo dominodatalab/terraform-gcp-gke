@@ -105,21 +105,15 @@ resource "google_filestore_instance" "nfs" {
   }
 }
 
-resource "time_static" "creation" {}
-
-locals {
-  unique_deploy_id = "${var.deploy_id}-${formatdate("YYYYMMDDhhmmss", resource.time_static.creation.rfc3339)}"
-}
-
 resource "google_kms_key_ring" "key_ring" {
   count    = var.database_encryption_key_name == null ? 1 : 0
-  name     = local.unique_deploy_id
+  name     = var.deploy_id
   location = local.region
 }
 
 resource "google_kms_crypto_key" "crypto_key" {
   count           = var.database_encryption_key_name == null ? 1 : 0
-  name            = local.unique_deploy_id
+  name            = var.deploy_id
   key_ring        = google_kms_key_ring.key_ring[0].id
   rotation_period = "86400s"
   purpose         = "ENCRYPT_DECRYPT"
