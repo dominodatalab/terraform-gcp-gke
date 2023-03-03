@@ -1,5 +1,10 @@
 version: 2.1
 
+parameters:
+  terraform_version:
+    default: "1.3.7"
+    type: string
+
 orbs:
   terraform: circleci/terraform@3.2.0
 
@@ -7,6 +12,63 @@ environment: &default_environment
   CLOUDSDK_CORE_PROJECT: domino-eng-platform-dev
   CLOUDSDK_COMPUTE_ZONE: us-west1-a
   GOOGLE_APPLICATION_CREDENTIALS: /root/.config/gcloud/legacy_credentials/terraform-gke-test@domino-eng-platform-dev.iam.gserviceaccount.com/adc.json
+  WORKSPACE: << parameters.workspace >>
+
+commands:
+  set_env_vars:
+    steps:
+      - run:
+          name: Configure test cluster env
+          command: |
+            echo export TF_VAR_deploy_id=\"${WORKSPACE}\" >> $BASH_ENV
+            echo 'export TF_VAR_description="CircleCI Build for ${CIRCLE_PR_REPONAME}: ${CIRCLE_BUILD_URL}"' >> $BASH_ENV
+            echo 'export TF_VAR_filestore_disabled="true"' >> $BASH_ENV
+            echo 'export GOOGLE_CREDENTIALS="$CLOUDSDK_SERVICE_KEY"' >> $BASH_ENV
+            echo 'export WORKSPACE=gcp-gke-circleci-${CIRCLE_BUILD_NUM}' >> $BASH_ENV
+  install_prereqs:
+    steps:
+      - run:
+          name: install pre-reqs
+          command: |
+            apt-get install -y wget zip
+  install_tf:
+    parameters:
+      terraform_version:
+        type: string
+        default: << pipeline.parameters.terraform_version >>
+    steps:
+      - terraform/install:
+          terraform_version: << parameters.terraform_version >>
+  tf_init_apply:
+    steps:
+      - run:
+          name: Terraform init/validate/apply
+          working_directory: tests
+          command: |
+            echo "Current dir: $(pwd)"
+            terraform init
+            terraform validate
+            terraform workspace new ${WORKSPACE}
+            terraform apply -auto-approve
+  tf_destroy:
+    steps:
+      - run:
+          name: Terraform destroy
+          working_directory: tests
+          command: |
+            echo "Current dir: $(pwd)"
+            terraform destroy --auto-approve || terraform destroy --auto-approve --refresh=false
+          when: always
+  tf_ws_delete:
+    steps:
+      - run:
+          name: Terraform workspace delete
+          working_directory: tests
+          command: |
+            echo "Current dir: $(pwd)"
+            terraform workspace select default
+            terraform workspace delete ${WORKSPACE}
+          when: always
 
 jobs:
   pre-commit:
@@ -15,13 +77,14 @@ jobs:
     parameters:
       terraform_version:
         type: string
+      workspace:
+        type: string
+        default: ci-<< pipeline.number >>
     environment: *default_environment
 
     steps:
       - checkout
-
-      - terraform/install:
-          terraform_version: <<parameters.terraform_version>>
+      - install_tf
       - run:
           name: pre-commit
           command: |
@@ -31,69 +94,80 @@ jobs:
             pip3 install checkov pre-commit
             SKIP=no-commit-to-branch pre-commit run --all-files
 
-  test:
+  test-deploy:
     docker:
       - image: google/cloud-sdk
     parameters:
       terraform_version:
         type: string
+      workspace:
+        type: string
+        default: ci-<< pipeline.number >>
     environment: *default_environment
-
     steps:
       - checkout
-
+      - install_prereqs
+      - install_tf
+      - set_env_vars
+      - tf_init_apply
       - run:
-          name: install pre-reqs
+          name: Check drift
+          working_directory: tests
           command: |
-            apt-get install -y wget zip
-
-      - terraform/install:
-          terraform_version: <<parameters.terraform_version>>
-
-      - run:
-          name: Configure test cluster env
-          command: |
-            echo 'export TF_VAR_description="CircleCI Build for ${CIRCLE_PR_REPONAME}: ${CIRCLE_BUILD_URL}"' >> $BASH_ENV
-            echo 'export TF_VAR_filestore_disabled="true"' >> $BASH_ENV
-            echo 'export GOOGLE_CREDENTIALS="$CLOUDSDK_SERVICE_KEY"' >> $BASH_ENV
-            echo 'export WORKSPACE=gcp-gke-circleci-${CIRCLE_BUILD_NUM}' >> $BASH_ENV
-
-      - run:
-          name: Test Terraform
-          command: |
-            cd tests
-            terraform init
-            terraform validate
-            terraform workspace new ${WORKSPACE}
-            terraform apply -auto-approve
             terraform plan -detailed-exitcode
+      - tf_destroy
+      - tf_ws_delete
 
+  test-upgrade:
+    docker:
+      - image: google/cloud-sdk
+    parameters:
+      workspace:
+        type: string
+        default: ci-<< pipeline.number >>-update
+      terraform_version:
+        type: string
+    environment: *default_environment
+    steps:
+      - checkout
+      - install_prereqs
+      - install_tf
+      - set_env_vars
       - run:
-          name: Terraform destroy
+          name: "Set module source to latest published release"
+          working_directory: tests
           command: |
-            cd tests
-            terraform destroy -auto-approve || (sleep 5m && terraform destroy -auto-approve)
-          when: always
-
+            # v2.2.2 is retracted
+            latest_tag="$(git tag | grep -v 2.2.2$ | tail -1)"
+            export MOD_SOURCE="github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git?ref=${latest_tag}"
+            echo "Latest published release tag is: ${latest_tag}"
+            echo "Setting module source to: ${MOD_SOURCE}"
+            sed -i -e "s|\(\"source\":\).*|\1 \"$MOD_SOURCE\",|" modules.tf.json
+      - tf_init_apply
       - run:
-          name: Terraform workspace delete
+          name: "Upgrade module by applying this commit"
+          working_directory: tests
           command: |
-            cd tests
-            terraform workspace select default
-            terraform workspace delete ${WORKSPACE}
-          when: always
-
-parameters:
-  terraform_version:
-    default: "1.3.6"
-    type: string
+            echo "Testing terraform module upgrade"
+            export MOD_SOURCE="./.."
+            echo "Setting module source to local ref: ${MOD_SOURCE}"
+            sed -i -e "s|\(\"source\":\).*|\1 \"$MOD_SOURCE\",|" modules.tf.json
+            terraform init --reconfigure --upgrade
+            terraform validate
+            terraform apply --auto-approve
+      - tf_destroy
+      - tf_ws_delete
 
 workflows:
-  build:
+  test-deploy-workflow:
     jobs:
       - pre-commit:
           terraform_version: << pipeline.parameters.terraform_version >>
-      - test:
+      - test-deploy:
+          terraform_version: << pipeline.parameters.terraform_version >>
+          requires:
+            - pre-commit
+      - test-upgrade:
           terraform_version: << pipeline.parameters.terraform_version >>
           requires:
             - pre-commit

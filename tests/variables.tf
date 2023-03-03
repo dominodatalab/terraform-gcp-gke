@@ -1,3 +1,8 @@
+variable "deploy_id" {
+  description = "deploy id"
+  type        = string
+}
+
 variable "description" {
   description = "GKE cluster description"
   type        = string

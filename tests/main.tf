@@ -7,15 +7,3 @@ terraform {
     prefix = "terraform/state"
   }
 }
-
-
-module "gke" {
-  source = "./.."
-
-  deploy_id              = terraform.workspace
-  project                = "domino-eng-platform-dev"
-  description            = var.description
-  filestore_disabled     = var.filestore_disabled
-  namespaces             = { platform = "domino-platform", compute = "domino-compute" }
-  kubeconfig_output_path = "${path.cwd}/kubeconfig"
-}
