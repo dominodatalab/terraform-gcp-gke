@@ -130,6 +130,7 @@ No modules.
 | <a name="input_enable_vertical_pod_autoscaling"></a> [enable\_vertical\_pod\_autoscaling](#input\_enable\_vertical\_pod\_autoscaling) | Enable GKE vertical scaling | `bool` | `true` | no |
 | <a name="input_filestore_capacity_gb"></a> [filestore\_capacity\_gb](#input\_filestore\_capacity\_gb) | Filestore Instance size (GB) for the cluster nfs shared storage | `number` | `1024` | no |
 | <a name="input_filestore_disabled"></a> [filestore\_disabled](#input\_filestore\_disabled) | Do not provision a Filestore instance (mostly to avoid GCP Filestore API issues) | `bool` | `false` | no |
+| <a name="input_gcs_force_destroy"></a> [gcs\_force\_destroy](#input\_gcs\_force\_destroy) | When deleting a bucket, all contained objects are deleted. | `bool` | `false` | no |
 | <a name="input_gke_release_channel"></a> [gke\_release\_channel](#input\_gke\_release\_channel) | GKE K8s release channel for master | `string` | `"STABLE"` | no |
 | <a name="input_google_dns_managed_zone"></a> [google\_dns\_managed\_zone](#input\_google\_dns\_managed\_zone) | Cloud DNS zone | <pre>object({<br>    enabled  = bool<br>    name     = string<br>    dns_name = string<br>  })</pre> | <pre>{<br>  "dns_name": "",<br>  "enabled": false,<br>  "name": ""<br>}</pre> | no |
 | <a name="input_kubeconfig_output_path"></a> [kubeconfig\_output\_path](#input\_kubeconfig\_output\_path) | Specify where the cluster kubeconfig file should be generated. | `string` | n/a | yes |

@@ -212,3 +212,9 @@ variable "database_encryption_key_name" {
   description = "Use an existing KMS key for the Application-layer Secrets Encryption settings. (Optional)"
   default     = null
 }
+
+variable "gcs_force_destroy" {
+  type        = bool
+  description = "When deleting a bucket, all contained objects are deleted."
+  default     = false
+}

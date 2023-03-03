@@ -102,7 +102,7 @@ resource "google_storage_bucket" "bucket" {
     enabled = true
   }
 
-  force_destroy = true
+  force_destroy = var.gcs_force_destroy
 
   depends_on = [google_kms_crypto_key_iam_binding.binding]
 }
