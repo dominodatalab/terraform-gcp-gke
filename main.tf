@@ -280,8 +280,7 @@ resource "google_container_node_pool" "node_pools" {
       }
     }
 
-    disk_size_gb    = each.value.disk_size_gb
-    local_ssd_count = 1
+    disk_size_gb = each.value.disk_size_gb
 
     metadata = {
       "disable-legacy-endpoints" = true
