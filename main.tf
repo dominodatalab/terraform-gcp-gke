@@ -10,6 +10,9 @@ locals {
   taint_effects = { "NoSchedule" : "NO_SCHEDULE", "PreferNoSchedule" : "PREFER_NO_SCHEDULE", "NoExecute" : "NO_EXECUTE" }
 
   crypto_key_id = var.database_encryption_key_name == null ? google_kms_crypto_key.crypto_key[0].id : var.database_encryption_key_name
+
+  #  webhooks: prometheus-adapter, hephaestus, istio
+  required_webhooks = ["6443", "9443", "15017"]
 }
 
 provider "google" {
@@ -315,15 +318,13 @@ resource "google_compute_firewall" "iap_tcp_forwarding" {
   target_tags   = ["iap-tcp-forwarding-allowed"]
 }
 
-# https://github.com/istio/istio/issues/19532
-# https://github.com/istio/istio/issues/21991
 resource "google_compute_firewall" "master_webhooks" {
   name    = "gke-${var.deploy_id}-master-to-webhook"
   network = google_compute_network.vpc_network.name
 
   allow {
     protocol = "tcp"
-    ports    = var.master_firewall_ports
+    ports    = distinct(concat(local.required_webhooks, var.master_firewall_ports))
   }
 
   source_ranges = [google_container_cluster.domino_cluster.private_cluster_config[0].master_ipv4_cidr_block]
