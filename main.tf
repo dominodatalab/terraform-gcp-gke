@@ -328,5 +328,4 @@ resource "google_compute_firewall" "master_webhooks" {
   }
 
   source_ranges = [google_container_cluster.domino_cluster.private_cluster_config[0].master_ipv4_cidr_block]
-  target_tags   = ["domino-platform-node"]
 }
