@@ -232,7 +232,6 @@ resource "google_container_cluster" "domino_cluster" {
       gcloud container clusters get-credentials ${var.deploy_id} ${local.is_regional ? "--region" : "--zone"} ${var.location}
     EOF
   }
-
 }
 
 resource "google_container_node_pool" "node_pools" {
@@ -259,6 +258,11 @@ resource "google_container_node_pool" "node_pools" {
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
+
+    # Google Container Filesystem - required to enable Image Streaming
+    gcfs_config {
+      enabled = true
+    }
 
     dynamic "guest_accelerator" {
       for_each = compact([each.value.gpu_accelerator])
