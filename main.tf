@@ -18,6 +18,10 @@ locals {
 provider "google" {
   project = var.project
   region  = local.region
+  batching {
+    enable_batching = true
+    send_after      = "15s"
+  }
 }
 
 data "google_project" "domino" {
