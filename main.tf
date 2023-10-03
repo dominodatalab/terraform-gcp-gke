@@ -11,8 +11,8 @@ locals {
 
   crypto_key_id = var.database_encryption_key_name == null ? google_kms_crypto_key.crypto_key[0].id : var.database_encryption_key_name
 
-  #  webhooks: prometheus-adapter, hephaestus, istio
-  required_webhooks = ["6443", "9443", "15017"]
+  #  webhooks: prometheus-adapter, hephaestus, workload-service, istio
+  required_webhooks = ["6443", "9443", "8080", "15017"]
 }
 
 provider "google" {
