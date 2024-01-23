@@ -16,8 +16,9 @@ locals {
 }
 
 provider "google" {
-  project = var.project
-  region  = local.region
+  project        = var.project
+  region         = local.region
+  default_labels = var.tags
 }
 
 data "google_project" "domino" {

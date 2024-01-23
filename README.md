@@ -72,15 +72,15 @@ Please submit any feature enhancements, bug fixes, or ideas via pull requests or
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
-| <a name="requirement_google"></a> [google](#requirement\_google) | >= 4.0, < 5.0 |
-| <a name="requirement_google-beta"></a> [google-beta](#requirement\_google-beta) | >= 4.0, < 5.0 |
+| <a name="requirement_google"></a> [google](#requirement\_google) | >= 5.0, < 6.0 |
+| <a name="requirement_google-beta"></a> [google-beta](#requirement\_google-beta) | >= 5.0, < 6.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | >= 4.0, < 5.0 |
+| <a name="provider_google"></a> [google](#provider\_google) | >= 5.0, < 6.0 |
 
 ## Modules
 
@@ -142,6 +142,7 @@ No modules.
 | <a name="input_node_pools"></a> [node\_pools](#input\_node\_pools) | GKE node pool params | <pre>object(<br>    {<br>      compute = object({<br>        min_count       = optional(number, 0)<br>        max_count       = optional(number, 10)<br>        initial_count   = optional(number, 1)<br>        max_pods        = optional(number, 30)<br>        preemptible     = optional(bool, false)<br>        disk_size_gb    = optional(number, 400)<br>        image_type      = optional(string, "COS_CONTAINERD")<br>        instance_type   = optional(string, "n2-highmem-8")<br>        gpu_accelerator = optional(string, "")<br>        labels = optional(map(string), {<br>          "dominodatalab.com/node-pool" = "default"<br>        })<br>        taints         = optional(list(string), [])<br>        node_locations = optional(list(string), [])<br>      }),<br>      platform = object({<br>        min_count       = optional(number, 1)<br>        max_count       = optional(number, 5)<br>        initial_count   = optional(number, 1)<br>        max_pods        = optional(number, 60)<br>        preemptible     = optional(bool, false)<br>        disk_size_gb    = optional(number, 100)<br>        image_type      = optional(string, "COS_CONTAINERD")<br>        instance_type   = optional(string, "n2-standard-8")<br>        gpu_accelerator = optional(string, "")<br>        labels = optional(map(string), {<br>          "dominodatalab.com/node-pool" = "platform"<br>        })<br>        taints         = optional(list(string), [])<br>        node_locations = optional(list(string), [])<br>      }),<br>      gpu = object({<br>        min_count       = optional(number, 0)<br>        max_count       = optional(number, 2)<br>        initial_count   = optional(number, 0)<br>        max_pods        = optional(number, 30)<br>        preemptible     = optional(bool, false)<br>        disk_size_gb    = optional(number, 400)<br>        image_type      = optional(string, "COS_CONTAINERD")<br>        instance_type   = optional(string, "n1-highmem-8")<br>        gpu_accelerator = optional(string, "nvidia-tesla-p100")<br>        labels = optional(map(string), {<br>          "dominodatalab.com/node-pool" = "default-gpu"<br>          "nvidia.com/gpu"              = "true"<br>        })<br>        taints = optional(list(string), [<br>          "nvidia.com/gpu=true:NoExecute"<br>        ])<br>        node_locations = optional(list(string), [])<br>      })<br>  })</pre> | <pre>{<br>  "compute": {},<br>  "gpu": {},<br>  "platform": {}<br>}</pre> | no |
 | <a name="input_project"></a> [project](#input\_project) | GCP Project ID | `string` | `"domino-eng-platform-dev"` | no |
 | <a name="input_static_ip_enabled"></a> [static\_ip\_enabled](#input\_static\_ip\_enabled) | Provision a static ip for use with managed zones/ingress | `bool` | `false` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Deployment tags. | `map(string)` | `{}` | no |
 
 ## Outputs
 
