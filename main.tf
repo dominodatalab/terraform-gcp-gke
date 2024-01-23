@@ -171,6 +171,8 @@ resource "google_container_cluster" "domino_cluster" {
   # node pool and immediately delete it.
   remove_default_node_pool = true
 
+  deletion_protection = false
+
   # Workaround for https://github.com/terraform-providers/terraform-provider-google/issues/3385
   # sum function introduced in 0.13
   initial_node_count = local.node_pools.platform.initial_count + local.node_pools.compute.initial_count + local.node_pools.gpu.initial_count
