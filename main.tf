@@ -40,6 +40,16 @@ resource "google_dns_record_set" "a" {
   rrdatas = [google_compute_global_address.static_ip[0].address]
 }
 
+resource "google_dns_record_set" "a_apps" {
+  count        = var.google_dns_managed_zone.enabled ? 1 : 0
+  name         = "apps-${var.deploy_id}.${var.google_dns_managed_zone.dns_name}"
+  managed_zone = var.google_dns_managed_zone.name
+  type         = "A"
+  ttl          = 300
+
+  rrdatas = [google_compute_global_address.static_ip[0].address]
+}
+
 resource "google_dns_record_set" "caa" {
   count        = var.google_dns_managed_zone.enabled ? 1 : 0
   name         = "${var.deploy_id}.${var.google_dns_managed_zone.dns_name}"
