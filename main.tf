@@ -232,7 +232,7 @@ resource "google_container_cluster" "domino_cluster" {
       if ! gcloud auth print-identity-token 2>/dev/null; then
         printf "%s" "$GOOGLE_CREDENTIALS" | gcloud auth activate-service-account --project="${var.project}" --key-file=-
       fi
-      gcloud container clusters get-credentials ${var.deploy_id} ${local.is_regional ? "--region" : "--zone"} ${var.location}
+      gcloud container clusters get-credentials ${var.deploy_id} --project="${var.project}" ${local.is_regional ? "--region" : "--zone"} ${var.location}
     EOF
   }
 }
