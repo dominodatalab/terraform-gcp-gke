@@ -16,8 +16,9 @@ locals {
 }
 
 provider "google" {
-  project = var.project
-  region  = local.region
+  project        = var.project
+  region         = local.region
+  default_labels = var.tags
 }
 
 data "google_project" "domino" {
@@ -169,6 +170,8 @@ resource "google_container_cluster" "domino_cluster" {
   # separately managed node pools. So we create the smallest possible default
   # node pool and immediately delete it.
   remove_default_node_pool = true
+
+  deletion_protection = false
 
   # Workaround for https://github.com/terraform-providers/terraform-provider-google/issues/3385
   # sum function introduced in 0.13
