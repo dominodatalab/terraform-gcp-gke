@@ -218,3 +218,9 @@ variable "gcs_force_destroy" {
   description = "When deleting a bucket, all contained objects are deleted."
   default     = false
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "Deployment tags."
+  default     = {}
+}

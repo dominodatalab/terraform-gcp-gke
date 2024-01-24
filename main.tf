@@ -16,8 +16,9 @@ locals {
 }
 
 provider "google" {
-  project = var.project
-  region  = local.region
+  project        = var.project
+  region         = local.region
+  default_labels = var.tags
 }
 
 data "google_project" "domino" {
@@ -180,6 +181,8 @@ resource "google_container_cluster" "domino_cluster" {
   # node pool and immediately delete it.
   remove_default_node_pool = true
 
+  deletion_protection = false
+
   # Workaround for https://github.com/terraform-providers/terraform-provider-google/issues/3385
   # sum function introduced in 0.13
   initial_node_count = local.node_pools.platform.initial_count + local.node_pools.compute.initial_count + local.node_pools.gpu.initial_count
@@ -239,7 +242,7 @@ resource "google_container_cluster" "domino_cluster" {
       if ! gcloud auth print-identity-token 2>/dev/null; then
         printf "%s" "$GOOGLE_CREDENTIALS" | gcloud auth activate-service-account --project="${var.project}" --key-file=-
       fi
-      gcloud container clusters get-credentials ${var.deploy_id} ${local.is_regional ? "--region" : "--zone"} ${var.location}
+      gcloud container clusters get-credentials ${var.deploy_id} --project="${var.project}" ${local.is_regional ? "--region" : "--zone"} ${var.location}
     EOF
   }
 }
