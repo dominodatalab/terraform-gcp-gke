@@ -102,7 +102,9 @@ No modules.
 | [google_container_cluster.domino_cluster](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster) | resource |
 | [google_container_node_pool.node_pools](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_node_pool) | resource |
 | [google_dns_record_set.a](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_record_set) | resource |
+| [google_dns_record_set.a_services](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_record_set) | resource |
 | [google_dns_record_set.caa](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_record_set) | resource |
+| [google_dns_record_set.caa_services](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_record_set) | resource |
 | [google_filestore_instance.nfs](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/filestore_instance) | resource |
 | [google_kms_crypto_key.crypto_key](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/kms_crypto_key) | resource |
 | [google_kms_crypto_key_iam_binding.binding](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/kms_crypto_key_iam_binding) | resource |
@@ -132,7 +134,7 @@ No modules.
 | <a name="input_filestore_disabled"></a> [filestore\_disabled](#input\_filestore\_disabled) | Do not provision a Filestore instance (mostly to avoid GCP Filestore API issues) | `bool` | `false` | no |
 | <a name="input_gcs_force_destroy"></a> [gcs\_force\_destroy](#input\_gcs\_force\_destroy) | When deleting a bucket, all contained objects are deleted. | `bool` | `false` | no |
 | <a name="input_gke_release_channel"></a> [gke\_release\_channel](#input\_gke\_release\_channel) | GKE K8s release channel for master | `string` | `"STABLE"` | no |
-| <a name="input_google_dns_managed_zone"></a> [google\_dns\_managed\_zone](#input\_google\_dns\_managed\_zone) | Cloud DNS zone | <pre>object({<br>    enabled  = bool<br>    name     = string<br>    dns_name = string<br>  })</pre> | <pre>{<br>  "dns_name": "",<br>  "enabled": false,<br>  "name": ""<br>}</pre> | no |
+| <a name="input_google_dns_managed_zone"></a> [google\_dns\_managed\_zone](#input\_google\_dns\_managed\_zone) | Cloud DNS zone | <pre>object({<br>    enabled          = bool<br>    name             = string<br>    dns_name         = string<br>    service_prefixes = set(string)<br>  })</pre> | <pre>{<br>  "dns_name": "",<br>  "enabled": false,<br>  "name": "",<br>  "service_prefixes": []<br>}</pre> | no |
 | <a name="input_kubeconfig_output_path"></a> [kubeconfig\_output\_path](#input\_kubeconfig\_output\_path) | Specify where the cluster kubeconfig file should be generated. | `string` | n/a | yes |
 | <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | Desired Kubernetes version of the cluster | `string` | `""` | no |
 | <a name="input_location"></a> [location](#input\_location) | The location (region or zone) of the cluster. A zone creates a single master. Specifying a region creates replicated masters accross all zones | `string` | `"us-west1-b"` | no |

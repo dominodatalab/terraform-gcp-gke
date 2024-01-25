@@ -58,14 +58,16 @@ variable "static_ip_enabled" {
 
 variable "google_dns_managed_zone" {
   type = object({
-    enabled  = bool
-    name     = string
-    dns_name = string
+    enabled          = bool
+    name             = string
+    dns_name         = string
+    service_prefixes = set(string)
   })
   default = {
-    enabled  = false
-    name     = ""
-    dns_name = ""
+    enabled          = false
+    name             = ""
+    dns_name         = ""
+    service_prefixes = []
   }
   description = "Cloud DNS zone"
 }
