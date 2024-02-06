@@ -128,7 +128,8 @@ No modules.
 | <a name="input_database_encryption_key_name"></a> [database\_encryption\_key\_name](#input\_database\_encryption\_key\_name) | Use an existing KMS key for the Application-layer Secrets Encryption settings. (Optional) | `string` | `null` | no |
 | <a name="input_deploy_id"></a> [deploy\_id](#input\_deploy\_id) | Domino Deployment ID. | `string` | n/a | yes |
 | <a name="input_description"></a> [description](#input\_description) | GKE cluster description | `string` | `"The Domino K8s Cluster"` | no |
-| <a name="input_enable_network_policy"></a> [enable\_network\_policy](#input\_enable\_network\_policy) | Enable network policy switch | `bool` | `true` | no |
+| <a name="input_enable_advanced_datapath"></a> [enable\_advanced\_datapath](#input\_enable\_advanced\_datapath) | Enable the ADVANCED\_DATAPATH provider | `bool` | `true` | no |
+| <a name="input_enable_network_policy"></a> [enable\_network\_policy](#input\_enable\_network\_policy) | Enable network policy switch. Has no effect when enable\_advanced\_datapath is true | `bool` | `true` | no |
 | <a name="input_enable_vertical_pod_autoscaling"></a> [enable\_vertical\_pod\_autoscaling](#input\_enable\_vertical\_pod\_autoscaling) | Enable GKE vertical scaling | `bool` | `true` | no |
 | <a name="input_filestore_capacity_gb"></a> [filestore\_capacity\_gb](#input\_filestore\_capacity\_gb) | Filestore Instance size (GB) for the cluster nfs shared storage | `number` | `1024` | no |
 | <a name="input_filestore_disabled"></a> [filestore\_disabled](#input\_filestore\_disabled) | Do not provision a Filestore instance (mostly to avoid GCP Filestore API issues) | `bool` | `false` | no |

@@ -238,9 +238,11 @@ resource "google_container_cluster" "domino_cluster" {
     workload_pool = "${data.google_project.domino.project_id}.svc.id.goog"
   }
 
+  datapath_provider = var.enable_advanced_datapath ? "ADVANCED_DATAPATH" : null
+
   network_policy {
-    provider = "CALICO"
-    enabled  = var.enable_network_policy
+    provider = var.enable_advanced_datapath ? "PROVIDER_UNSPECIFIED" : "CALICO"
+    enabled  = !var.enable_advanced_datapath && var.enable_network_policy
   }
 
   provisioner "local-exec" {

@@ -72,8 +72,14 @@ variable "google_dns_managed_zone" {
   description = "Cloud DNS zone"
 }
 
+variable "enable_advanced_datapath" {
+  description = "Enable the ADVANCED_DATAPATH provider"
+  type        = bool
+  default     = true
+}
+
 variable "enable_network_policy" {
-  description = "Enable network policy switch"
+  description = "Enable network policy switch. Has no effect when enable_advanced_datapath is true"
   type        = bool
   default     = true
 }
