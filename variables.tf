@@ -74,7 +74,7 @@ variable "managed_dns" {
   managed_dns = {
     enabled = Whether to create DNS records in the given zone
     name = Managed zone to modify
-    dns_name = DNS record names to create
+    dns_name = DNS record name to create
     service_prefixes = List of additional prefixes to the dns_name to create
   }
   EOF
@@ -113,7 +113,7 @@ variable "gke" {
     }
     control_plane_ports =  Firewall ports to open from the master, e.g., webhooks
     advanced_datapath = Enable the ADVANCED_DATAPATH provider
-    network_policies = Enable network policy switch. Has no effect when enable_advanced_datapath is true
+    network_policies = Enable network policy switch. Cannot be enabled when enable_advanced_datapath is true
     vertical_pod_autoscaling = Enable GKE vertical scaling
     kubeconfig = {
       path = Specify where the cluster kubeconfig file should be generated.
