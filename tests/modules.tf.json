@@ -4,13 +4,24 @@
       "source": "./..",
       "deploy_id": "${var.deploy_id}",
       "project": "domino-eng-platform-dev",
-      "description": "${var.description}",
-      "filestore_disabled": "${var.filestore_disabled}",
+      "storage": {
+        "filestore": {
+          "enabled": "${var.filestore_enabled}"
+        }
+      },
       "namespaces": {
         "platform": "domino-platform",
         "compute": "domino-compute"
       },
-      "kubeconfig_output_path": "${path.cwd}/kubeconfig"
+      "gke": {
+        "public_access": {
+          "enabled": true,
+          "cidrs": ["0.0.0.0/0"]
+        },
+        "kubeconfig": {
+          "path": "${path.cwd}/kubeconfig"
+        }
+      }
     }
   }
 }

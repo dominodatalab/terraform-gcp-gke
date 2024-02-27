@@ -4,6 +4,18 @@ variable "project" {
   description = "GCP Project ID"
 }
 
+variable "tags" {
+  type        = map(string)
+  description = "Deployment tags."
+  default     = {}
+}
+
+variable "location" {
+  type        = string
+  default     = "us-west1-b"
+  description = "The location (region or zone) of the cluster. A zone creates a single master. Specifying a region creates replicated masters accross all zones"
+}
+
 variable "deploy_id" {
   type        = string
   description = "Domino Deployment ID."
@@ -21,9 +33,9 @@ variable "deploy_id" {
   }
 }
 
-variable "kubeconfig_output_path" {
-  type        = string
-  description = "Specify where the cluster kubeconfig file should be generated."
+variable "namespaces" {
+  type        = object({ platform = string, compute = string })
+  description = "Namespace that are used for generating the service account bindings"
 }
 
 variable "allowed_ssh_ranges" {
@@ -32,94 +44,105 @@ variable "allowed_ssh_ranges" {
   description = "CIDR ranges allowed to SSH to nodes in the cluster."
 }
 
-variable "description" {
-  description = "GKE cluster description"
-  type        = string
-  default     = "The Domino K8s Cluster"
-}
-
-variable "filestore_capacity_gb" {
-  type        = number
-  default     = 1024
-  description = "Filestore Instance size (GB) for the cluster nfs shared storage"
-}
-
-variable "filestore_disabled" {
-  type        = bool
-  default     = false
-  description = "Do not provision a Filestore instance (mostly to avoid GCP Filestore API issues)"
-}
-
-variable "static_ip_enabled" {
-  type        = bool
-  default     = false
-  description = "Provision a static ip for use with managed zones/ingress"
-}
-
-variable "google_dns_managed_zone" {
-  type = object({
-    enabled          = bool
-    name             = string
-    dns_name         = string
-    service_prefixes = set(string)
-  })
-  default = {
-    enabled          = false
-    name             = ""
-    dns_name         = ""
-    service_prefixes = []
-  }
-  description = "Cloud DNS zone"
-}
-
-variable "enable_advanced_datapath" {
-  description = "Enable the ADVANCED_DATAPATH provider"
-  type        = bool
-  default     = true
-}
-
-variable "enable_network_policy" {
-  description = "Enable network policy switch. Has no effect when enable_advanced_datapath is true"
-  type        = bool
-  default     = true
-}
-
-variable "enable_vertical_pod_autoscaling" {
-  type        = bool
-  default     = true
-  description = "Enable GKE vertical scaling"
-}
-
-variable "gke_release_channel" {
-  type        = string
-  default     = "STABLE"
-  description = "GKE K8s release channel for master"
-}
-
-variable "location" {
-  type        = string
-  default     = "us-west1-b"
-  description = "The location (region or zone) of the cluster. A zone creates a single master. Specifying a region creates replicated masters accross all zones"
-}
-
-variable "master_firewall_ports" {
-  type        = list(string)
-  default     = []
-  description = "Firewall ports to open from the master, e.g., webhooks"
-}
-
-variable "master_authorized_networks_config" {
-  type = list(object({
-    cidr_block   = string
-    display_name = string
-  }))
-  default = [
-    {
-      cidr_block   = "0.0.0.0/0"
-      display_name = "global-access"
+variable "storage" {
+  description = <<EOF
+  storage = {
+    filestore = {
+      enabled = Provision a Filestore instance (mostly to avoid GCP Filestore API issues)
+      capacity_gb = Filestore Instance size (GB) for the cluster NFS shared storage
     }
-  ]
-  description = "Configuration options for master authorized networks. Default is for debugging only, and should be removed for production."
+    gcs = {
+      force_destroy_on_deletion = Toogle to allow recursive deletion of all objects in the bucket. if 'false' terraform will NOT be able to delete non-empty buckets.
+    }
+  EOF
+
+  type = object({
+    filestore = optional(object({
+      enabled     = optional(bool, true)
+      capacity_gb = optional(number, 1024)
+    }), {}),
+    gcs = optional(object({
+      force_destroy_on_deletion = optional(bool, false)
+    }), {})
+  })
+
+  default = {}
+}
+
+variable "managed_dns" {
+  description = <<EOF
+  managed_dns = {
+    enabled = Whether to create DNS records in the given zone
+    name = Managed zone to modify
+    dns_name = DNS record names to create
+    service_prefixes = List of additional prefixes to the dns_name to create
+  }
+  EOF
+  type = object({
+    enabled          = optional(bool, false)
+    name             = optional(string, "")
+    dns_name         = optional(string, "")
+    service_prefixes = optional(set(string), [])
+
+  })
+  default = {}
+}
+
+variable "kms" {
+  description = <<EOF
+  kms = {
+    database_encryption_key_name = Use an existing KMS key for the Application-layer Secrets Encryption settings. (Optional)
+  }
+  EOF
+
+  type = object({
+    database_encryption_key_name = optional(string, null)
+  })
+
+  default = {}
+}
+
+variable "gke" {
+  description = <<EOF
+  gke = {
+    k8s_version = Cluster k8s version
+    release_channel = GKE release channel
+    public_access = {
+      enabled = Enable API public endpoint
+      cidrs = List of CIDR ranges permitted for accessing the public endpoint
+    }
+    control_plane_ports =  Firewall ports to open from the master, e.g., webhooks
+    advanced_datapath = Enable the ADVANCED_DATAPATH provider
+    network_policies = Enable network policy switch. Has no effect when enable_advanced_datapath is true
+    vertical_pod_autoscaling = Enable GKE vertical scaling
+    kubeconfig = {
+      path = Specify where the cluster kubeconfig file should be generated.
+    }
+  }
+  EOF
+
+  type = object({
+    k8s_version     = optional(string, ""),
+    release_channel = optional(string, "RAPID"),
+    public_access = optional(object({
+      enabled = optional(bool, false),
+      cidrs   = optional(list(string), [])
+    }), {}),
+    control_plane_ports      = optional(list(string), [])
+    advanced_datapath        = optional(bool, true),
+    network_policies         = optional(bool, false),
+    vertical_pod_autoscaling = optional(bool, true),
+    kubeconfig = optional(object({
+      path = optional(string, null)
+    }), {})
+  })
+
+  default = {}
+
+  validation {
+    condition     = !var.gke.advanced_datapath || (var.gke.advanced_datapath && !var.gke.network_policies)
+    error_message = "GKE network policies cannot be enabled with advanced datapath"
+  }
 }
 
 variable "node_pools" {
@@ -202,33 +225,4 @@ variable "additional_node_pools" {
     node_locations  = optional(list(string), [])
   }))
   default = {}
-}
-
-variable "namespaces" {
-  type        = object({ platform = string, compute = string })
-  description = "Namespace that are used for generating the service account bindings"
-}
-
-variable "kubernetes_version" {
-  type        = string
-  description = "Desired Kubernetes version of the cluster"
-  default     = ""
-}
-
-variable "database_encryption_key_name" {
-  type        = string
-  description = "Use an existing KMS key for the Application-layer Secrets Encryption settings. (Optional)"
-  default     = null
-}
-
-variable "gcs_force_destroy" {
-  type        = bool
-  description = "When deleting a bucket, all contained objects are deleted."
-  default     = false
-}
-
-variable "tags" {
-  type        = map(string)
-  description = "Deployment tags."
-  default     = {}
 }

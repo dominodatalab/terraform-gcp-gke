@@ -17,14 +17,14 @@ output "cluster" {
 }
 
 output "dns" {
-  value       = var.google_dns_managed_zone.enabled ? google_dns_record_set.a[0].name : ""
+  value       = var.managed_dns.enabled ? google_dns_record_set.a[0].name : ""
   description = "The external (public) DNS name for the Domino UI"
 }
 
 output "google_filestore_instance" {
   value = {
-    file_share = !var.filestore_disabled ? google_filestore_instance.nfs[0].file_shares[0].name : "",
-    ip_address = !var.filestore_disabled ? google_filestore_instance.nfs[0].networks[0].ip_addresses[0] : "",
+    file_share = var.storage.filestore.enabled ? google_filestore_instance.nfs[0].file_shares[0].name : "",
+    ip_address = var.storage.filestore.enabled ? google_filestore_instance.nfs[0].networks[0].ip_addresses[0] : "",
   }
   description = "Domino Google Cloud Filestore instance, name and ip_address"
 }
@@ -40,7 +40,7 @@ output "region" {
 }
 
 output "static_ip" {
-  value       = var.static_ip_enabled ? google_compute_global_address.static_ip[0].address : ""
+  value       = var.managed_dns.enabled ? google_compute_global_address.static_ip[0].address : ""
   description = "The external (public) static IPv4 for the Domino UI"
 }
 

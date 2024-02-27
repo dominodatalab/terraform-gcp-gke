@@ -137,6 +137,9 @@ jobs:
           name: "Set module source to latest published release"
           working_directory: tests
           command: |
+            cp modules.tf.json{,.new}
+            cp modules.tf.previous.json modules.tf.json
+
             # v2.2.2 is retracted
             latest_tag="$(git tag | grep -v 2.2.2$ | tail -1)"
             export MOD_SOURCE="github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git?ref=${latest_tag}"
@@ -148,6 +151,8 @@ jobs:
           name: "Upgrade module by applying this commit"
           working_directory: tests
           command: |
+            cp modules.tf.json.new modules.tf.json
+
             echo "Testing terraform module upgrade"
             export MOD_SOURCE="./.."
             echo "Setting module source to local ref: ${MOD_SOURCE}"
