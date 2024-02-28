@@ -1,8 +1,7 @@
 locals {
-  #  webhooks: prometheus-adapter, hephaestus, istio
-  required_webhooks = ["6443", "9443", "15017"]
+  #  webhooks: prometheus-adapter, vault-agent, newrelic, hephaestus, cert-manager, istio
+  required_webhooks = ["6443", "8080", "8443", "9443", "10250", "15017"]
 }
-
 
 resource "google_container_cluster" "domino_cluster" {
   name     = var.deploy_id
