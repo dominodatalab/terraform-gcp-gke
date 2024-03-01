@@ -26,8 +26,7 @@ No resources.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_deploy_id"></a> [deploy\_id](#input\_deploy\_id) | deploy id | `string` | n/a | yes |
-| <a name="input_description"></a> [description](#input\_description) | GKE cluster description | `string` | `"The Domino K8s Cluster"` | no |
-| <a name="input_filestore_disabled"></a> [filestore\_disabled](#input\_filestore\_disabled) | Do not provision a Filestore instance (mostly to avoid GCP Filestore API issues) | `bool` | `false` | no |
+| <a name="input_filestore_enabled"></a> [filestore\_enabled](#input\_filestore\_enabled) | Do not provision a Filestore instance (mostly to avoid GCP Filestore API issues) | `bool` | `false` | no |
 
 ## Outputs
 

@@ -1,0 +1,15 @@
+{
+  "module": {
+    "gke": {
+      "source": "./..",
+      "deploy_id": "${var.deploy_id}",
+      "project": "domino-eng-platform-dev",
+      "filestore_disabled": "${!var.filestore_enabled}",
+      "namespaces": {
+        "platform": "domino-platform",
+        "compute": "domino-compute"
+      },
+      "kubeconfig_output_path": "${path.cwd}/kubeconfig"
+    }
+  }
+}

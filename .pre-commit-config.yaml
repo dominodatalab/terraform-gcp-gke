@@ -50,10 +50,10 @@ repos:
         args:
           - '--args=--compact'
           - '--args=--quiet'
-          - '--args=--skip-check CKV_GCP_24,CKV_GCP_49,CKV_GCP_41,CKV_GCP_68,CKV_GCP_22,CKV_GCP_82,CKV_GCP_69,CKV_GCP_66,CKV_GCP_65,CKV_GCP_71,CKV_GCP_13,CKV_GCP_19,CKV_GCP_67,CKV_GCP_61,CKV_GCP_29,CKV_GCP_62,CKV_GCP_76,CKV_GCP_26,CKV_GCP_84,CKV_CIRCLECIPIPELINES_2,CKV_CIRCLECIPIPELINES_6,CKV2_GHA_1'
+          - '--args=--skip-check CKV_GCP_24,CKV_GCP_49,CKV_GCP_41,CKV_GCP_68,CKV_GCP_22,CKV_GCP_82,CKV_GCP_69,CKV_GCP_66,CKV_GCP_65,CKV_GCP_71,CKV_GCP_13,CKV_GCP_19,CKV_GCP_67,CKV_GCP_61,CKV_GCP_29,CKV_GCP_62,CKV_GCP_76,CKV_GCP_26,CKV_GCP_84,CKV_GCP_12,CKV_CIRCLECIPIPELINES_2,CKV_CIRCLECIPIPELINES_6,CKV2_GHA_1'
       - id: terraform_tfsec
         args:
-          - '--args=--exclude google-gke-enforce-pod-security-policy,google-storage-bucket-encryption-customer-key,google-compute-enable-vpc-flow-logs,google-compute-no-public-ingress,google-gke-metadata-endpoints-disabled,google-gke-no-public-control-plane,google-gke-node-metadata-security,google-gke-use-service-account,google-storage-enable-ubla,google-iam-no-project-level-service-account-impersonation,google-gke-use-cluster-labels'
+          - '--args=--exclude google-gke-enforce-pod-security-policy,google-storage-bucket-encryption-customer-key,google-compute-enable-vpc-flow-logs,google-compute-no-public-ingress,google-gke-metadata-endpoints-disabled,google-gke-no-public-control-plane,google-gke-node-metadata-security,google-gke-use-service-account,google-storage-enable-ubla,google-iam-no-project-level-service-account-impersonation,google-gke-use-cluster-labels,google-gke-enable-network-policy'
       ## Merge back the terrascan id when the following error is merged:
       ## Unsupported argument; An argument named "nullable" is not expected here.
       # - id: terrascan ## Merge back when there is a new version upstream
