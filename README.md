@@ -6,7 +6,7 @@ Terraform module which creates a Domino deployment inside of GCP's GKE.
 
 :warning: Important: If you have existing infrastructure created with a version of this module < `v3.0.0` you will need to update the input variable structure.
 
-In addition, a new enabled-bydefault variable to control [GKE dataplane v2](https://cloud.google.com/kubernetes-engine/docs/how-to/dataplane-v2) has been introduced: `gke.advanced_datapath`. For existing infrastructure, make sure to set it to `false` otherwise it will **recreate -your cluster**.
+In addition, a new enabled-by-default variable to control [GKE dataplane v2](https://cloud.google.com/kubernetes-engine/docs/how-to/dataplane-v2) has been introduced: `gke.advanced_datapath`. For existing infrastructure, make sure to set it to `false` otherwise it will **recreate -your cluster**.
 
 ## Usage
 
