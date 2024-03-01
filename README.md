@@ -1,7 +1,12 @@
-[![CircleCI](https://circleci.com/gh/dominodatalab/terraform-gcp-gke.svg?style=svg&circle-token=dfa46ce0cbeb40ea61fd9e96f7c6a05d5a87c3f7)](https://circleci.com/gh/dominodatalab/terraform-gcp-gke)
 # Domino GKE Terraform
 
 Terraform module which creates a Domino deployment inside of GCP's GKE.
+
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/dominodatalab/terraform-gcp-gke/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/dominodatalab/terraform-gcp-gke/tree/main)
+
+:warning: Important: If you have existing infrastructure created with a version of this module < `v3.0.0` you will need to update the input variable structure.
+
+In addition, a new enabled-bydefault variable to control [GKE dataplane v2](https://cloud.google.com/kubernetes-engine/docs/how-to/dataplane-v2) has been introduced: `gke.advanced_datapath`. For existing infrastructure, make sure to set it to `false` otherwise it will **recreate -your cluster**.
 
 ## Usage
 
