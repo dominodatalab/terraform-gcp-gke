@@ -7,6 +7,10 @@ resource "google_artifact_registry_repository" "domino" {
   location      = local.region
   repository_id = "${var.deploy_id}-domino"
   format        = "DOCKER"
+
+  docker_config {
+    immutable_tags = true
+  }
 }
 
 resource "google_artifact_registry_repository_iam_member" "gcr" {
