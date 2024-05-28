@@ -22,7 +22,7 @@ resource "google_artifact_registry_repository_iam_member" "gcr" {
 }
 
 resource "google_artifact_registry_repository_iam_member" "platform" {
-  count = var.migration_permissions ? 1 : 0
+  count      = var.migration_permissions ? 1 : 0
   repository = google_artifact_registry_repository.domino.name
   location   = google_artifact_registry_repository.domino.location
 
