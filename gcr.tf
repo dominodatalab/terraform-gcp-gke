@@ -20,3 +20,12 @@ resource "google_artifact_registry_repository_iam_member" "gcr" {
   role   = "roles/artifactregistry.writer"
   member = "serviceAccount:${google_service_account.accounts["gcr"].email}"
 }
+
+resource "google_artifact_registry_repository_iam_member" "platform" {
+  count = var.migration_permissions ? 1 : 0
+  repository = google_artifact_registry_repository.domino.name
+  location   = google_artifact_registry_repository.domino.location
+
+  role   = "roles/artifactregistry.writer"
+  member = "serviceAccount:${google_service_account.accounts["platform"].email}"
+}
