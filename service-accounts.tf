@@ -1,5 +1,5 @@
 locals {
-  service_accounts = toset(["platform", "gcr", "importer"])
+  service_accounts = toset(["platform", "gcr"])
 }
 
 resource "google_service_account" "accounts" {
@@ -42,13 +42,5 @@ resource "google_service_account_iam_binding" "gcr" {
   members = [
     "serviceAccount:${var.project}.svc.id.goog[${var.namespaces.compute}/forge]",
     "serviceAccount:${var.project}.svc.id.goog[${var.namespaces.compute}/hephaestus]"
-  ]
-}
-
-resource "google_service_account_iam_binding" "importer" {
-  service_account_id = google_service_account.accounts["importer"].name
-  role               = "roles/iam.workloadIdentityUser"
-  members = [
-    "serviceAccount:${var.project}.svc.id.goog[${var.namespaces.platform}/domino-data-importer]",
   ]
 }
