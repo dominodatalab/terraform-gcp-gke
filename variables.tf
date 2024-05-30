@@ -4,6 +4,12 @@ variable "project" {
   description = "GCP Project ID"
 }
 
+variable "migration_permissions" {
+  type        = bool
+  default     = false
+  description = "Add registry permissions to platform service account for migration purposes"
+}
+
 variable "tags" {
   type        = map(string)
   description = "Deployment tags."
