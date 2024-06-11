@@ -6,7 +6,28 @@ Terraform module which creates a Domino deployment inside of GCP's GKE.
 
 :warning: Important: If you have existing infrastructure created with a version of this module < `v3.0.0` you will need to update the input variable structure.
 
-In addition, a new enabled-by-default variable to control [GKE dataplane v2](https://cloud.google.com/kubernetes-engine/docs/how-to/dataplane-v2) has been introduced: `gke.advanced_datapath`. For existing infrastructure, make sure to set it to `false` otherwise it will **recreate -your cluster**.
+The following configuration has been removed:
+* `description`
+* `static_ip_enabled`
+
+The following configuration has been moved:
+
+| Original variable                   | New variable                            | Notes                                                       |
+|-------------------------------------|-----------------------------------------|-------------------------------------------------------------|
+| `filestore_disabled`                | `storage.filestore.enabled`             |                                                             |
+| `filestore_capacity_gb`             | `storage.filestore.capacity_gb`         |                                                             |
+| `gcs_force_destroy`                 | `storage.gcs.force_destroy_on_deletion` |                                                             |
+| `kubeconfig_output_path`            | `gke.kubeconfig.path`                   |                                                             |
+| `enable_network_policy`             | `gke.network_policies`                  |                                                             |
+| `kubernetes_version`                | `gke.k8s_version`                       |                                                             |
+| `gke_release_channel`               | `gke.release_channel`                   |                                                             |
+| `enable_vertical_pod_autoscaling`   | `gke.vertical_pod_autoscaling`          |                                                             |
+| `master_firewall_ports`             | `gke.control_plane_ports`               |                                                             |
+| `master_authorized_networks_config` | `gke.public_access.cidrs`               | `gke.public_access.enabled` must also be set to take effect |
+| `google_dns_managed_zone`           | `managed_dns`                           |                                                             |
+| `database_encryption_key_name`      | `kms.database_encryption_key_name`      |                                                             |
+
+A new, enabled-by-default variable to control [GKE dataplane v2](https://cloud.google.com/kubernetes-engine/docs/how-to/dataplane-v2) has been introduced: `gke.advanced_datapath`. For existing infrastructure, make sure to set it to `false` otherwise it will **recreate your cluster**.
 
 ## Usage
 
