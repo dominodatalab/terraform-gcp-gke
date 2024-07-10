@@ -58,3 +58,8 @@ output "domino_artifact_repository" {
   value       = google_artifact_registry_repository.domino
   description = "Domino Google artifact repository"
 }
+
+output "nfs_instance_ip" {
+  value = google_compute_instance.nfs[0].network_interface.0.network_ip
+  description = "NFS instance IP"
+}
