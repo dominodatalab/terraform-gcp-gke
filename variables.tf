@@ -72,7 +72,7 @@ variable "storage" {
       capacity_gb = optional(number, 1024)
     }), {}),
     nfs_instance = optional(object({
-      enabled = optional(bool, false)
+      enabled     = optional(bool, false)
       capacity_gb = optional(number, 100)
     }), {}),
     gcs = optional(object({

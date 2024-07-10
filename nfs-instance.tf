@@ -1,5 +1,7 @@
+# tfsec:ignore:google-compute-disk-encryption-customer-key
 resource "google_compute_disk" "nfs" {
-  count    = var.storage.nfs_instance.enabled ? 1 : 0
+  #checkov:skip=CKV_GCP_37:Avoid extra churn for testing-only instance
+  count = var.storage.nfs_instance.enabled ? 1 : 0
 
   name = "${var.deploy_id}-nfs-data"
   type = "pd-standard"
@@ -7,23 +9,31 @@ resource "google_compute_disk" "nfs" {
   size = var.storage.nfs_instance.capacity_gb
 }
 
+# tfsec:ignore:google-compute-no-project-wide-ssh-keys
 resource "google_compute_instance" "nfs" {
-  count    = var.storage.nfs_instance.enabled ? 1 : 0
+  #checkov:skip=CKV_GCP_37:Avoid extra churn for testing-only instance
+  #checkov:skip=CKV_GCP_38:Avoid extra churn for testing-only instance
+  #checkov:skip=CKV_GCP_32:SSH is useful for troubleshooting, and this is for testing only
+  #checkov:skip=CKV_GCP_40:This is need for ssh
+  count = var.storage.nfs_instance.enabled ? 1 : 0
 
-  name         = "${var.deploy_id}-nfs"
-  machine_type = "n2-standard-2"
-  zone         = local.zone
+  name                      = "${var.deploy_id}-nfs"
+  machine_type              = "n2-standard-2"
+  zone                      = local.zone
+  allow_stopping_for_update = true
 
   tags = ["iap-tcp-forwarding-allowed", "nfs-allowed"]
 
+  # tfsec:ignore:google-compute-vm-disk-encryption-customer-key
   boot_disk {
     initialize_params {
       image = "debian-cloud/debian-12"
     }
   }
 
+  # tfsec:ignore:google-compute-vm-disk-encryption-customer-key
   attached_disk {
-    source = google_compute_disk.nfs[0].self_link
+    source      = google_compute_disk.nfs[0].self_link
     device_name = "nfs"
   }
 
@@ -31,9 +41,14 @@ resource "google_compute_instance" "nfs" {
     network    = google_compute_network.vpc_network.self_link
     subnetwork = google_compute_subnetwork.default.self_link
 
+    # tfsec:ignore:google-compute-no-public-ip
     access_config {
       // Ephemeral public IP
     }
+  }
+
+  shielded_instance_config {
+    enable_vtpm = true
   }
 
   metadata_startup_script = file("${path.module}/templates/nfs-install.sh")
@@ -44,7 +59,7 @@ resource "google_compute_instance" "nfs" {
 }
 
 resource "google_compute_firewall" "nfs" {
-  count    = var.storage.nfs_instance.enabled ? 1 : 0
+  count   = var.storage.nfs_instance.enabled ? 1 : 0
   name    = "${var.deploy_id}-nfs"
   network = google_compute_network.vpc_network.name
 
