@@ -1,5 +1,21 @@
+resource "google_compute_address" "nfs" {
+  count    = var.storage.nfs_instance.enabled ? 1 : 0
+
+  name = "${var.deploy_id}-nfs"
+}
+
+resource "google_compute_disk" "nfs" {
+  count    = var.storage.nfs_instance.enabled ? 1 : 0
+
+  name = "${var.deploy_id}-nfs-data"
+  type = "pd-ssd" // TODO: Cheapest type?
+  zone = local.zone
+  size = var.storage.nfs_instance.capacity_gb
+}
+
 resource "google_compute_instance" "nfs" {
   count    = var.storage.nfs_instance.enabled ? 1 : 0
+
   name         = "${var.deploy_id}-nfs"
   machine_type = "n2-standard-2"
   zone         = local.zone
@@ -12,20 +28,29 @@ resource "google_compute_instance" "nfs" {
     }
   }
 
+  attached_disk {
+    source = google_compute_disk.nfs[0].self_link
+    device_name = "nfs"
+  }
+
   network_interface {
     network    = google_compute_network.vpc_network.self_link
     subnetwork = google_compute_subnetwork.default.self_link
 
     access_config {
-      // Ephemeral public IP
+        nat_ip = google_compute_address.nfs[0].address
     }
   }
 
-  metadata_startup_script = "apt install -y nfs-kernel-server && mkdir -p /srv/domino && chmod 777 /srv/domino && echo '/srv/domino 10.0.0.0/255.0.0.0(rw,async,no_root_squash)' >> /etc/exports && systemctl enable nfs-kernel-server --now && sleep 5 && /etc/init.d/nfs-kernel-server restart"
+  metadata_startup_script = file("${path.module}/templates/nfs-install.sh")
 
+  lifecycle {
+    ignore_changes = [attached_disk]
+  }
 }
 
 resource "google_compute_firewall" "nfs" {
+  count    = var.storage.nfs_instance.enabled ? 1 : 0
   name    = "${var.deploy_id}-nfs"
   network = google_compute_network.vpc_network.name
 
