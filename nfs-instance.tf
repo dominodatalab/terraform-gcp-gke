@@ -8,7 +8,7 @@ resource "google_compute_disk" "nfs" {
   count    = var.storage.nfs_instance.enabled ? 1 : 0
 
   name = "${var.deploy_id}-nfs-data"
-  type = "pd-ssd" // TODO: Cheapest type?
+  type = "pd-standard"
   zone = local.zone
   size = var.storage.nfs_instance.capacity_gb
 }
