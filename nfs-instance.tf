@@ -51,7 +51,7 @@ resource "google_compute_instance" "nfs" {
     enable_vtpm = true
   }
 
-  metadata_startup_script = file("${path.module}/templates/nfs-install.sh")
+  metadata_startup_script = templatefile("${path.module}/templates/nfs-install.sh", { nfs_path = local.nfs_path })
 
   lifecycle {
     ignore_changes = [attached_disk]

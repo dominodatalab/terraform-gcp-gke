@@ -3,6 +3,7 @@ locals {
   is_regional = length(split("-", var.location)) == 2
   region      = local.is_regional ? var.location : substr(var.location, 0, length(var.location) - 2)
   zone        = local.is_regional ? format("%s-a", var.location) : var.location
+  nfs_path    = "/srv/domino"
 }
 
 provider "google" {

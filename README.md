@@ -106,7 +106,7 @@ Please submit any feature enhancements, bug fixes, or ideas via pull requests or
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | >= 5.0, < 6.0 |
+| <a name="provider_google"></a> [google](#provider\_google) | 5.31.0 |
 
 ## Modules
 
@@ -176,6 +176,7 @@ No modules.
 | <a name="output_dns"></a> [dns](#output\_dns) | The external (public) DNS name for the Domino UI |
 | <a name="output_domino_artifact_repository"></a> [domino\_artifact\_repository](#output\_domino\_artifact\_repository) | Domino Google artifact repository |
 | <a name="output_google_filestore_instance"></a> [google\_filestore\_instance](#output\_google\_filestore\_instance) | Domino Google Cloud Filestore instance, name and ip\_address |
+| <a name="output_nfs_instance"></a> [nfs\_instance](#output\_nfs\_instance) | Domino Google Cloud Filestore instance, name and ip\_address |
 | <a name="output_nfs_instance_ip"></a> [nfs\_instance\_ip](#output\_nfs\_instance\_ip) | NFS instance IP |
 | <a name="output_project"></a> [project](#output\_project) | GCP project ID |
 | <a name="output_region"></a> [region](#output\_region) | Region where the cluster is deployed derived from 'location' input variable |

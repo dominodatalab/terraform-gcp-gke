@@ -63,3 +63,10 @@ output "nfs_instance_ip" {
   value       = var.storage.nfs_instance.enabled ? google_compute_instance.nfs[0].network_interface[0].network_ip : ""
   description = "NFS instance IP"
 }
+output "nfs_instance" {
+  value = {
+    nfs_path   = var.storage.nfs_instance.enabled ? local.nfs_path : "",
+    ip_address = var.storage.nfs_instance.enabled ? google_compute_instance.nfs[0].network_interface[0].network_ip : "",
+  }
+  description = "Domino Google Cloud Filestore instance, name and ip_address"
+}
