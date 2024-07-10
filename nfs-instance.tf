@@ -1,9 +1,3 @@
-resource "google_compute_address" "nfs" {
-  count    = var.storage.nfs_instance.enabled ? 1 : 0
-
-  name = "${var.deploy_id}-nfs"
-}
-
 resource "google_compute_disk" "nfs" {
   count    = var.storage.nfs_instance.enabled ? 1 : 0
 
@@ -38,7 +32,7 @@ resource "google_compute_instance" "nfs" {
     subnetwork = google_compute_subnetwork.default.self_link
 
     access_config {
-        nat_ip = google_compute_address.nfs[0].address
+      // Ephemeral public IP
     }
   }
 

@@ -60,6 +60,6 @@ output "domino_artifact_repository" {
 }
 
 output "nfs_instance_ip" {
-  value = var.storage.nfs_instance.enabled ? google_compute_instance.nfs[0].network_interface.0.access_config.0.nat_ip : ""
+  value = var.storage.nfs_instance.enabled ? google_compute_instance.nfs[0].network_interface[0].network_ip : ""
   description = "NFS instance IP"
 }
