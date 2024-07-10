@@ -22,7 +22,6 @@ commands:
           command: |
             echo export TF_VAR_deploy_id=\"${WORKSPACE}\" >> $BASH_ENV
             echo 'export TF_VAR_description="CircleCI Build for ${CIRCLE_PR_REPONAME}: ${CIRCLE_BUILD_URL}"' >> $BASH_ENV
-            echo 'export TF_VAR_storage="{ filestore={enabled=false}, nfs_instance={enabled=true}}"' >> $BASH_ENV
             echo 'export GOOGLE_CREDENTIALS="$CLOUDSDK_SERVICE_KEY"' >> $BASH_ENV
             echo 'export WORKSPACE=gcp-gke-circleci-${CIRCLE_BUILD_NUM}' >> $BASH_ENV
   install_prereqs:
