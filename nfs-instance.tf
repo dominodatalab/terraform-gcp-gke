@@ -43,7 +43,7 @@ resource "google_compute_instance" "nfs" {
 
     # tfsec:ignore:google-compute-no-public-ip
     access_config {
-      // Ephemeral public IP
+      # Ephemeral public IP
     }
   }
 
