@@ -54,8 +54,12 @@ variable "storage" {
   description = <<EOF
   storage = {
     filestore = {
-      enabled = Provision a Filestore instance (mostly to avoid GCP Filestore API issues)
+      enabled = Provision a Filestore instance (for production installs)
       capacity_gb = Filestore Instance size (GB) for the cluster NFS shared storage
+    }
+    nfs_instance = {
+      enabled = Provision an instance as an NFS server (to avoid filestore churn during testing)
+      capacity_gb = NFS instance disk size
     }
     gcs = {
       force_destroy_on_deletion = Toogle to allow recursive deletion of all objects in the bucket. if 'false' terraform will NOT be able to delete non-empty buckets.
@@ -66,6 +70,10 @@ variable "storage" {
     filestore = optional(object({
       enabled     = optional(bool, true)
       capacity_gb = optional(number, 1024)
+    }), {}),
+    nfs_instance = optional(object({
+      enabled     = optional(bool, false)
+      capacity_gb = optional(number, 100)
     }), {}),
     gcs = optional(object({
       force_destroy_on_deletion = optional(bool, false)

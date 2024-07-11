@@ -7,6 +7,9 @@
       "storage": {
         "filestore": {
           "enabled": "${var.filestore_enabled}"
+        },
+        "nfs_instance": {
+          "enabled": "${var.nfs_instance_enabled}"
         }
       },
       "namespaces": {

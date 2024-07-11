@@ -43,6 +43,7 @@ resource "google_container_node_pool" "node_pools" {
 
     tags = [
       "iap-tcp-forwarding-allowed",
+      "nfs-allowed",
       "domino-${each.key}-node"
     ]
 
