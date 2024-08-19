@@ -136,7 +136,7 @@ variable "gke" {
   EOF
 
   type = object({
-    k8s_version     = optional(string, "1.29"),
+    k8s_version     = optional(string, "1.30"),
     release_channel = optional(string, "STABLE"),
     public_access = optional(object({
       enabled = optional(bool, false),
