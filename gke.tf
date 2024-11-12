@@ -20,6 +20,8 @@ resource "google_container_cluster" "domino_cluster" {
   # node pool and immediately delete it.
   remove_default_node_pool = true
 
+  # On version 5.0.0+ of the provider, you must explicitly set deletion_protection = false
+  # and run terraform apply to write the field to state in order to destroy a cluster.
   deletion_protection = false
 
   # Workaround for https://github.com/terraform-providers/terraform-provider-google/issues/3385
