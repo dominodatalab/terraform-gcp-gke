@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+#ddlcloud_generator_gke = {ref = "generator", git = "git+https://github.com/dominodatalab/terraform-gcp-gke.git"}
+ddlcloud_generator_gke = {editable=true, path="../"}
+ddlcloud_tf_base_schemas = {ref = "main", git = "git+https://github.com/Secretions/domino-tf-base-schemas.git"}
+pydantic = "~=2.10"
+PyYAML = "~=6.0"
+
+[dev-packages]
+
+[requires]
+python_version = "3.13"

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from ddlc.generators.common import BaseTFConfig, BaseTFOutput, TFSet
+from ddlcloud_tf_base_schemas import BaseTFConfig, BaseTFOutput, TFSet
 
 VERSION = "1.0"
 
