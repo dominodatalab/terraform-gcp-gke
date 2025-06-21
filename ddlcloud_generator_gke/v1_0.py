@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from ddlcloud_tf_base_schemas import BaseTFConfig, BaseTFOutput, TFSet
 
 VERSION = "1.0"
+MODULE_ID = "gke"
 
 
 class GKEGeneratorException(Exception):
@@ -173,5 +174,6 @@ def generate_gke_module(args, existing_config: dict | None) -> TFSet:
                 ),
             )
         },
+        module_id=MODULE_ID,
         version=VERSION,
     )

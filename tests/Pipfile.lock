@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "685b5074bfef3bb1e21e4e738d2a14c5622a982c2c32cfd2e9a62dbab72b23b8"
+            "sha256": "937b3bed5706af2926380ce22113d884e1c214a1ac186b8523e6db7de2051dc9"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -30,7 +30,7 @@
         },
         "ddlcloud-tf-base-schemas": {
             "git": "git+https://github.com/Secretions/domino-tf-base-schemas.git",
-            "ref": "d0b2414b9f9dda5d999c2d1a5c3f9b80e7b7a91d"
+            "ref": "a53dd0483f4d44cbe779a1c3115a7220c3a28a2e"
         },
         "pydantic": {
             "hashes": [
