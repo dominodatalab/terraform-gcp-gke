@@ -25,6 +25,7 @@ repos:
         args: [--follow-imports=silent]
         additional_dependencies:
           - "pydantic"
+          - "types-pyyaml"
         exclude: ^resources/
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.81.0

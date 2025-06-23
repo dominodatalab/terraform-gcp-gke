@@ -11,6 +11,10 @@ PyYAML = "~=6.0"
 
 [dev-packages]
 pytest = "*"
+black = "*"
+ruff = "*"
+mypy = "*"
+types-pyyaml = "*"
 
 [requires]
 python_version = "3.13"

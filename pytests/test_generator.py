@@ -1,23 +1,18 @@
-import yaml
-from os import path
-from os import path
-
 from unittest import TestCase
 
-from ddlcloud_generator_gke import gke_subparser
-from ddlcloud_tf_base_schemas import TFBackendConfig, TFLocalBackend
+import yaml
 
 from .generate import parse_args, validate
 
 
 class TestGenerator(TestCase):
     maxDiff = None
-    
+
     def get_tfmodule(self, input_args: list | None = None):
         input_args = input_args or []
         args = parse_args(["gke", "--deploy-id", "test", *input_args])
         return args.generator(args, {})
-    
+
     def test_generate_gke_module(self):
         with open("fixtures/defaults.yaml") as f:
             defaults = yaml.safe_load(f)

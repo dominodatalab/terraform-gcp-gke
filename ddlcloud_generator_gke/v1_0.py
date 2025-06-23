@@ -1,6 +1,5 @@
-from pydantic import BaseModel
-
 from ddlcloud_tf_base_schemas import BaseTFConfig, BaseTFOutput, TFSet
+from pydantic import BaseModel
 
 VERSION = "1.0"
 MODULE_ID = "gke"
