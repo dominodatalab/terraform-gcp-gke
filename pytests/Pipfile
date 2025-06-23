@@ -10,6 +10,7 @@ pydantic = "~=2.10"
 PyYAML = "~=6.0"
 
 [dev-packages]
+pytest = "*"
 
 [requires]
 python_version = "3.13"
