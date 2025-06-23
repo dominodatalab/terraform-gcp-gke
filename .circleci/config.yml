@@ -72,7 +72,7 @@ commands:
 jobs:
   pre-commit:
     docker:
-      - image: cimg/python:3.11.1
+      - image: cimg/python:3.13.2
     parameters:
       terraform_version:
         type: string
@@ -95,7 +95,7 @@ jobs:
 
   python-tests:
     docker:
-      - image: cimg/python:3.11.1
+      - image: cimg/python:3.13.2
     parameters:
       terraform_version:
         type: string
