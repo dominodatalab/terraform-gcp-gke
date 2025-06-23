@@ -93,6 +93,27 @@ jobs:
             pip3 install checkov pre-commit
             SKIP=no-commit-to-branch pre-commit run --all-files
 
+  python-tests:
+    docker:
+      - image: cimg/python:3.11.1
+    parameters:
+      terraform_version:
+        type: string
+      workspace:
+        type: string
+        default: ci-<< pipeline.number >>
+    environment: *default_environment
+
+    steps:
+      - checkout
+      - install_tf
+      - run:
+          name: python tests
+          command: |
+            cd pytests
+            pipenv install --dev
+            pipenv run pytest .
+
   test-deploy:
     docker:
       - image: google/cloud-sdk
@@ -161,6 +182,8 @@ workflows:
   test-deploy-workflow:
     jobs:
       - pre-commit:
+          terraform_version: << pipeline.parameters.terraform_version >>
+      - python-tests:
           terraform_version: << pipeline.parameters.terraform_version >>
       - test-deploy:
           terraform_version: << pipeline.parameters.terraform_version >>
