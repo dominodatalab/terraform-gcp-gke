@@ -7,8 +7,8 @@ from os.path import dirname, join, normpath
 from subprocess import run
 from tempfile import TemporaryDirectory
 
+import yaml
 from ddlcloud_tf_base_schemas import TFBackendConfig, TFLocalBackend
-from pydantic_yaml import to_yaml_str
 
 from ddlcloud_generator_gke import gke_subparser
 
@@ -47,11 +47,7 @@ def main():
 
     tf_module = args.generator(args, {})
 
-    # print(yaml.safe_dump(tf_module.model_dump(by_alias=True)))
-    print(to_yaml_str(tf_module, add_comments=True, by_alias=True, exclude_defaults=True, exclude_none=True))
-    #tf_module.configs["main"].backend = TFBackendConfig(type="local", config=TFLocalBackend(path=path.join("/tmp", "the.tfstate")))
-    #tf_module.configs["main"].module.gke_cluster.node_pools.compute.initial_count = 10
-    #print(tf_module.configs["main"].render_to_json())
+    print(yaml.safe_dump(tf_module.model_dump(by_alias=True)))
 
 
 if __name__ == "__main__":

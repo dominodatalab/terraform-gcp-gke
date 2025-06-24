@@ -1,5 +1,3 @@
-from typing import Annotated
-
 from ddlcloud_tf_base_schemas import BaseTFConfig, BaseTFOutput, TFSet
 from pydantic import BaseModel, Field
 
@@ -98,9 +96,6 @@ class GKENodePools(BaseModel):
 # TODO: Is it simpler to have the full objects for everything, or leave none for module defaults?
 # Also impacts the building of the objects on the infra manifest side
 class GKEModule(BaseModel):
-    """test_1 test_2
-    test_red test_blue"""
-
     source: str
     project: str | None = None
     migration_permissions: bool | None = None
@@ -113,8 +108,8 @@ class GKEModule(BaseModel):
     managed_dns: GKEManagedDNS = GKEManagedDNS()
     kms: GKEKMS = GKEKMS()
     gke: GKESettings = GKESettings()
-    node_pools: Annotated[GKENodePools, Field(description="Must be compute+platform+gpu")] = GKENodePools()
-    additional_node_pools: Annotated[dict[str, GKENodePool] | None, Field(descriptions="Open-ended map of node pools")] = None
+    node_pools: GKENodePools = GKENodePools()
+    additional_node_pools: dict[str, GKENodePool] | None = None
 
 
 class GKEModules(BaseModel):
