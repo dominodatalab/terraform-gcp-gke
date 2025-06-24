@@ -12,17 +12,17 @@ class GKEGeneratorException(Exception):
 
 
 class GKEOutputs(BaseTFOutput):
-    google_filestore_ip_address: str
-    google_filestore_file_share: str
-    google_external_dns: str
-    google_bucket_name: str
-    google_project: str
-    google_platform_service_account: str
-    google_cluster_uuid: str
-    google_gcr_service_account: str
-    google_artifact_registry: str
-    nfs_instance_ip: str
-    nfs_instance_path: str
+    google_filestore_ip_address: str = "${module.gke_cluster.google_filestore_instance.ip_address}"
+    google_filestore_file_share: str = "/${module.gke_cluster.google_filestore_instance.file_share}"
+    google_external_dns: str = "${module.gke_cluster.dns}"
+    google_bucket_name: str = "${module.gke_cluster.bucket_name}"
+    google_project: str = "${module.gke_cluster.project}"
+    google_platform_service_account: str = "${module.gke_cluster.service_accounts.platform.account_id}"
+    google_cluster_uuid: str = "${module.gke_cluster.uuid}"
+    google_gcr_service_account: str = "${module.gke_cluster.service_accounts.gcr.email}"
+    google_artifact_registry: str = "${module.gke_cluster.domino_artifact_repository.location}-docker.pkg.dev/${module.gke_cluster.domino_artifact_repository.project}/${module.gke_cluster.domino_artifact_repository.repository_id}"
+    nfs_instance_ip: str = "${module.gke_cluster.nfs_instance.ip_address}"
+    nfs_instance_path: str = "${module.gke_cluster.nfs_instance.nfs_path}"
 
 
 class GKENamespaces(BaseModel):
@@ -38,7 +38,7 @@ class GKEStorage(BaseModel):
     class GCSSettings(BaseModel):
         force_destroy_on_deletion: bool = False
 
-    # TODO: Validate we don't do both?
+    # TODO: Validate we don't do both? # it's time to do
     filestore: Store = Store(enabled=True, capacity=1024)
     nfs_instance: Store = Store(enabled=False, capacity=100)
     gcs: GCSSettings = GCSSettings()
@@ -65,15 +65,16 @@ class GKESettings(BaseModel):
 
     k8s_version: str | None = None
     release_channel: str | None = None
-    public_access: PublicAccess | None = None
+    public_access: PublicAccess = PublicAccess()
     control_plane_ports: list[str] | None = None
     advanced_datapath: bool | None = None
     network_policies: bool | None = None
     vertical_pod_autoscaling: bool | None = None
-    kubeconfig: Kubeconfig | None = None
+    kubeconfig: Kubeconfig = Kubeconfig()
 
 
 class GKENodePool(BaseModel):
+    """stuff"""
     min_count: int | None = None
     max_count: int | None = None
     initial_count: int | None = None
@@ -89,9 +90,9 @@ class GKENodePool(BaseModel):
 
 
 class GKENodePools(BaseModel):
-    compute: GKENodePool | None = None
-    platform: GKENodePool | None = None
-    gpu: GKENodePool | None = None
+    compute: GKENodePool = GKENodePool()
+    platform: GKENodePool = GKENodePool()
+    gpu: GKENodePool = GKENodePool()
 
 
 # TODO: Is it simpler to have the full objects for everything, or leave none for module defaults?
@@ -108,13 +109,12 @@ class GKEModule(BaseModel):
     deploy_id: str
     namespaces: GKENamespaces = GKENamespaces()
     allowed_ssh_ranges: list[str] | None = None
-    storage: GKEStorage | None = None
-    managed_dns: GKEManagedDNS | None = None
-    kms: GKEKMS | None = None
-    gke: GKESettings
-    # node_pools: GKENodePools | None = None
-    node_pools: Annotated[GKENodePools | None, Field(description="Must be compute+platform+gpu\nhi")] = None
-    additional_node_pools: dict[str, GKENodePool] | None = None
+    storage: GKEStorage = GKEStorage()
+    managed_dns: GKEManagedDNS = GKEManagedDNS()
+    kms: GKEKMS = GKEKMS()
+    gke: GKESettings = GKESettings()
+    node_pools: Annotated[GKENodePools, Field(description="Must be compute+platform+gpu")] = GKENodePools()
+    additional_node_pools: Annotated[dict[str, GKENodePool] | None, Field(descriptions="Open-ended map of node pools")] = None
 
 
 class GKEModules(BaseModel):
@@ -124,7 +124,7 @@ class GKEModules(BaseModel):
 class GKEConfig(BaseTFConfig):
     name: str = "gke_cluster"
     module: GKEModules
-    output: GKEOutputs
+    output: GKEOutputs = GKEOutputs()
 
 
 def upgrade(existing_config: dict) -> TFSet:
@@ -163,19 +163,6 @@ def generate_gke_module(args, existing_config: dict | None) -> TFSet:
                         location=args.location,
                         gke=GKESettings(kubeconfig=GKESettings.Kubeconfig(path=args.kubeconfig_path)),
                     )
-                ),
-                output=GKEOutputs(
-                    google_filestore_ip_address="${module.gke_cluster.google_filestore_instance.ip_address}",
-                    google_filestore_file_share="/${module.gke_cluster.google_filestore_instance.file_share}",
-                    google_external_dns="${module.gke_cluster.dns}",
-                    google_bucket_name="${module.gke_cluster.bucket_name}",
-                    google_project="${module.gke_cluster.project}",
-                    google_platform_service_account="${module.gke_cluster.service_accounts.platform.account_id}",
-                    google_cluster_uuid="${module.gke_cluster.uuid}",
-                    google_gcr_service_account="${module.gke_cluster.service_accounts.gcr.email}",
-                    google_artifact_registry="${module.gke_cluster.domino_artifact_repository.location}-docker.pkg.dev/${module.gke_cluster.domino_artifact_repository.project}/${module.gke_cluster.domino_artifact_repository.repository_id}",
-                    nfs_instance_ip="${module.gke_cluster.nfs_instance.ip_address}",
-                    nfs_instance_path="${module.gke_cluster.nfs_instance.nfs_path}",
                 ),
             )
         },
