@@ -133,7 +133,7 @@ def upgrade(existing_config: dict) -> TFSet:
         raise GKEGeneratorException("Can't upgrade GKE config, multiple tf modules when one expected!")
 
     the_cfg = existing_config["configs"]["main"]
-    return TFSet(configs={"main": GKEConfig(**the_cfg)}, version=VERSION)
+    return TFSet(configs={"main": GKEConfig(**the_cfg)}, module_id=MODULE_ID, version=VERSION)
 
 
 def gke_subparser(subparser, parents):
