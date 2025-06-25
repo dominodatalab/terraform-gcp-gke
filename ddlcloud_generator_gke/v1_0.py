@@ -1,3 +1,5 @@
+from typing import Self
+
 from ddlcloud_tf_base_schemas import (
     BaseTFConfig,
     BaseTFOutput,
@@ -5,6 +7,7 @@ from ddlcloud_tf_base_schemas import (
     ValidatingBaseModel,
 )
 from packaging.version import Version
+from pydantic import model_validator
 
 VERSION = "1.0"
 MODULE_ID = "gke"
@@ -43,10 +46,15 @@ class GKEStorage(ValidatingBaseModel):
     class GCSSettings(ValidatingBaseModel):
         force_destroy_on_deletion: bool = False
 
-    # TODO: Validate we don't do both? # it's time to do
     filestore: Store = Store(enabled=True, capacity=1024)
     nfs_instance: Store = Store(enabled=False, capacity=100)
     gcs: GCSSettings = GCSSettings()
+
+    @model_validator(mode="after")
+    def validate_stores(self) -> Self:
+        if self.filestore.enabled and self.nfs_instance.enabled:
+            raise ValueError("Cannot enable both filestore and nfs instance")
+        return self
 
 
 class GKEManagedDNS(ValidatingBaseModel):
@@ -101,8 +109,6 @@ class GKENodePools(ValidatingBaseModel):
     gpu: GKENodePool = GKENodePool()
 
 
-# TODO: Is it simpler to have the full objects for everything, or leave none for module defaults?
-# Also impacts the building of the objects on the infra manifest side
 class GKEModule(ValidatingBaseModel):
     source: str
     project: str | None = None

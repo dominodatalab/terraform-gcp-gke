@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import yaml
 
-from ddlcloud_generator_gke import GKENodePool
+from ddlcloud_generator_gke import GKENodePool, GKEStorage
 
 from .generate import parse_args, validate
 
@@ -95,3 +95,18 @@ class TestGenerator(TestCase):
 
         for module in tf_module.configs.values():
             validate(module)
+
+    def test_store_multi_enable(self):
+        values = {
+            "filestore": {"enabled": True, "capacity": 1024},
+            "nfs_instance": {"enabled": True, "capacity": 100},
+        }
+        with self.assertRaisesRegex(ValueError, "Cannot enable both filestore and nfs instance"):
+            GKEStorage(**values)
+
+        values["filestore"]["enabled"] = False
+        GKEStorage(**values)
+
+        values["filestore"]["enabled"] = False
+        values["nfs_instance"]["enabled"] = True
+        GKEStorage(**values)
