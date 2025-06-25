@@ -31,6 +31,7 @@ def parse_args(test_args: list | None = None):
     common_args = argparse.ArgumentParser(add_help=False)
     common_args.add_argument("--upgrade", help="Upgrade from existing file", action="store_true")
     common_args.add_argument("--deploy-id", help="Name for deployment", required=True)
+    common_args.add_argument("--file", help="Load existing file")
     gke_subparser(subparser, [common_args]).set_defaults(command=True)
 
     args = parser.parse_args(test_args)
@@ -45,7 +46,12 @@ def parse_args(test_args: list | None = None):
 def main():
     args = parse_args()
 
-    tf_module = args.generator(args, {})
+    existing_config = None
+    if args.file:
+        with open(args.file) as f:
+            existing_config = yaml.safe_load(f)
+
+    tf_module = args.generator(args, existing_config)
 
     print(yaml.safe_dump(tf_module.model_dump(by_alias=True)))
 

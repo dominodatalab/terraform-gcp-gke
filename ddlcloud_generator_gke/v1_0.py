@@ -1,5 +1,6 @@
 from ddlcloud_tf_base_schemas import BaseTFConfig, BaseTFOutput, TFSet
-from pydantic import BaseModel, Field
+from packaging.version import Version
+from pydantic import BaseModel
 
 VERSION = "1.0"
 MODULE_ID = "gke"
@@ -18,7 +19,9 @@ class GKEOutputs(BaseTFOutput):
     google_platform_service_account: str = "${module.gke_cluster.service_accounts.platform.account_id}"
     google_cluster_uuid: str = "${module.gke_cluster.uuid}"
     google_gcr_service_account: str = "${module.gke_cluster.service_accounts.gcr.email}"
-    google_artifact_registry: str = "${module.gke_cluster.domino_artifact_repository.location}-docker.pkg.dev/${module.gke_cluster.domino_artifact_repository.project}/${module.gke_cluster.domino_artifact_repository.repository_id}"
+    google_artifact_registry: str = (
+        "${module.gke_cluster.domino_artifact_repository.location}-docker.pkg.dev/${module.gke_cluster.domino_artifact_repository.project}/${module.gke_cluster.domino_artifact_repository.repository_id}"
+    )
     nfs_instance_ip: str = "${module.gke_cluster.nfs_instance.ip_address}"
     nfs_instance_path: str = "${module.gke_cluster.nfs_instance.nfs_path}"
 
@@ -73,6 +76,7 @@ class GKESettings(BaseModel):
 
 class GKENodePool(BaseModel):
     """stuff"""
+
     min_count: int | None = None
     max_count: int | None = None
     initial_count: int | None = None
@@ -122,13 +126,28 @@ class GKEConfig(BaseTFConfig):
     output: GKEOutputs = GKEOutputs()
 
 
+def _load_tfset(configs: dict) -> TFSet:
+    return TFSet(**(configs | {"module_id": MODULE_ID, "version": VERSION}))
+
+
 def upgrade(existing_config: dict) -> TFSet:
+    if existing_config["module_id"] != MODULE_ID:
+        raise GKEGeneratorException(
+            f"Cannot upgrade from {existing_config['module_id']} module type using {MODULE_ID} module"
+        )
     if len(existing_config["configs"]) != 1:
         print(len(existing_config["configs"]))
         raise GKEGeneratorException("Can't upgrade GKE config, multiple tf modules when one expected!")
 
-    the_cfg = existing_config["configs"]["main"]
-    return TFSet(configs={"main": GKEConfig(**the_cfg)}, module_id=MODULE_ID, version=VERSION)
+    # Upgrades go here
+    # if Version(existing_config["version"]) == Version("0.9"):
+    #     <parameter changes>
+    #     existing_config["verison"] = "1.0"
+
+    if Version(existing_config["version"]) != Version(VERSION):
+        raise GKEGeneratorException(f"Attemping to load config with invalid version: {existing_config['version']}")
+
+    return _load_tfset(existing_config)
 
 
 def gke_subparser(subparser, parents):
@@ -148,19 +167,19 @@ def generate_gke_module(args, existing_config: dict | None) -> TFSet:
     if existing_config:
         return upgrade(existing_config)
 
-    return TFSet(
-        configs={
-            "main": GKEConfig(
-                module=GKEModules(
-                    gke_cluster=GKEModule(
-                        source=f"github.com/dominodatalab/terraform-gcp-gke?ref={args.module_version}",
-                        deploy_id=args.deploy_id,
-                        location=args.location,
-                        gke=GKESettings(kubeconfig=GKESettings.Kubeconfig(path=args.kubeconfig_path)),
-                    )
-                ),
-            )
-        },
-        module_id=MODULE_ID,
-        version=VERSION,
+    return _load_tfset(
+        {
+            "configs": {
+                "main": GKEConfig(
+                    module=GKEModules(
+                        gke_cluster=GKEModule(
+                            source=f"github.com/dominodatalab/terraform-gcp-gke?ref={args.module_version}",
+                            deploy_id=args.deploy_id,
+                            location=args.location,
+                            gke=GKESettings(kubeconfig=GKESettings.Kubeconfig(path=args.kubeconfig_path)),
+                        )
+                    ),
+                )
+            }
+        }
     )
