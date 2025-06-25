@@ -1,3 +1,4 @@
+from copy import deepcopy
 from unittest import TestCase
 
 import yaml
@@ -123,21 +124,39 @@ class TestGenerator(TestCase):
 
         with self.subTest("Load existing config"):
             new_tf_module = self.get_tfmodule()
-            loaded_tf_module = upgrade(existing_config)
-            self.assertEqual(loaded_tf_module.model_dump(), new_tf_module.model_dump())
+            loaded_tf_module = upgrade(deepcopy(existing_config))
+
+            # for vals in loaded_tf_module.configs.values():
+            #    self.assertEqual(type(vals), GKEConfig)
+            self.assertEqual(loaded_tf_module, new_tf_module)
 
         with self.subTest("Load incorrect module"):
-            existing_config["module_id"] = "eks"
+            _existing_config = deepcopy(existing_config)
+            _existing_config["module_id"] = "eks"
             with self.assertRaisesRegex(GKEGeneratorException, "Cannot upgrade from eks module type using gke module"):
-                upgrade(existing_config)
-            existing_config["module_id"] = "gke"
+                upgrade(_existing_config)
+
+        with self.subTest("Non-one amount of configs"):
+            _existing_config = deepcopy(existing_config)
+            _existing_config["configs"]["extra_config"] = {}
+            with self.assertRaisesRegex(
+                GKEGeneratorException, "Can't upgrade GKE config, exactly one config expected.*extra_config"
+            ):
+                upgrade(_existing_config)
+            _existing_config["configs"].pop("extra_config")
+            _existing_config["configs"].pop("main")
+            with self.assertRaisesRegex(
+                GKEGeneratorException, "Can't upgrade GKE config, exactly one config expected: {'configs': {}"
+            ):
+                upgrade(_existing_config)
 
         with self.subTest("Load unknown gke module version"):
-            existing_config["version"] = "6.6.6"
+            _existing_config = deepcopy(existing_config)
+            _existing_config["version"] = "6.6.6"
             with self.assertRaisesRegex(GKEGeneratorException, "Attemping to load config with invalid version: 6.6.6"):
-                upgrade(existing_config)
+                upgrade(_existing_config)
 
-    def test__load_tfset(self):
+    def test_load_tfset(self):
         with open("fixtures/defaults.yaml") as f:
             existing_config = yaml.safe_load(f)
 
@@ -147,3 +166,8 @@ class TestGenerator(TestCase):
         loaded_tf_module = load_tfset(existing_config)
         self.assertNotEqual(loaded_tf_module.module_id, "eks")
         self.assertNotEqual(loaded_tf_module.version, "6.6.6")
+
+        with self.subTest("Error on existing_values"):
+            existing_config["configs"]["extra_config"] = {}
+            with self.assertRaisesRegex(GKEGeneratorException, "Config has extra values"):
+                load_tfset(existing_config)

@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import Self
 
 from ddlcloud_tf_base_schemas import (
@@ -137,7 +138,19 @@ class GKEConfig(BaseTFConfig):
 
 
 def load_tfset(configs: dict) -> TFSet:
-    return TFSet(**(configs | {"module_id": MODULE_ID, "version": VERSION}))
+    _configs = deepcopy(configs)
+    main = _configs["configs"].pop("main")
+    if isinstance(main, dict):
+        main = GKEConfig(**main)
+    _configs.pop("module_id", None)
+    _configs.pop("version", None)
+    if _configs != {"configs": {}}:
+        raise GKEGeneratorException(f"Config has extra values: {_configs}")
+    return TFSet(
+        configs={"main": main},
+        module_id=MODULE_ID,
+        version=VERSION,
+    )
 
 
 def upgrade(existing_config: dict) -> TFSet:
@@ -146,8 +159,7 @@ def upgrade(existing_config: dict) -> TFSet:
             f"Cannot upgrade from {existing_config['module_id']} module type using {MODULE_ID} module"
         )
     if len(existing_config["configs"]) != 1:
-        print(len(existing_config["configs"]))
-        raise GKEGeneratorException("Can't upgrade GKE config, multiple tf modules when one expected!")
+        raise GKEGeneratorException(f"Can't upgrade GKE config, exactly one config expected: {existing_config}")
 
     # Upgrades go here
     # if Version(existing_config["version"]) == Version("0.9"):
