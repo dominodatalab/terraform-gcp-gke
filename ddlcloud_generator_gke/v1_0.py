@@ -10,9 +10,6 @@ from ddlcloud_tf_base_schemas import (
 from packaging.version import Version
 from pydantic import model_validator
 
-VERSION = "1.0"
-MODULE_ID = "gke"
-
 
 class GKEGeneratorException(Exception):
     pass
@@ -137,71 +134,78 @@ class GKEConfig(BaseTFConfig):
     output: GKEOutputs = GKEOutputs()
 
 
-def load_tfset(configs: dict) -> TFSet:
-    _configs = deepcopy(configs)
-    main = _configs["configs"].pop("main")
-    if isinstance(main, dict):
-        main = GKEConfig(**main)
-    _configs.pop("module_id", None)
-    _configs.pop("version", None)
-    if _configs != {"configs": {}}:
-        raise GKEGeneratorException(f"Config has extra values: {_configs}")
-    return TFSet(
-        configs={"main": main},
-        module_id=MODULE_ID,
-        version=VERSION,
-    )
+class GKEGenerator:
+    version = "1.0"
+    module_id = "gke"
 
-
-def upgrade(existing_config: dict) -> TFSet:
-    if existing_config["module_id"] != MODULE_ID:
-        raise GKEGeneratorException(
-            f"Cannot upgrade from {existing_config['module_id']} module type using {MODULE_ID} module"
+    @classmethod
+    def load_tfset(cls, configs: dict) -> TFSet:
+        _configs = deepcopy(configs)
+        main = _configs["configs"].pop("main")
+        if isinstance(main, dict):
+            main = GKEConfig(**main)
+        _configs.pop("module_id", None)
+        _configs.pop("version", None)
+        if _configs != {"configs": {}}:
+            raise GKEGeneratorException(f"Config has extra values: {_configs}")
+        return TFSet(
+            configs={"main": main},
+            module_id=cls.module_id,
+            version=cls.version,
         )
-    if len(existing_config["configs"]) != 1:
-        raise GKEGeneratorException(f"Can't upgrade GKE config, exactly one config expected: {existing_config}")
 
-    # Upgrades go here
-    # if Version(existing_config["version"]) == Version("0.9"):
-    #     <parameter changes>
-    #     existing_config["verison"] = "1.0"
+    @classmethod
+    def upgrade(cls, existing_config: dict) -> TFSet:
+        if existing_config["module_id"] != cls.module_id:
+            raise GKEGeneratorException(
+                f"Cannot upgrade from {existing_config['module_id']} module type using {cls.module_id} module"
+            )
+        if len(existing_config["configs"]) != 1:
+            raise GKEGeneratorException(f"Can't upgrade GKE config, exactly one config expected: {existing_config}")
 
-    if Version(existing_config["version"]) != Version(VERSION):
-        raise GKEGeneratorException(f"Attemping to load config with invalid version: {existing_config['version']}")
+        # Upgrades go here
+        # if Version(existing_config["version"]) == Version("0.9"):
+        #     <parameter changes>
+        #     existing_config["verison"] = "1.0"
 
-    return load_tfset(existing_config)
+        if Version(existing_config["version"]) != Version(cls.version):
+            raise GKEGeneratorException(f"Attemping to load config with invalid version: {existing_config['version']}")
 
+        return cls.load_tfset(existing_config)
 
-def gke_subparser(subparser, parents):
-    gke_subparser = subparser.add_parser("gke", help="GKE Terraform Generator", parents=parents)
-    gke_subparser.add_argument("--location", help="GCP Location (ie region/zone)", default="us-west1-b")
-    gke_subparser.add_argument("--kubernetes-version", help="Kubernetes Version", default="1.21")
-    gke_subparser.add_argument("--module-version", help="Version of terraform-gcp-gke module", default="v3.1.3")
-    gke_subparser.add_argument("--kubeconfig_path", help="Override path for generated kubeconfig", default="kubeconfig")
-    gke_subparser.add_argument("--dev", help="Development defaults", action="store_true")
-    gke_subparser.set_defaults(generator=generate_gke_module)
-    return gke_subparser
+    @classmethod
+    def subparser(cls, subparser, parents):
+        gke_subparser = subparser.add_parser("gke", help="GKE Terraform Generator", parents=parents)
+        gke_subparser.add_argument("--location", help="GCP Location (ie region/zone)", default="us-west1-b")
+        gke_subparser.add_argument("--kubernetes-version", help="Kubernetes Version", default="1.21")
+        gke_subparser.add_argument("--module-version", help="Version of terraform-gcp-gke module", default="v3.1.3")
+        gke_subparser.add_argument(
+            "--kubeconfig_path", help="Override path for generated kubeconfig", default="kubeconfig"
+        )
+        gke_subparser.add_argument("--dev", help="Development defaults", action="store_true")
+        gke_subparser.set_defaults(generator=cls.generate_gke_module)
+        return gke_subparser
 
+    @classmethod
+    def generate_gke_module(cls, args, existing_config: dict | None) -> TFSet:
+        """Creates the data required to configure the terraform-gcp-gke Terraform module."""
 
-def generate_gke_module(args, existing_config: dict | None) -> TFSet:
-    """Creates the data required to configure the terraform-gcp-gke Terraform module."""
+        if existing_config:
+            return cls.upgrade(existing_config)
 
-    if existing_config:
-        return upgrade(existing_config)
-
-    return load_tfset(
-        {
-            "configs": {
-                "main": GKEConfig(
-                    module=GKEModules(
-                        gke_cluster=GKEModule(
-                            source=f"github.com/dominodatalab/terraform-gcp-gke?ref={args.module_version}",
-                            deploy_id=args.deploy_id,
-                            location=args.location,
-                            gke=GKESettings(kubeconfig=GKESettings.Kubeconfig(path=args.kubeconfig_path)),
-                        )
-                    ),
-                )
+        return cls.load_tfset(
+            {
+                "configs": {
+                    "main": GKEConfig(
+                        module=GKEModules(
+                            gke_cluster=GKEModule(
+                                source=f"github.com/dominodatalab/terraform-gcp-gke?ref={args.module_version}",
+                                deploy_id=args.deploy_id,
+                                location=args.location,
+                                gke=GKESettings(kubeconfig=GKESettings.Kubeconfig(path=args.kubeconfig_path)),
+                            )
+                        ),
+                    )
+                }
             }
-        }
-    )
+        )

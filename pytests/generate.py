@@ -10,7 +10,7 @@ from tempfile import TemporaryDirectory
 import yaml
 from ddlcloud_tf_base_schemas import TFBackendConfig, TFLocalBackend
 
-from ddlcloud_generator_gke import gke_subparser
+from ddlcloud_generator_gke import GKEGenerator
 
 module_root = normpath(join(dirname(path.realpath(__file__)), ".."))
 
@@ -32,7 +32,7 @@ def parse_args(test_args: list | None = None):
     common_args.add_argument("--upgrade", help="Upgrade from existing file", action="store_true")
     common_args.add_argument("--deploy-id", help="Name for deployment", required=True)
     common_args.add_argument("--file", help="Load existing file")
-    gke_subparser(subparser, [common_args]).set_defaults(command=True)
+    GKEGenerator.subparser(subparser, [common_args]).set_defaults(command=True)
 
     args = parser.parse_args(test_args)
 
