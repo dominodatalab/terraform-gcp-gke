@@ -1,6 +1,5 @@
-from ddlcloud_tf_base_schemas import BaseTFConfig, BaseTFOutput, TFSet
+from ddlcloud_tf_base_schemas import BaseTFConfig, BaseTFOutput, TFSet, ValidatingBaseModel
 from packaging.version import Version
-from pydantic import BaseModel
 
 VERSION = "1.0"
 MODULE_ID = "gke"
@@ -26,17 +25,17 @@ class GKEOutputs(BaseTFOutput):
     nfs_instance_path: str = "${module.gke_cluster.nfs_instance.nfs_path}"
 
 
-class GKENamespaces(BaseModel):
+class GKENamespaces(ValidatingBaseModel):
     platform: str = "domino-platform"
     compute: str = "domino-compute"
 
 
-class GKEStorage(BaseModel):
-    class Store(BaseModel):
+class GKEStorage(ValidatingBaseModel):
+    class Store(ValidatingBaseModel):
         enabled: bool
         capacity: int
 
-    class GCSSettings(BaseModel):
+    class GCSSettings(ValidatingBaseModel):
         force_destroy_on_deletion: bool = False
 
     # TODO: Validate we don't do both? # it's time to do
@@ -45,23 +44,23 @@ class GKEStorage(BaseModel):
     gcs: GCSSettings = GCSSettings()
 
 
-class GKEManagedDNS(BaseModel):
+class GKEManagedDNS(ValidatingBaseModel):
     enabled: bool = False
     name: str | None = None
     dns_name: str | None = None
     service_prefixes: list[str] | None = None
 
 
-class GKEKMS(BaseModel):
+class GKEKMS(ValidatingBaseModel):
     database_encryption_key_name: str | None = None
 
 
-class GKESettings(BaseModel):
-    class PublicAccess(BaseModel):
+class GKESettings(ValidatingBaseModel):
+    class PublicAccess(ValidatingBaseModel):
         enabled: bool = False
         cidrs: list[str] | None = None
 
-    class Kubeconfig(BaseModel):
+    class Kubeconfig(ValidatingBaseModel):
         path: str | None = None
 
     k8s_version: str | None = None
@@ -74,7 +73,7 @@ class GKESettings(BaseModel):
     kubeconfig: Kubeconfig = Kubeconfig()
 
 
-class GKENodePool(BaseModel):
+class GKENodePool(ValidatingBaseModel):
     """stuff"""
 
     min_count: int | None = None
@@ -91,7 +90,7 @@ class GKENodePool(BaseModel):
     node_locations: list[str] | None = None
 
 
-class GKENodePools(BaseModel):
+class GKENodePools(ValidatingBaseModel):
     compute: GKENodePool = GKENodePool()
     platform: GKENodePool = GKENodePool()
     gpu: GKENodePool = GKENodePool()
@@ -99,7 +98,7 @@ class GKENodePools(BaseModel):
 
 # TODO: Is it simpler to have the full objects for everything, or leave none for module defaults?
 # Also impacts the building of the objects on the infra manifest side
-class GKEModule(BaseModel):
+class GKEModule(ValidatingBaseModel):
     source: str
     project: str | None = None
     migration_permissions: bool | None = None
@@ -116,7 +115,7 @@ class GKEModule(BaseModel):
     additional_node_pools: dict[str, GKENodePool] | None = None
 
 
-class GKEModules(BaseModel):
+class GKEModules(ValidatingBaseModel):
     gke_cluster: GKEModule
 
 

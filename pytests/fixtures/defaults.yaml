@@ -16,20 +16,74 @@ configs:
           kubeconfig:
             path: kubeconfig
           network_policies: null
-          public_access: null
+          public_access:
+            cidrs: null
+            enabled: false
           release_channel: null
           vertical_pod_autoscaling: null
-        kms: null
+        kms:
+          database_encryption_key_name: null
         location: us-west1-b
-        managed_dns: null
+        managed_dns:
+          dns_name: null
+          enabled: false
+          name: null
+          service_prefixes: null
         migration_permissions: null
         namespaces:
           compute: domino-compute
           platform: domino-platform
-        node_pools: null
+        node_pools:
+          compute:
+            disk_size_gb: null
+            gpu_accelerator: null
+            image_type: null
+            initial_count: null
+            instance_type: null
+            labels: null
+            max_count: null
+            max_pods: null
+            min_count: null
+            node_locations: null
+            preemptible: null
+            taints: null
+          gpu:
+            disk_size_gb: null
+            gpu_accelerator: null
+            image_type: null
+            initial_count: null
+            instance_type: null
+            labels: null
+            max_count: null
+            max_pods: null
+            min_count: null
+            node_locations: null
+            preemptible: null
+            taints: null
+          platform:
+            disk_size_gb: null
+            gpu_accelerator: null
+            image_type: null
+            initial_count: null
+            instance_type: null
+            labels: null
+            max_count: null
+            max_pods: null
+            min_count: null
+            node_locations: null
+            preemptible: null
+            taints: null
         project: null
         source: github.com/dominodatalab/terraform-gcp-gke?ref=v3.1.3
-        storage: null
+        storage:
+          filestore:
+            capacity: 1024
+            enabled: true
+          gcs:
+            force_destroy_on_deletion: false
+          nfs_instance:
+            capacity: 100
+            enabled: false
         tags: null
     name: gke_cluster
     output:

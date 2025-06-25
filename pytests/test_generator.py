@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import yaml
 
-from ddlcloud_generator_gke import GKEStorage
+from ddlcloud_generator_gke import GKENodePool
 
 from .generate import parse_args, validate
 
@@ -56,10 +56,42 @@ class TestGenerator(TestCase):
         gke_cluster.namespaces.platform = "test-platform"
         gke_cluster.namespaces.compute = "test-compute"
         gke_cluster.allowed_ssh_ranges = ["1.2.3.4/32", "5.6.7.8/24"]
-        gke_cluster.storage = GKEStorage()
         gke_cluster.storage.filestore.enabled = False
         gke_cluster.storage.nfs_instance.enabled = True
         gke_cluster.storage.gcs.force_destroy_on_deletion = True
+        gke_cluster.managed_dns.enabled = True
+        gke_cluster.managed_dns.name = "some-zone-name"
+        gke_cluster.managed_dns.dns_name = "some-dns-name"
+        gke_cluster.managed_dns.service_prefixes = ["app-", "test-"]
+        gke_cluster.kms.database_encryption_key_name = "some-key-name"
+        gke_cluster.gke.k8s_version = "3"  # exactly pi
+        gke_cluster.gke.release_channel = "SHAKEY"
+        gke_cluster.gke.public_access.enabled = True
+        gke_cluster.gke.public_access.cidrs = ["9.10.11.12/13", "14.15.16.17/18"]
+        gke_cluster.gke.control_plane_ports = ["443", "8443"]
+        gke_cluster.gke.advanced_datapath = False
+        gke_cluster.gke.network_policies = True
+        gke_cluster.gke.vertical_pod_autoscaling = False
+        gke_cluster.gke.kubeconfig.path = "/tmp/kubeconfig/path"
+        gke_cluster.node_pools.platform.initial_count = 2
+        gke_cluster.node_pools.compute.initial_count = 2
+        gke_cluster.node_pools.gpu.initial_count = 2
+        gke_cluster.additional_node_pools = {
+            "extra_pool": GKENodePool(
+                min_count=0,
+                max_count=10,
+                initial_count=5,
+                max_pods=15,
+                preemptible=True,
+                disk_size_gb=100,
+                image_type="some-image-type",
+                instance_type="some-instance-type",
+                gpu_accelerator="some-gpu-type",
+                labels={"some-label": "some-value"},
+                taints=["some.com/taint=taint-value"],
+                node_locations=["some-locaiton"],
+            )
+        }
 
         for module in tf_module.configs.values():
             validate(module)

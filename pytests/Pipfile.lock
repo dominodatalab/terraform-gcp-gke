@@ -30,7 +30,7 @@
         },
         "ddlcloud-tf-base-schemas": {
             "git": "git+https://github.com/Secretions/domino-tf-base-schemas.git",
-            "ref": "a53dd0483f4d44cbe779a1c3115a7220c3a28a2e"
+            "ref": "e3a702957a3aa5eaa8e0a743a041f5a02a7b29a5"
         },
         "lark": {
             "hashes": [
