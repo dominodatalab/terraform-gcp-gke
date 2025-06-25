@@ -2,7 +2,13 @@ from unittest import TestCase
 
 import yaml
 
-from ddlcloud_generator_gke import GKENodePool, GKEStorage
+from ddlcloud_generator_gke import (
+    GKEGeneratorException,
+    GKENodePool,
+    GKEStorage,
+    load_tfset,
+    upgrade,
+)
 
 from .generate import parse_args, validate
 
@@ -110,3 +116,34 @@ class TestGenerator(TestCase):
         values["filestore"]["enabled"] = False
         values["nfs_instance"]["enabled"] = True
         GKEStorage(**values)
+
+    def test_upgrade(self):
+        with open("fixtures/defaults.yaml") as f:
+            existing_config = yaml.safe_load(f)
+
+        with self.subTest("Load existing config"):
+            new_tf_module = self.get_tfmodule()
+            loaded_tf_module = upgrade(existing_config)
+            self.assertEqual(loaded_tf_module.model_dump(), new_tf_module.model_dump())
+
+        with self.subTest("Load incorrect module"):
+            existing_config["module_id"] = "eks"
+            with self.assertRaisesRegex(GKEGeneratorException, "Cannot upgrade from eks module type using gke module"):
+                upgrade(existing_config)
+            existing_config["module_id"] = "gke"
+
+        with self.subTest("Load unknown gke module version"):
+            existing_config["version"] = "6.6.6"
+            with self.assertRaisesRegex(GKEGeneratorException, "Attemping to load config with invalid version: 6.6.6"):
+                upgrade(existing_config)
+
+    def test__load_tfset(self):
+        with open("fixtures/defaults.yaml") as f:
+            existing_config = yaml.safe_load(f)
+
+        existing_config["module_id"] = "eks"
+        existing_config["version"] = "6.6.6"
+
+        loaded_tf_module = load_tfset(existing_config)
+        self.assertNotEqual(loaded_tf_module.module_id, "eks")
+        self.assertNotEqual(loaded_tf_module.version, "6.6.6")

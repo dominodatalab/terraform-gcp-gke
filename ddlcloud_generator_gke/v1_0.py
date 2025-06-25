@@ -136,7 +136,7 @@ class GKEConfig(BaseTFConfig):
     output: GKEOutputs = GKEOutputs()
 
 
-def _load_tfset(configs: dict) -> TFSet:
+def load_tfset(configs: dict) -> TFSet:
     return TFSet(**(configs | {"module_id": MODULE_ID, "version": VERSION}))
 
 
@@ -157,7 +157,7 @@ def upgrade(existing_config: dict) -> TFSet:
     if Version(existing_config["version"]) != Version(VERSION):
         raise GKEGeneratorException(f"Attemping to load config with invalid version: {existing_config['version']}")
 
-    return _load_tfset(existing_config)
+    return load_tfset(existing_config)
 
 
 def gke_subparser(subparser, parents):
@@ -177,7 +177,7 @@ def generate_gke_module(args, existing_config: dict | None) -> TFSet:
     if existing_config:
         return upgrade(existing_config)
 
-    return _load_tfset(
+    return load_tfset(
         {
             "configs": {
                 "main": GKEConfig(
