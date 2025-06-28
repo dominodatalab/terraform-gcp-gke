@@ -112,6 +112,9 @@ jobs:
           command: |
             cd pytests
             pipenv install --dev
+            pipenv run black --check --diff ../ddlcloud_generator_gke .
+            pipenv run ruff check ../ddlcloud_generator_gke .
+            pipenv run mypy --follow-imports=silent ../ddlcloud_generator_gke .
             pipenv run coverage run --source ddlcloud_generator_gke -m pytest -v .
             pipenv run coverage report --fail-under=80 -m
 
