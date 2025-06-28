@@ -12,6 +12,7 @@ PyYAML = "~=6.0"
 
 [dev-packages]
 pytest = "*"
+coverage = "*"
 black = "*"
 ruff = "*"
 mypy = "*"
