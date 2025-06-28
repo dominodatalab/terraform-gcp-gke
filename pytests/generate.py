@@ -8,7 +8,7 @@ from subprocess import run
 from tempfile import TemporaryDirectory
 
 import yaml
-from ddlcloud_tf_base_schemas import TFBackendConfig, TFLocalBackend
+from domino_tf_base_schemas import TFBackendConfig, TFLocalBackend
 
 from ddlcloud_generator_gke import GKEGenerator
 

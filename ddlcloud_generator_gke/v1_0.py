@@ -1,7 +1,7 @@
 from copy import deepcopy
 from typing import Self
 
-from ddlcloud_tf_base_schemas import (
+from domino_tf_base_schemas import (
     BaseTFConfig,
     BaseTFOutput,
     TFSet,
