@@ -52,6 +52,14 @@ class TestGenerator(TestCase):
             for module in tf_module.configs.values():
                 validate(module)
 
+        with self.subTest("upgrade"):
+            args = parse_args(["gke", "--deploy-id", "test"])
+            self.assertEqual(tf_module.configs["main"].module.gke_cluster.location, "some-location")
+            upgrade_tf_module = GKEGenerator.generate_gke_module(args, tf_module.model_dump(by_alias=True))
+            self.assertEqual(tf_module, upgrade_tf_module)
+            for module in tf_module.configs.values():
+                validate(module)
+
     def test_module_settings(self):
         tf_module = self.get_tfmodule()
         gke_cluster = tf_module.configs["main"].module.gke_cluster
