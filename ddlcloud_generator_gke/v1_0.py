@@ -16,6 +16,7 @@ class GKEGeneratorException(Exception):
 
 
 class GKEOutputs(BaseTFOutput):
+    _version: str = "0.1.0"
     google_filestore_ip_address: str = "${module.gke_cluster.google_filestore_instance.ip_address}"
     google_filestore_file_share: str = "/${module.gke_cluster.google_filestore_instance.file_share}"
     google_external_dns: str = "${module.gke_cluster.dns}"
