@@ -72,7 +72,7 @@ commands:
 jobs:
   pre-commit:
     docker:
-      - image: cimg/python:3.11.1
+      - image: cimg/python:3.13.2
     parameters:
       terraform_version:
         type: string
@@ -92,6 +92,27 @@ jobs:
             curl -L https://github.com/terraform-docs/terraform-docs/releases/download/v0.16.0/terraform-docs-v0.16.0-linux-amd64.tar.gz | tar -C /tmp -xzf - && chmod +x /tmp/terraform-docs && sudo mv /tmp/terraform-docs /usr/local/bin
             pip3 install checkov pre-commit
             SKIP=no-commit-to-branch pre-commit run --all-files
+
+  python-tests:
+    docker:
+      - image: cimg/python:3.13.2
+    parameters:
+      terraform_version:
+        type: string
+      workspace:
+        type: string
+        default: ci-<< pipeline.number >>
+    environment: *default_environment
+
+    steps:
+      - checkout
+      - install_tf
+      - run:
+          name: python tests
+          command: |
+            cd pytests
+            pipenv install --dev
+            pipenv run make checks
 
   test-deploy:
     docker:
@@ -161,6 +182,8 @@ workflows:
   test-deploy-workflow:
     jobs:
       - pre-commit:
+          terraform_version: << pipeline.parameters.terraform_version >>
+      - python-tests:
           terraform_version: << pipeline.parameters.terraform_version >>
       - test-deploy:
           terraform_version: << pipeline.parameters.terraform_version >>

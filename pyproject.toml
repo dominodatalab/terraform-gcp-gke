@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+version_scheme = "no-guess-dev"
+
+[project]
+name = "ddlcloud_generator_gke"
+description = "DDLCloud Generator Module for GKE"
+readme = "README.md"
+authors = [{name = "Infrastructure Engineering", email = "eng-infrastructure@dominodatalab.com"}]
+requires-python = ">=3.12"
+dynamic = ["version"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ddlcloud_generator_gke"]
+namespaces = false
+
+[tool.black]
+line-length = 120
+skip-string-normalization = true
+target-version = ['py39']
+
+[tool.pytest.ini_options]
+filterwarnings = [
+  "error",
+  "ignore::pytest.PytestUnraisableExceptionWarning",
+  "ignore:.*datetime.datetime.utcfromtimestamp.*is deprecated:DeprecationWarning", # botocore
+]
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]
+warn_no_return = false
+namespace_packages = true
+explicit_package_bases = true
+ignore_missing_imports = true
+pretty = false
+show_error_context = false
+no_error_summary = true
+check_untyped_defs = true
+exclude = [
+]
+
+[tool.pyright]
+exclude = [
+  "**/__pycache__",
+  ".venv",
+  ".git",
+  "build",
+  "resources"
+]
+
+[tool.ruff]
+select = ["E", "F", "I"]
+ignore = ["E501"] # line length
+exclude = [
+  "**/__pycache__",
+  ".venv",
+  ".git",
+  "build",
+  "resources"
+]
+
+[tool.coverage.run]
+source = ["."]
+omit = ["*/venv/*", "*/.venv/*", "*/tests/*", "setup.py"]
