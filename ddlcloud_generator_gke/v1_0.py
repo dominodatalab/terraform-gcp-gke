@@ -86,8 +86,6 @@ class GKESettings(ValidatingBaseModel):
 
 
 class GKENodePool(ValidatingBaseModel):
-    """stuff"""
-
     min_count: int | None = None
     max_count: int | None = None
     initial_count: int | None = None

@@ -11,10 +11,6 @@ description = "DDLCloud Generator Module for GKE"
 readme = "README.md"
 authors = [{name = "Infrastructure Engineering", email = "eng-infrastructure@dominodatalab.com"}]
 requires-python = ">=3.12"
-#dependencies = [
-#  "PyYAML~=6.0",
-#  "pydantic~=2.10",
-#]
 dynamic = ["version"]
 
 [tool.setuptools.packages.find]

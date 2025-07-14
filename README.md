@@ -184,3 +184,7 @@ No modules.
 | <a name="output_static_ip"></a> [static\_ip](#output\_static\_ip) | The external (public) static IPv4 for the Domino UI |
 | <a name="output_uuid"></a> [uuid](#output\_uuid) | Cluster UUID |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
+# ddlcloud\_generator\_gke
+
+This is a python module for defining interactions with Domino's `ddlcloud` provisioning tool. This tool is currently unreleased.
