@@ -179,7 +179,7 @@ class GKEGenerator:
         gke_subparser.add_argument("--kubernetes-version", help="Kubernetes Version", default="1.21")
         gke_subparser.add_argument("--module-version", help="Version of terraform-gcp-gke module", default="v3.1.3")
         gke_subparser.add_argument(
-            "--kubeconfig_path", help="Override path for generated kubeconfig", default="kubeconfig"
+            "--kubeconfig-path", help="Override path for generated kubeconfig", default="kubeconfig"
         )
         gke_subparser.add_argument("--dev", help="Development defaults", action="store_true")
         gke_subparser.set_defaults(generator=cls.generate_gke_module)
