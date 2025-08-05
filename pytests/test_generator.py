@@ -39,7 +39,7 @@ class TestGenerator(TestCase):
                     "some-location",
                     "--module-version",
                     "some-module-version",
-                    "--kubeconfig_path",
+                    "--kubeconfig-path",
                     "/path/to/kubeconfig",
                     "--dev",
                 ]
