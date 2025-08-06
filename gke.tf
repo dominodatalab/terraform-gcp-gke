@@ -106,5 +106,5 @@ resource "terraform_data" "kubeconfig" {
     EOF
   }
   triggers_replace = [var.gke.kubeconfig.path]
-  depends_on = [google_container_cluster.domino_cluster]
+  depends_on       = [google_container_cluster.domino_cluster]
 }
