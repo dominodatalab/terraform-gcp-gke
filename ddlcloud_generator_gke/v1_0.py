@@ -173,17 +173,11 @@ class GKEGenerator:
         return cls.load_tfset(existing_config)
 
     @classmethod
-    def subparser(cls, subparser, parents):
-        gke_subparser = subparser.add_parser("gke", help="GKE Terraform Generator", parents=parents)
-        gke_subparser.add_argument("--location", help="GCP Location (ie region/zone)", default="us-west1-b")
-        gke_subparser.add_argument("--kubernetes-version", help="Kubernetes Version", default="1.21")
-        gke_subparser.add_argument("--module-version", help="Version of terraform-gcp-gke module", default="v3.1.3")
-        gke_subparser.add_argument(
-            "--kubeconfig-path", help="Override path for generated kubeconfig", default="kubeconfig"
-        )
-        gke_subparser.add_argument("--dev", help="Development defaults", action="store_true")
-        gke_subparser.set_defaults(generator=cls.generate_gke_module)
-        return gke_subparser
+    def add_specific_args(cls, parser):
+        parser.add_argument("--location", help="GCP Location (ie region/zone)", default="us-west1-b")
+        parser.add_argument("--kubernetes-version", help="Kubernetes Version", default="1.21")
+        parser.add_argument("--dev", help="Development defaults", action="store_true")
+        parser.set_defaults(generator=cls.generate_gke_module)
 
     @classmethod
     def generate_gke_module(cls, args, existing_config: dict | None) -> TFSet:
