@@ -75,19 +75,6 @@ resource "google_container_cluster" "domino_cluster" {
     enabled  = var.gke.network_policies
   }
 
-  provisioner "local-exec" {
-    environment = {
-      KUBECONFIG                 = var.gke.kubeconfig.path
-      USE_GKE_GCLOUD_AUTH_PLUGIN = "True"
-    }
-    command = <<-EOF
-      if ! gcloud auth print-identity-token 2>/dev/null; then
-        printf "%s" "$GOOGLE_CREDENTIALS" | gcloud auth activate-service-account --project="${var.project}" --key-file=-
-      fi
-      gcloud container clusters get-credentials ${var.deploy_id} --project="${var.project}" ${local.is_regional ? "--region" : "--zone"} ${var.location}
-    EOF
-  }
-
   lifecycle {
     ignore_changes = [description]
   }
@@ -103,4 +90,21 @@ resource "google_compute_firewall" "master_webhooks" {
   }
 
   source_ranges = [google_container_cluster.domino_cluster.private_cluster_config[0].master_ipv4_cidr_block]
+}
+
+resource "terraform_data" "kubeconfig" {
+  provisioner "local-exec" {
+    environment = {
+      KUBECONFIG                 = var.gke.kubeconfig.path
+      USE_GKE_GCLOUD_AUTH_PLUGIN = "True"
+    }
+    command = <<-EOF
+      if ! gcloud auth print-identity-token 2>/dev/null; then
+        printf "%s" "$GOOGLE_CREDENTIALS" | gcloud auth activate-service-account --project="${var.project}" --key-file=-
+      fi
+      gcloud container clusters get-credentials ${var.deploy_id} --project="${var.project}" ${local.is_regional ? "--region" : "--zone"} ${var.location}
+    EOF
+  }
+  triggers_replace = [var.gke.kubeconfig.path]
+  depends_on       = [google_container_cluster.domino_cluster]
 }
