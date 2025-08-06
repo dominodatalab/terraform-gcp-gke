@@ -92,7 +92,7 @@ resource "google_compute_firewall" "master_webhooks" {
   source_ranges = [google_container_cluster.domino_cluster.private_cluster_config[0].master_ipv4_cidr_block]
 }
 
-resource "null_resource" "kubeconfig" {
+resource "terraform_data" "kubeconfig" {
   provisioner "local-exec" {
     environment = {
       KUBECONFIG                 = var.gke.kubeconfig.path
@@ -105,8 +105,6 @@ resource "null_resource" "kubeconfig" {
       gcloud container clusters get-credentials ${var.deploy_id} --project="${var.project}" ${local.is_regional ? "--region" : "--zone"} ${var.location}
     EOF
   }
-  triggers = {
-    kubeconfig_path = var.gke.kubeconfig.path
-  }
+  triggers_replace = [var.gke.kubeconfig.path]
   depends_on = [google_container_cluster.domino_cluster]
 }
