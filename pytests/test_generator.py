@@ -1,7 +1,12 @@
 from copy import deepcopy
+from os import path
+from os.path import dirname, join, normpath
+from subprocess import run
+from tempfile import TemporaryDirectory
 from unittest import TestCase
 
 import yaml
+from domino_tf_base_schemas import TFBackendConfig, TFLocalBackend
 
 from ddlcloud_generator_gke import (
     GKEGenerator,
@@ -9,8 +14,19 @@ from ddlcloud_generator_gke import (
     GKENodePool,
     GKEStorage,
 )
+from ddlcloud_generator_gke.util import parse_args
 
-from .generate import parse_args, validate
+module_root = normpath(join(dirname(path.realpath(__file__)), ".."))
+
+
+def validate(module):
+    with TemporaryDirectory() as tmpdir:
+        module.backend = TFBackendConfig(type="local", config=TFLocalBackend(path=path.join(tmpdir, "the.tfstate")))
+        module.module.gke_cluster.source = module_root
+        with open(path.join(tmpdir, "main.tf.json"), "w") as f:
+            f.write(module.render_to_json())
+        run(["terraform", "init"], cwd=tmpdir, check=True)
+        run(["terraform", "validate"], cwd=tmpdir, check=True)
 
 
 class TestGenerator(TestCase):
