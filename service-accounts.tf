@@ -10,6 +10,7 @@ resource "google_service_account" "accounts" {
 }
 
 
+/*
 resource "google_project_iam_member" "service_account" {
   for_each = local.service_accounts
 
@@ -17,6 +18,7 @@ resource "google_project_iam_member" "service_account" {
   role    = "roles/iam.serviceAccountUser"
   member  = "serviceAccount:${google_service_account.accounts[each.value].email}"
 }
+*/
 
 resource "google_project_iam_member" "platform_roles" {
   for_each = toset(["roles/logging.logWriter", "roles/monitoring.metricWriter"])
