@@ -119,6 +119,7 @@ No modules.
 |------|------|
 | [google_artifact_registry_repository.domino](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/artifact_registry_repository) | resource |
 | [google_artifact_registry_repository_iam_member.gcr](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/artifact_registry_repository_iam_member) | resource |
+| [google_artifact_registry_repository_iam_member.gcr_credential_refresher_reader](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/artifact_registry_repository_iam_member) | resource |
 | [google_artifact_registry_repository_iam_member.platform](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/artifact_registry_repository_iam_member) | resource |
 | [google_compute_disk.nfs](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk) | resource |
 | [google_compute_firewall.iap_tcp_forwarding](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) | resource |
@@ -143,8 +144,10 @@ No modules.
 | [google_project_iam_member.platform_roles](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
 | [google_project_iam_member.service_account](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
 | [google_service_account.accounts](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account) | resource |
+| [google_service_account.gcr_credential_refresher](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account) | resource |
 | [google_service_account_iam_binding.gcr](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_binding) | resource |
 | [google_service_account_iam_binding.platform_gcs](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_binding) | resource |
+| [google_service_account_iam_member.gcr_credential_refresher_workload_identity](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_member) | resource |
 | [google_storage_bucket.bucket](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket) | resource |
 | [google_storage_bucket_iam_binding.bucket](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_iam_binding) | resource |
 | [terraform_data.kubeconfig](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
@@ -177,6 +180,7 @@ No modules.
 | <a name="output_cluster"></a> [cluster](#output\_cluster) | GKE cluster information |
 | <a name="output_dns"></a> [dns](#output\_dns) | The external (public) DNS name for the Domino UI |
 | <a name="output_domino_artifact_repository"></a> [domino\_artifact\_repository](#output\_domino\_artifact\_repository) | Domino Google artifact repository |
+| <a name="output_gcr_credential_refresher"></a> [gcr\_credential\_refresher](#output\_gcr\_credential\_refresher) | Configuration for the GCR credential refresher Helm chart values |
 | <a name="output_google_filestore_instance"></a> [google\_filestore\_instance](#output\_google\_filestore\_instance) | Domino Google Cloud Filestore instance, name and ip\_address |
 | <a name="output_nfs_instance"></a> [nfs\_instance](#output\_nfs\_instance) | Domino Google Cloud Filestore instance, name and ip\_address |
 | <a name="output_nfs_instance_ip"></a> [nfs\_instance\_ip](#output\_nfs\_instance\_ip) | NFS instance IP |
