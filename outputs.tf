@@ -59,6 +59,14 @@ output "domino_artifact_repository" {
   description = "Domino Google artifact repository"
 }
 
+output "gcr_credential_refresher" {
+  value = {
+    service_account_email = google_service_account.gcr_credential_refresher.email
+    registry_server       = "${google_artifact_registry_repository.domino.location}-docker.pkg.dev"
+  }
+  description = "Configuration for the GCR credential refresher Helm chart values"
+}
+
 output "nfs_instance_ip" {
   value       = var.storage.nfs_instance.enabled ? google_compute_instance.nfs[0].network_interface[0].network_ip : ""
   description = "NFS instance IP"
