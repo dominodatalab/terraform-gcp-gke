@@ -98,6 +98,7 @@ configs:
       google_project: ${module.gke_cluster.project}
       nfs_instance_ip: ${module.gke_cluster.nfs_instance.ip_address}
       nfs_instance_path: ${module.gke_cluster.nfs_instance.nfs_path}
+      gcr_credential_refresher: ${module.gke_cluster.gcr_credential_refresher}
     remote_module_refs: null
 module_id: gke
 version: '1.0'
