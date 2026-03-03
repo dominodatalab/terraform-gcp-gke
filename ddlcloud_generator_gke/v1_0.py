@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Self
+from typing import Self, Union
 
 from domino_tf_base_schemas import (
     BaseTFConfig,
@@ -13,6 +13,11 @@ from pydantic import model_validator
 
 class GKEGeneratorException(Exception):
     pass
+
+
+class GcrCredentialRefresherOutput(ValidatingBaseModel):
+    service_account_email: str
+    registry_server: str
 
 
 class GKEOutputs(BaseTFOutput):
@@ -30,6 +35,9 @@ class GKEOutputs(BaseTFOutput):
     )
     nfs_instance_ip: str = "${module.gke_cluster.nfs_instance.ip_address}"
     nfs_instance_path: str = "${module.gke_cluster.nfs_instance.nfs_path}"
+    gcr_credential_refresher: Union[str, GcrCredentialRefresherOutput] = (
+        "${module.gke_cluster.gcr_credential_refresher}"
+    )
 
 
 class GKENamespaces(ValidatingBaseModel):
