@@ -2,11 +2,11 @@ version: 2.1
 
 parameters:
   terraform_version:
-    default: "1.4.5"
+    default: "1.15.6"
     type: string
 
 orbs:
-  terraform: circleci/terraform@3.2.0
+  terraform: circleci/terraform@3.7.0
 
 environment: &default_environment
   CLOUDSDK_CORE_PROJECT: domino-eng-platform-dev
@@ -89,7 +89,7 @@ jobs:
           command: |
             curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
             curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
-            curl -L https://github.com/terraform-docs/terraform-docs/releases/download/v0.20.0/terraform-docs-v0.20.0-linux-amd64.tar.gz | tar -C /tmp -xzf - && chmod +x /tmp/terraform-docs && sudo mv /tmp/terraform-docs /usr/local/bin
+            curl -L https://github.com/terraform-docs/terraform-docs/releases/download/v0.24.0/terraform-docs-v0.24.0-linux-amd64.tar.gz | tar -C /tmp -xzf - && chmod +x /tmp/terraform-docs && sudo mv /tmp/terraform-docs /usr/local/bin
             pip3 install checkov pre-commit
             SKIP=no-commit-to-branch pre-commit run --all-files
 
@@ -157,8 +157,14 @@ jobs:
           name: "Set module source to latest published release"
           working_directory: tests
           command: |
-            # v2.2.2 is retracted
-            latest_tag="$(git tag | grep -v 2.2.2$ | tail -1)"
+            # v2.2.2 is retracted; resolve newest release tag by version sort (unified with terraform-azure-aks)
+            latest_tag=$(git -c 'versionsort.suffix=-' ls-remote --tags --refs --sort=-v:refname \
+              "https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git" 'v*.*.*' \
+              | awk -F/ '{print $NF}' | grep -v '2.2.2$' | head -1)
+            if [ -z "$latest_tag" ]; then
+              echo "Failed to resolve latest release tag"
+              exit 1
+            fi
             export MOD_SOURCE="github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git?ref=${latest_tag}"
             echo "Latest published release tag is: ${latest_tag}"
             echo "Setting module source to: ${MOD_SOURCE}"
