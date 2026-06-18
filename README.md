@@ -92,7 +92,7 @@ It may be possible to lower the "admin" privilage levels to a "creator" level if
 Please submit any feature enhancements, bug fixes, or ideas via pull requests or issues.
 
 # Terraform Docs
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -189,7 +189,7 @@ No modules.
 | <a name="output_service_accounts"></a> [service\_accounts](#output\_service\_accounts) | GKE cluster Workload Identity namespace IAM service accounts |
 | <a name="output_static_ip"></a> [static\_ip](#output\_static\_ip) | The external (public) static IPv4 for the Domino UI |
 | <a name="output_uuid"></a> [uuid](#output\_uuid) | Cluster UUID |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
 
 # ddlcloud\_generator\_gke
 

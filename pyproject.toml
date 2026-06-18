@@ -21,7 +21,7 @@ namespaces = false
 [tool.black]
 line-length = 120
 skip-string-normalization = true
-target-version = ['py39']
+target-version = ['py312']
 
 [tool.pytest.ini_options]
 filterwarnings = [
@@ -53,8 +53,6 @@ exclude = [
 ]
 
 [tool.ruff]
-select = ["E", "F", "I"]
-ignore = ["E501"] # line length
 exclude = [
   "**/__pycache__",
   ".venv",
@@ -62,6 +60,10 @@ exclude = [
   "build",
   "resources"
 ]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E501"] # line length
 
 [tool.coverage.run]
 source = ["."]
