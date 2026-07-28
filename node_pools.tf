@@ -6,10 +6,14 @@ locals {
 resource "google_container_node_pool" "node_pools" {
   for_each = local.node_pools
 
-  name           = each.key
-  location       = google_container_cluster.domino_cluster.location
-  cluster        = google_container_cluster.domino_cluster.name
-  node_locations = length(each.value.node_locations) != 0 ? each.value.node_locations : google_container_cluster.domino_cluster.node_locations
+  name     = each.key
+  location = google_container_cluster.domino_cluster.location
+  cluster  = google_container_cluster.domino_cluster.name
+  node_locations = length(each.value.node_locations) != 0 ? each.value.node_locations : (
+    var.storage.gcnv.enabled && !local.gcnv_regional && contains(["compute", "platform"], each.key)
+    ? [local.gcnv_location]
+    : google_container_cluster.domino_cluster.node_locations
+  )
 
   initial_node_count = each.value.initial_count
   max_pods_per_node  = each.value.max_pods

@@ -79,6 +79,13 @@ configs:
           filestore:
             capacity: 1024
             enabled: true
+          gcnv:
+            enabled: false
+            pool_capacity_gib: 1024
+            trident_namespace: trident
+            regional: false
+            primary_zone: null
+            replica_zone: null
           gcs:
             force_destroy_on_deletion: false
           nfs_instance:
@@ -99,6 +106,13 @@ configs:
       nfs_instance_ip: ${module.gke_cluster.nfs_instance.ip_address}
       nfs_instance_path: ${module.gke_cluster.nfs_instance.nfs_path}
       gcr_credential_refresher: ${module.gke_cluster.gcr_credential_refresher}
+      gcnv_project_number: ${module.gke_cluster.gcnv.project_number}
+      gcnv_location: ${module.gke_cluster.gcnv.location}
+      gcnv_storage_pool_name: ${module.gke_cluster.gcnv.storage_pool_name}
+      gcnv_service_account_email: ${module.gke_cluster.gcnv.service_account_email}
+      gcnv_client_cidr: ${module.gke_cluster.gcnv.client_cidr}
+      gcnv_root_volume_name: ${module.gke_cluster.gcnv.root_volume_name}
+      gcnv_export_policy_name: ${module.gke_cluster.gcnv.export_policy_name}
     remote_module_refs: null
 module_id: gke
 version: '1.0'

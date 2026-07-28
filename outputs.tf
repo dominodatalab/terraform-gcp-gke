@@ -78,3 +78,16 @@ output "nfs_instance" {
   }
   description = "Domino Google Cloud Filestore instance, name and ip_address"
 }
+
+output "gcnv" {
+  value = {
+    project_number        = var.storage.gcnv.enabled ? data.google_project.domino.number : null
+    location              = var.storage.gcnv.enabled ? local.gcnv_location : null
+    storage_pool_name     = var.storage.gcnv.enabled ? google_netapp_storage_pool.gcnv[0].name : null
+    service_account_email = var.storage.gcnv.enabled ? google_service_account.gcnv[0].email : null
+    client_cidr           = var.storage.gcnv.enabled ? google_compute_subnetwork.default.ip_cidr_range : null
+    root_volume_name      = var.storage.gcnv.enabled ? local.gcnv_root_volume.name : null
+    export_policy_name    = var.storage.gcnv.enabled ? local.gcnv_root_volume.nas.export_policy_name : null
+  }
+  description = "GCNV ONTAP-mode pool and Trident service account."
+}

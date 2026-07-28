@@ -64,6 +64,14 @@ variable "storage" {
     gcs = {
       force_destroy_on_deletion = Toogle to allow recursive deletion of all objects in the bucket. if 'false' terraform will NOT be able to delete non-empty buckets.
     }
+    gcnv = {
+      enabled = Provision a Google Cloud NetApp Volumes storage pool in ONTAP-mode (Trident GCNV backend)
+      pool_capacity_gib = GCNV storage pool capacity (GiB)
+      trident_namespace = Namespace containing the Trident controller service account
+      regional = If true, create a zone-redundant (regional) pool with two synchronous replicas across two zones; if false (default), a single-zone (zonal) pool.
+      primary_zone = Active zone for a regional pool. Required when regional is true.
+      replica_zone = Standby zone for a regional pool. Required when regional is true.
+    }
   EOF
 
   type = object({
@@ -77,10 +85,30 @@ variable "storage" {
     }), {}),
     gcs = optional(object({
       force_destroy_on_deletion = optional(bool, false)
+    }), {}),
+    gcnv = optional(object({
+      enabled           = optional(bool, false)
+      pool_capacity_gib = optional(number, 1024)
+      trident_namespace = optional(string, "trident")
+      regional          = optional(bool, false)
+      primary_zone      = optional(string)
+      replica_zone      = optional(string)
     }), {})
   })
 
   default = {}
+
+  validation {
+    condition = length([
+      for enabled in [
+        var.storage.filestore.enabled,
+        var.storage.nfs_instance.enabled,
+        var.storage.gcnv.enabled,
+      ] : enabled if enabled
+    ]) <= 1
+    error_message = "Only one shared storage backend can be enabled."
+  }
+
 }
 
 variable "managed_dns" {
