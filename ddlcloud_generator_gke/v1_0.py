@@ -38,6 +38,13 @@ class GKEOutputs(BaseTFOutput):
     gcr_credential_refresher: Union[str, GcrCredentialRefresherOutput] = (
         "${module.gke_cluster.gcr_credential_refresher}"
     )
+    gcnv_project_number: str = "${module.gke_cluster.gcnv.project_number}"
+    gcnv_location: str = "${module.gke_cluster.gcnv.location}"
+    gcnv_storage_pool_name: str = "${module.gke_cluster.gcnv.storage_pool_name}"
+    gcnv_service_account_email: str = "${module.gke_cluster.gcnv.service_account_email}"
+    gcnv_client_cidr: str = "${module.gke_cluster.gcnv.client_cidr}"
+    gcnv_root_volume_name: str = "${module.gke_cluster.gcnv.root_volume_name}"
+    gcnv_export_policy_name: str = "${module.gke_cluster.gcnv.export_policy_name}"
 
 
 class GKENamespaces(ValidatingBaseModel):
@@ -53,14 +60,32 @@ class GKEStorage(ValidatingBaseModel):
     class GCSSettings(ValidatingBaseModel):
         force_destroy_on_deletion: bool = False
 
+    class GCNVSettings(ValidatingBaseModel):
+        enabled: bool = False
+        pool_capacity_gib: int = 1024
+        trident_namespace: str = "trident"
+        regional: bool = False
+        primary_zone: str | None = None
+        replica_zone: str | None = None
+
     filestore: Store = Store(enabled=True, capacity=1024)
     nfs_instance: Store = Store(enabled=False, capacity=100)
     gcs: GCSSettings = GCSSettings()
+    gcnv: GCNVSettings = GCNVSettings()
 
     @model_validator(mode="after")
     def validate_stores(self) -> Self:
-        if self.filestore.enabled and self.nfs_instance.enabled:
-            raise ValueError("Cannot enable both filestore and nfs instance")
+        enabled = [
+            name
+            for name, is_enabled in (
+                ("filestore", self.filestore.enabled),
+                ("nfs_instance", self.nfs_instance.enabled),
+                ("gcnv", self.gcnv.enabled),
+            )
+            if is_enabled
+        ]
+        if len(enabled) > 1:
+            raise ValueError(f"Multiple shared stores enabled: {', '.join(enabled)}")
         return self
 
 

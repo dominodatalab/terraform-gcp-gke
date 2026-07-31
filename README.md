@@ -97,16 +97,18 @@ Please submit any feature enhancements, bug fixes, or ideas via pull requests or
 
 | Name | Version |
 | ---- | ------- |
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
-| <a name="requirement_google"></a> [google](#requirement\_google) | >= 5.0, < 8.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4 |
+| <a name="requirement_google"></a> [google](#requirement\_google) | >= 7.28.0, < 8.0 |
 | <a name="requirement_google-beta"></a> [google-beta](#requirement\_google-beta) | >= 5.0, < 8.0 |
+| <a name="requirement_netapp-ontap"></a> [netapp-ontap](#requirement\_netapp-ontap) | 2.7.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.9 |
 
 ## Providers
 
 | Name | Version |
 | ---- | ------- |
-| <a name="provider_google"></a> [google](#provider\_google) | >= 5.0, < 8.0 |
+| <a name="provider_google"></a> [google](#provider\_google) | >= 7.28.0, < 8.0 |
+| <a name="provider_netapp-ontap"></a> [netapp-ontap](#provider\_netapp-ontap) | 2.7.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
@@ -125,9 +127,11 @@ No modules.
 | [google_compute_firewall.iap_tcp_forwarding](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) | resource |
 | [google_compute_firewall.master_webhooks](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) | resource |
 | [google_compute_firewall.nfs](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) | resource |
+| [google_compute_global_address.gcnv](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) | resource |
 | [google_compute_global_address.static_ip](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) | resource |
 | [google_compute_instance.nfs](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance) | resource |
 | [google_compute_network.vpc_network](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network) | resource |
+| [google_compute_network_peering_routes_config.gcnv](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network_peering_routes_config) | resource |
 | [google_compute_router.router](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router) | resource |
 | [google_compute_router_nat.nat](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router_nat) | resource |
 | [google_compute_subnetwork.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork) | resource |
@@ -141,18 +145,30 @@ No modules.
 | [google_kms_crypto_key.crypto_key](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/kms_crypto_key) | resource |
 | [google_kms_crypto_key_iam_binding.binding](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/kms_crypto_key_iam_binding) | resource |
 | [google_kms_key_ring.key_ring](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/kms_key_ring) | resource |
+| [google_netapp_storage_pool.gcnv](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/netapp_storage_pool) | resource |
+| [google_project_iam_custom_role.gcnv](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_custom_role) | resource |
+| [google_project_iam_member.gcnv](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
+| [google_project_iam_member.gcnv_viewer](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
 | [google_project_iam_member.platform_roles](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
 | [google_project_iam_member.service_account](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
 | [google_service_account.accounts](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account) | resource |
+| [google_service_account.gcnv](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account) | resource |
 | [google_service_account.gcr_credential_refresher](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account) | resource |
+| [google_service_account_iam_binding.gcnv](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_binding) | resource |
 | [google_service_account_iam_binding.gcr](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_binding) | resource |
 | [google_service_account_iam_binding.platform_gcs](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_binding) | resource |
 | [google_service_account_iam_member.gcr_credential_refresher_workload_identity](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account_iam_member) | resource |
+| [google_service_networking_connection.gcnv](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_networking_connection) | resource |
 | [google_storage_bucket.bucket](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket) | resource |
 | [google_storage_bucket_iam_binding.bucket](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_iam_binding) | resource |
+| [netapp-ontap_nfs_export_policy_rule.gcnv_node_access](https://registry.terraform.io/providers/NetApp/netapp-ontap/2.7.0/docs/resources/nfs_export_policy_rule) | resource |
+| [terraform_data.gcnv_ontap_ready](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.gcnv_volume_cleanup](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [terraform_data.kubeconfig](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [google_compute_zones.gcnv](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/compute_zones) | data source |
 | [google_project.domino](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/project) | data source |
 | [google_storage_project_service_account.gcs_account](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/storage_project_service_account) | data source |
+| [netapp-ontap_volumes.gcnv](https://registry.terraform.io/providers/NetApp/netapp-ontap/2.7.0/docs/data-sources/volumes) | data source |
 
 ## Inputs
 
@@ -169,7 +185,7 @@ No modules.
 | <a name="input_namespaces"></a> [namespaces](#input\_namespaces) | Namespace that are used for generating the service account bindings | `object({ platform = string, compute = string })` | n/a | yes |
 | <a name="input_node_pools"></a> [node\_pools](#input\_node\_pools) | GKE node pool params | <pre>object(<br/>    {<br/>      compute = object({<br/>        min_count       = optional(number, 0)<br/>        max_count       = optional(number, 10)<br/>        initial_count   = optional(number, 1)<br/>        max_pods        = optional(number, 30)<br/>        preemptible     = optional(bool, false)<br/>        disk_size_gb    = optional(number, 400)<br/>        image_type      = optional(string, "COS_CONTAINERD")<br/>        instance_type   = optional(string, "n2-highmem-8")<br/>        gpu_accelerator = optional(string, "")<br/>        labels = optional(map(string), {<br/>          "dominodatalab.com/node-pool" = "default"<br/>        })<br/>        taints         = optional(list(string), [])<br/>        node_locations = optional(list(string), [])<br/>      }),<br/>      platform = object({<br/>        min_count       = optional(number, 1)<br/>        max_count       = optional(number, 5)<br/>        initial_count   = optional(number, 1)<br/>        max_pods        = optional(number, 60)<br/>        preemptible     = optional(bool, false)<br/>        disk_size_gb    = optional(number, 100)<br/>        image_type      = optional(string, "COS_CONTAINERD")<br/>        instance_type   = optional(string, "n2-standard-8")<br/>        gpu_accelerator = optional(string, "")<br/>        labels = optional(map(string), {<br/>          "dominodatalab.com/node-pool" = "platform"<br/>        })<br/>        taints         = optional(list(string), [])<br/>        node_locations = optional(list(string), [])<br/>      }),<br/>      gpu = object({<br/>        min_count       = optional(number, 0)<br/>        max_count       = optional(number, 2)<br/>        initial_count   = optional(number, 0)<br/>        max_pods        = optional(number, 30)<br/>        preemptible     = optional(bool, false)<br/>        disk_size_gb    = optional(number, 400)<br/>        image_type      = optional(string, "COS_CONTAINERD")<br/>        instance_type   = optional(string, "n1-highmem-8")<br/>        gpu_accelerator = optional(string, "nvidia-tesla-p100")<br/>        labels = optional(map(string), {<br/>          "dominodatalab.com/node-pool" = "default-gpu"<br/>          "nvidia.com/gpu"              = "true"<br/>        })<br/>        taints = optional(list(string), [<br/>          "nvidia.com/gpu=true:NoExecute"<br/>        ])<br/>        node_locations = optional(list(string), [])<br/>      })<br/>  })</pre> | <pre>{<br/>  "compute": {},<br/>  "gpu": {},<br/>  "platform": {}<br/>}</pre> | no |
 | <a name="input_project"></a> [project](#input\_project) | GCP Project ID | `string` | `"domino-eng-platform-dev"` | no |
-| <a name="input_storage"></a> [storage](#input\_storage) | storage = {<br/>    filestore = {<br/>      enabled = Provision a Filestore instance (for production installs)<br/>      capacity\_gb = Filestore Instance size (GB) for the cluster NFS shared storage<br/>    }<br/>    nfs\_instance = {<br/>      enabled = Provision an instance as an NFS server (to avoid filestore churn during testing)<br/>      capacity\_gb = NFS instance disk size<br/>    }<br/>    gcs = {<br/>      force\_destroy\_on\_deletion = Toogle to allow recursive deletion of all objects in the bucket. if 'false' terraform will NOT be able to delete non-empty buckets.<br/>    } | <pre>object({<br/>    filestore = optional(object({<br/>      enabled     = optional(bool, true)<br/>      capacity_gb = optional(number, 1024)<br/>    }), {}),<br/>    nfs_instance = optional(object({<br/>      enabled     = optional(bool, false)<br/>      capacity_gb = optional(number, 100)<br/>    }), {}),<br/>    gcs = optional(object({<br/>      force_destroy_on_deletion = optional(bool, false)<br/>    }), {})<br/>  })</pre> | `{}` | no |
+| <a name="input_storage"></a> [storage](#input\_storage) | storage = {<br/>    filestore = {<br/>      enabled = Provision a Filestore instance (for production installs)<br/>      capacity\_gb = Filestore Instance size (GB) for the cluster NFS shared storage<br/>    }<br/>    nfs\_instance = {<br/>      enabled = Provision an instance as an NFS server (to avoid filestore churn during testing)<br/>      capacity\_gb = NFS instance disk size<br/>    }<br/>    gcs = {<br/>      force\_destroy\_on\_deletion = Toogle to allow recursive deletion of all objects in the bucket. if 'false' terraform will NOT be able to delete non-empty buckets.<br/>    }<br/>    gcnv = {<br/>      enabled = Provision a Google Cloud NetApp Volumes storage pool in ONTAP-mode (Trident GCNV backend)<br/>      pool\_capacity\_gib = GCNV storage pool capacity (GiB)<br/>      trident\_namespace = Namespace containing the Trident controller service account<br/>      regional = If true, create a zone-redundant (regional) pool with two synchronous replicas across two zones; if false (default), a single-zone (zonal) pool.<br/>      primary\_zone = Active zone for a regional pool. Required when regional is true.<br/>      replica\_zone = Standby zone for a regional pool. Required when regional is true.<br/>    } | <pre>object({<br/>    filestore = optional(object({<br/>      enabled     = optional(bool, true)<br/>      capacity_gb = optional(number, 1024)<br/>    }), {}),<br/>    nfs_instance = optional(object({<br/>      enabled     = optional(bool, false)<br/>      capacity_gb = optional(number, 100)<br/>    }), {}),<br/>    gcs = optional(object({<br/>      force_destroy_on_deletion = optional(bool, false)<br/>    }), {}),<br/>    gcnv = optional(object({<br/>      enabled           = optional(bool, false)<br/>      pool_capacity_gib = optional(number, 1024)<br/>      trident_namespace = optional(string, "trident")<br/>      regional          = optional(bool, false)<br/>      primary_zone      = optional(string)<br/>      replica_zone      = optional(string)<br/>    }), {})<br/>  })</pre> | `{}` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Deployment tags. | `map(string)` | `{}` | no |
 
 ## Outputs
@@ -180,6 +196,7 @@ No modules.
 | <a name="output_cluster"></a> [cluster](#output\_cluster) | GKE cluster information |
 | <a name="output_dns"></a> [dns](#output\_dns) | The external (public) DNS name for the Domino UI |
 | <a name="output_domino_artifact_repository"></a> [domino\_artifact\_repository](#output\_domino\_artifact\_repository) | Domino Google artifact repository |
+| <a name="output_gcnv"></a> [gcnv](#output\_gcnv) | GCNV ONTAP-mode pool and Trident service account. |
 | <a name="output_gcr_credential_refresher"></a> [gcr\_credential\_refresher](#output\_gcr\_credential\_refresher) | Configuration for the GCR credential refresher Helm chart values |
 | <a name="output_google_filestore_instance"></a> [google\_filestore\_instance](#output\_google\_filestore\_instance) | Domino Google Cloud Filestore instance, name and ip\_address |
 | <a name="output_nfs_instance"></a> [nfs\_instance](#output\_nfs\_instance) | Domino Google Cloud Filestore instance, name and ip\_address |

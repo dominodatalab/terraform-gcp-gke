@@ -131,7 +131,10 @@ class TestGenerator(TestCase):
             "filestore": {"enabled": True, "capacity": 1024},
             "nfs_instance": {"enabled": True, "capacity": 100},
         }
-        with self.assertRaisesRegex(ValueError, "Cannot enable both filestore and nfs instance"):
+        with self.assertRaisesRegex(
+            ValueError,
+            "Multiple shared stores enabled: filestore, nfs_instance",
+        ):
             GKEStorage(**values)
 
         values["filestore"]["enabled"] = False
@@ -140,6 +143,54 @@ class TestGenerator(TestCase):
         values["filestore"]["enabled"] = False
         values["nfs_instance"]["enabled"] = True
         GKEStorage(**values)
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "Multiple shared stores enabled: filestore, gcnv",
+        ):
+            GKEStorage(filestore={"enabled": True, "capacity": 1024}, gcnv={"enabled": True})
+        with self.assertRaisesRegex(
+            ValueError,
+            "Multiple shared stores enabled: nfs_instance, gcnv",
+        ):
+            GKEStorage(
+                filestore={"enabled": False, "capacity": 1024},
+                nfs_instance={"enabled": True, "capacity": 100},
+                gcnv={"enabled": True},
+            )
+
+    def test_gcnv_storage(self):
+        tf_module = self.get_tfmodule()
+        gke_cluster = tf_module.configs["main"].module.gke_cluster
+        gke_cluster.storage.filestore.enabled = False
+        gke_cluster.storage.gcnv.enabled = True
+        gke_cluster.storage.gcnv.trident_namespace = "custom-trident"
+        gke_cluster.storage.gcnv.regional = True
+        gke_cluster.storage.gcnv.primary_zone = "us-west1-b"
+        gke_cluster.storage.gcnv.replica_zone = "us-west1-c"
+
+        for module in tf_module.configs.values():
+            self.assertTrue(module.module.gke_cluster.storage.gcnv.regional)
+            self.assertEqual(module.module.gke_cluster.storage.gcnv.trident_namespace, "custom-trident")
+            self.assertEqual(module.module.gke_cluster.storage.gcnv.primary_zone, "us-west1-b")
+            self.assertEqual(module.module.gke_cluster.storage.gcnv.replica_zone, "us-west1-c")
+            validate(module)
+
+    def test_gcnv_output_includes_all_fields(self):
+        tf_module = self.get_tfmodule()
+        for module in tf_module.configs.values():
+            self.assertEqual(
+                module.output.gcnv_client_cidr,
+                "${module.gke_cluster.gcnv.client_cidr}",
+            )
+            self.assertEqual(
+                module.output.gcnv_root_volume_name,
+                "${module.gke_cluster.gcnv.root_volume_name}",
+            )
+            self.assertEqual(
+                module.output.gcnv_export_policy_name,
+                "${module.gke_cluster.gcnv.export_policy_name}",
+            )
 
     def test_upgrade(self):
         with open("fixtures/defaults.yaml") as f:
