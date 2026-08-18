@@ -132,6 +132,11 @@ variable "managed_dns" {
 
   })
   default = {}
+
+  validation {
+    condition     = !var.managed_dns.zone_create || length(var.managed_dns.dns_name) > 0
+    error_message = "managed_dns.dns_name must be set when managed_dns.zone_create=true."
+  }
 }
 
 variable "kms" {
