@@ -2,7 +2,7 @@ data "google_storage_project_service_account" "gcs_account" {
 }
 
 resource "google_kms_crypto_key_iam_binding" "binding" {
-  count         = var.kms.database_encryption_key_name == null ? 1 : 0
+  count         = var.storage.gcs.create && var.kms.database_encryption_key_name == null ? 1 : 0
   crypto_key_id = google_kms_crypto_key.crypto_key[0].id
   role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
 
@@ -10,7 +10,8 @@ resource "google_kms_crypto_key_iam_binding" "binding" {
 }
 
 resource "google_storage_bucket_iam_binding" "bucket" {
-  bucket = google_storage_bucket.bucket.name
+  count  = var.storage.gcs.create ? 1 : 0
+  bucket = google_storage_bucket.bucket[0].name
   role   = "roles/storage.admin"
   members = [
     "serviceAccount:${google_service_account.accounts["platform"].email}"
@@ -18,6 +19,8 @@ resource "google_storage_bucket_iam_binding" "bucket" {
 }
 
 resource "google_storage_bucket" "bucket" {
+  count = var.storage.gcs.create ? 1 : 0
+
   name     = "dominodatalab-${var.deploy_id}"
   location = local.region
 
@@ -35,6 +38,17 @@ resource "google_storage_bucket" "bucket" {
   force_destroy = var.storage.gcs.force_destroy_on_deletion
 
   depends_on = [google_kms_crypto_key_iam_binding.binding]
+}
+
+# State migration: these resources were unconditional before storage.gcs.create existed.
+moved {
+  from = google_storage_bucket.bucket
+  to   = google_storage_bucket.bucket[0]
+}
+
+moved {
+  from = google_storage_bucket_iam_binding.bucket
+  to   = google_storage_bucket_iam_binding.bucket[0]
 }
 
 resource "google_filestore_instance" "nfs" {

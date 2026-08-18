@@ -62,6 +62,7 @@ variable "storage" {
       capacity_gb = NFS instance disk size
     }
     gcs = {
+      create = Whether to create the Domino GCS bucket and its IAM/KMS bindings. Set to false for a compute-only dataplane.
       force_destroy_on_deletion = Toogle to allow recursive deletion of all objects in the bucket. if 'false' terraform will NOT be able to delete non-empty buckets.
     }
     gcnv = {
@@ -84,6 +85,7 @@ variable "storage" {
       capacity_gb = optional(number, 100)
     }), {}),
     gcs = optional(object({
+      create                    = optional(bool, true)
       force_destroy_on_deletion = optional(bool, false)
     }), {}),
     gcnv = optional(object({
@@ -118,6 +120,7 @@ variable "managed_dns" {
     name = Managed zone to modify
     dns_name = DNS record name to create
     service_prefixes = List of additional prefixes to the dns_name to create
+    zone_create = Whether to create a dedicated Cloud DNS managed zone for this dataplane, plus workload identities for external-dns and cert-manager
   }
   EOF
   type = object({
@@ -125,6 +128,7 @@ variable "managed_dns" {
     name             = optional(string, "")
     dns_name         = optional(string, "")
     service_prefixes = optional(set(string), [])
+    zone_create      = optional(bool, false)
 
   })
   default = {}
@@ -139,6 +143,20 @@ variable "kms" {
 
   type = object({
     database_encryption_key_name = optional(string, null)
+  })
+
+  default = {}
+}
+
+variable "registry" {
+  description = <<EOF
+  registry = {
+    create = Whether to create the Domino Artifact Registry repository and its GCR credential refresher. Set to false for a compute-only dataplane.
+  }
+  EOF
+
+  type = object({
+    create = optional(bool, true)
   })
 
   default = {}
