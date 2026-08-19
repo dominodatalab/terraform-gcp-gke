@@ -69,6 +69,16 @@ resource "google_dns_managed_zone_iam_member" "external_dns" {
   member       = "serviceAccount:${google_service_account.external_dns[0].email}"
 }
 
+# external-dns discovers its zone by listing zones at project scope, which the zone-scoped
+# grant above cannot satisfy. dns.reader is read-only; writes stay zone-scoped.
+resource "google_project_iam_member" "external_dns_zone_reader" {
+  count = var.managed_dns.zone_create ? 1 : 0
+
+  project = var.project
+  role    = "roles/dns.reader"
+  member  = "serviceAccount:${google_service_account.external_dns[0].email}"
+}
+
 resource "google_service_account" "cert_manager" {
   count = var.managed_dns.zone_create ? 1 : 0
 
