@@ -93,12 +93,12 @@ output "gcnv" {
 }
 
 output "dns_zone" {
-  value = {
-    name         = var.managed_dns.zone_create ? google_dns_managed_zone.dataplane[0].name : null
-    dns_name     = var.managed_dns.zone_create ? google_dns_managed_zone.dataplane[0].dns_name : null
-    name_servers = var.managed_dns.zone_create ? google_dns_managed_zone.dataplane[0].name_servers : null
-  }
-  description = "Per-dataplane Cloud DNS zone (fields null when managed_dns.zone_create=false). name_servers is consumed by the control plane to create the NS delegation record."
+  value = var.managed_dns.zone_create ? {
+    name         = google_dns_managed_zone.dataplane[0].name
+    dns_name     = google_dns_managed_zone.dataplane[0].dns_name
+    name_servers = google_dns_managed_zone.dataplane[0].name_servers
+  } : null
+  description = "Per-dataplane Cloud DNS zone (null when managed_dns.zone_create=false). name_servers is consumed by the control plane to create the NS delegation record."
 }
 
 output "external_dns_identity" {

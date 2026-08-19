@@ -205,7 +205,7 @@ No modules.
 | <a name="output_cert_manager_identity"></a> [cert\_manager\_identity](#output\_cert\_manager\_identity) | Workload identity for cert-manager (null when managed\_dns.zone\_create=false) |
 | <a name="output_cluster"></a> [cluster](#output\_cluster) | GKE cluster information |
 | <a name="output_dns"></a> [dns](#output\_dns) | The external (public) DNS name for the Domino UI |
-| <a name="output_dns_zone"></a> [dns\_zone](#output\_dns\_zone) | Per-dataplane Cloud DNS zone (fields null when managed\_dns.zone\_create=false). name\_servers is consumed by the control plane to create the NS delegation record. |
+| <a name="output_dns_zone"></a> [dns\_zone](#output\_dns\_zone) | Per-dataplane Cloud DNS zone (null when managed\_dns.zone\_create=false). name\_servers is consumed by the control plane to create the NS delegation record. |
 | <a name="output_domino_artifact_repository"></a> [domino\_artifact\_repository](#output\_domino\_artifact\_repository) | Domino Google artifact repository (null when registry.create=false) |
 | <a name="output_external_dns_identity"></a> [external\_dns\_identity](#output\_external\_dns\_identity) | Workload identity for external-dns (null when managed\_dns.zone\_create=false) |
 | <a name="output_gcnv"></a> [gcnv](#output\_gcnv) | GCNV ONTAP-mode pool and Trident service account. |
