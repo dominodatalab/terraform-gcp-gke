@@ -67,7 +67,7 @@ variable "storage" {
     }
     gcnv = {
       enabled = Provision a Google Cloud NetApp Volumes storage pool in ONTAP-mode (Trident GCNV backend)
-      pool_capacity_gib = GCNV storage pool capacity (GiB)
+      pool_capacity_gib = GCNV storage pool capacity (GiB). Must cover the shared store plus Domino's 931 GiB staging volume.
       trident_namespace = Namespace containing the Trident controller service account
       regional = If true, create a zone-redundant (regional) pool with two synchronous replicas across two zones; if false (default), a single-zone (zonal) pool.
       primary_zone = Active zone for a regional pool. Required when regional is true.
@@ -90,7 +90,7 @@ variable "storage" {
     }), {}),
     gcnv = optional(object({
       enabled           = optional(bool, false)
-      pool_capacity_gib = optional(number, 1024)
+      pool_capacity_gib = optional(number, 1200)
       trident_namespace = optional(string, "trident")
       regional          = optional(bool, false)
       primary_zone      = optional(string)
