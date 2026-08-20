@@ -34,6 +34,9 @@ resource "google_dns_record_set" "caa" {
 }
 
 # Per-dataplane zone; the caller NS-delegates it from the control plane's Route53 zone.
+# Signing is opt-in: every parent up to domino.tech is unsigned, so a DS record could never
+# be authenticated.
+# tfsec:ignore:google-dns-enable-dnssec
 resource "google_dns_managed_zone" "dataplane" {
   count       = var.managed_dns.zone_create ? 1 : 0
   name        = var.deploy_id
