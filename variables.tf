@@ -121,6 +121,7 @@ variable "managed_dns" {
     dns_name = DNS record name to create
     service_prefixes = List of additional prefixes to the dns_name to create
     zone_create = Whether to create a dedicated Cloud DNS managed zone for this dataplane, plus workload identities for external-dns and cert-manager
+    dnssec = Whether to enable DNSSEC for the created zone
   }
   EOF
   type = object({
@@ -129,7 +130,7 @@ variable "managed_dns" {
     dns_name         = optional(string, "")
     service_prefixes = optional(set(string), [])
     zone_create      = optional(bool, false)
-
+    dnssec           = optional(bool, false)
   })
   default = {}
 

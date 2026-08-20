@@ -40,8 +40,11 @@ resource "google_dns_managed_zone" "dataplane" {
   dns_name    = "${var.deploy_id}.${trimsuffix(var.managed_dns.dns_name, ".")}."
   description = "Domino dataplane DNS zone for ${var.deploy_id}"
 
-  dnssec_config {
-    state = "on"
+  dynamic "dnssec_config" {
+    for_each = var.managed_dns.dnssec ? [1] : []
+    content {
+      state = "on"
+    }
   }
 }
 
