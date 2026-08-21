@@ -40,7 +40,7 @@ resource "google_dns_record_set" "caa" {
 resource "google_dns_managed_zone" "dataplane" {
   count       = var.managed_dns.zone_create ? 1 : 0
   name        = var.deploy_id
-  dns_name    = "${var.deploy_id}.${trimsuffix(var.managed_dns.dns_name, ".")}."
+  dns_name    = "${trimsuffix(var.managed_dns.zone_fqdn, ".")}."
   description = "Domino dataplane DNS zone for ${var.deploy_id}"
 
   dynamic "dnssec_config" {

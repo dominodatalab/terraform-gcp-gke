@@ -121,6 +121,7 @@ variable "managed_dns" {
     dns_name = DNS record name to create
     service_prefixes = List of additional prefixes to the dns_name to create
     zone_create = Whether to create a dedicated Cloud DNS managed zone for this dataplane, plus workload identities for external-dns and cert-manager
+    zone_fqdn = FQDN of the dataplane zone to create. Required when zone_create=true
     dnssec = Whether to enable DNSSEC for the created zone
   }
   EOF
@@ -130,13 +131,14 @@ variable "managed_dns" {
     dns_name         = optional(string, "")
     service_prefixes = optional(set(string), [])
     zone_create      = optional(bool, false)
+    zone_fqdn        = optional(string, "")
     dnssec           = optional(bool, false)
   })
   default = {}
 
   validation {
-    condition     = !var.managed_dns.zone_create || length(var.managed_dns.dns_name) > 0
-    error_message = "managed_dns.dns_name must be set when managed_dns.zone_create=true."
+    condition     = !var.managed_dns.zone_create || can(regex("^[a-z0-9]([-a-z0-9.]*[a-z0-9])?$", var.managed_dns.zone_fqdn))
+    error_message = "managed_dns.zone_fqdn must be a DNS name with no trailing dot when managed_dns.zone_create=true."
   }
 }
 
