@@ -62,11 +62,12 @@ variable "storage" {
       capacity_gb = NFS instance disk size
     }
     gcs = {
+      create = Whether to create the Domino GCS bucket and its IAM/KMS bindings. Set to false for a compute-only dataplane.
       force_destroy_on_deletion = Toogle to allow recursive deletion of all objects in the bucket. if 'false' terraform will NOT be able to delete non-empty buckets.
     }
     gcnv = {
       enabled = Provision a Google Cloud NetApp Volumes storage pool in ONTAP-mode (Trident GCNV backend)
-      pool_capacity_gib = GCNV storage pool capacity (GiB)
+      pool_capacity_gib = GCNV storage pool capacity (GiB). Must cover the shared store plus Domino's 931 GiB staging volume.
       trident_namespace = Namespace containing the Trident controller service account
       regional = If true, create a zone-redundant (regional) pool with two synchronous replicas across two zones; if false (default), a single-zone (zonal) pool.
       primary_zone = Active zone for a regional pool. Required when regional is true.
@@ -84,11 +85,12 @@ variable "storage" {
       capacity_gb = optional(number, 100)
     }), {}),
     gcs = optional(object({
+      create                    = optional(bool, true)
       force_destroy_on_deletion = optional(bool, false)
     }), {}),
     gcnv = optional(object({
       enabled           = optional(bool, false)
-      pool_capacity_gib = optional(number, 1024)
+      pool_capacity_gib = optional(number, 1200)
       trident_namespace = optional(string, "trident")
       regional          = optional(bool, false)
       primary_zone      = optional(string)
@@ -118,6 +120,9 @@ variable "managed_dns" {
     name = Managed zone to modify
     dns_name = DNS record name to create
     service_prefixes = List of additional prefixes to the dns_name to create
+    zone_create = Whether to create a dedicated Cloud DNS managed zone for this dataplane, plus workload identities for external-dns and cert-manager
+    zone_fqdn = FQDN of the dataplane zone to create. Required when zone_create=true
+    dnssec = Whether to enable DNSSEC for the created zone
   }
   EOF
   type = object({
@@ -125,9 +130,16 @@ variable "managed_dns" {
     name             = optional(string, "")
     dns_name         = optional(string, "")
     service_prefixes = optional(set(string), [])
-
+    zone_create      = optional(bool, false)
+    zone_fqdn        = optional(string, "")
+    dnssec           = optional(bool, false)
   })
   default = {}
+
+  validation {
+    condition     = !var.managed_dns.zone_create || can(regex("^[a-z0-9]([-a-z0-9.]*[a-z0-9])?$", var.managed_dns.zone_fqdn))
+    error_message = "managed_dns.zone_fqdn must be a DNS name with no trailing dot when managed_dns.zone_create=true."
+  }
 }
 
 variable "kms" {
@@ -139,6 +151,20 @@ variable "kms" {
 
   type = object({
     database_encryption_key_name = optional(string, null)
+  })
+
+  default = {}
+}
+
+variable "registry" {
+  description = <<EOF
+  registry = {
+    create = Whether to create the Domino Artifact Registry repository and its GCR credential refresher. Set to false for a compute-only dataplane.
+  }
+  EOF
+
+  type = object({
+    create = optional(bool, true)
   })
 
   default = {}

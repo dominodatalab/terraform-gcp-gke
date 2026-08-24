@@ -1,6 +1,6 @@
 output "bucket_name" {
-  value       = google_storage_bucket.bucket.name
-  description = "Name of the cloud storage bucket"
+  value       = var.storage.gcs.create ? google_storage_bucket.bucket[0].name : null
+  description = "Name of the cloud storage bucket (null when storage.gcs.create=false)"
 }
 
 output "cluster" {
@@ -55,16 +55,16 @@ output "service_accounts" {
 }
 
 output "domino_artifact_repository" {
-  value       = google_artifact_registry_repository.domino
-  description = "Domino Google artifact repository"
+  value       = var.registry.create ? google_artifact_registry_repository.domino[0] : null
+  description = "Domino Google artifact repository (null when registry.create=false)"
 }
 
 output "gcr_credential_refresher" {
-  value = {
-    service_account_email = google_service_account.gcr_credential_refresher.email
-    registry_server       = "${google_artifact_registry_repository.domino.location}-docker.pkg.dev"
-  }
-  description = "Configuration for the GCR credential refresher Helm chart values"
+  value = var.registry.create ? {
+    service_account_email = google_service_account.gcr_credential_refresher[0].email
+    registry_server       = "${google_artifact_registry_repository.domino[0].location}-docker.pkg.dev"
+  } : null
+  description = "Configuration for the GCR credential refresher Helm chart values (null when registry.create=false)"
 }
 
 output "nfs_instance_ip" {
@@ -90,4 +90,27 @@ output "gcnv" {
     export_policy_name    = var.storage.gcnv.enabled ? local.gcnv_root_volume.nas.export_policy_name : null
   }
   description = "GCNV ONTAP-mode pool and Trident service account."
+}
+
+output "dns_zone" {
+  value = var.managed_dns.zone_create ? {
+    name         = google_dns_managed_zone.dataplane[0].name
+    dns_name     = google_dns_managed_zone.dataplane[0].dns_name
+    name_servers = google_dns_managed_zone.dataplane[0].name_servers
+  } : null
+  description = "Per-dataplane Cloud DNS zone (null when managed_dns.zone_create=false). name_servers is consumed by the control plane to create the NS delegation record."
+}
+
+output "external_dns_identity" {
+  value = var.managed_dns.zone_create ? {
+    service_account_email = google_service_account.external_dns[0].email
+  } : null
+  description = "Workload identity for external-dns (null when managed_dns.zone_create=false)"
+}
+
+output "cert_manager_identity" {
+  value = var.managed_dns.zone_create ? {
+    service_account_email = google_service_account.cert_manager[0].email
+  } : null
+  description = "Workload identity for cert-manager (null when managed_dns.zone_create=false)"
 }
