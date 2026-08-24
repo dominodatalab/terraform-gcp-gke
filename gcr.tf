@@ -33,7 +33,6 @@ resource "google_artifact_registry_repository_iam_member" "platform" {
   member = "serviceAccount:${google_service_account.accounts["platform"].email}"
 }
 
-# State migration: these resources were unconditional before registry.create existed.
 moved {
   from = google_artifact_registry_repository.domino
   to   = google_artifact_registry_repository.domino[0]

@@ -33,9 +33,7 @@ resource "google_dns_record_set" "caa" {
   rrdatas = ["0 issue \"letsencrypt.org\"", "0 issue \"pki.goog\""]
 }
 
-# Per-dataplane zone; the caller NS-delegates it from the control plane's Route53 zone.
-# Signing is opt-in: every parent up to domino.tech is unsigned, so a DS record could never
-# be authenticated.
+# Parent zones are unsigned, so a DS record could not be authenticated.
 # tfsec:ignore:google-dns-enable-dnssec
 resource "google_dns_managed_zone" "dataplane" {
   count       = var.managed_dns.zone_create ? 1 : 0
@@ -75,8 +73,7 @@ resource "google_dns_managed_zone_iam_member" "external_dns" {
   member       = "serviceAccount:${google_service_account.external_dns[0].email}"
 }
 
-# external-dns discovers its zone by listing zones at project scope, which the zone-scoped
-# grant above cannot satisfy. dns.reader is read-only; writes stay zone-scoped.
+# external-dns lists zones at project scope, which the zone-scoped grant above cannot cover.
 resource "google_project_iam_member" "external_dns_zone_reader" {
   count = var.managed_dns.zone_create ? 1 : 0
 

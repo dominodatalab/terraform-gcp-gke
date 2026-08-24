@@ -40,7 +40,6 @@ resource "google_storage_bucket" "bucket" {
   depends_on = [google_kms_crypto_key_iam_binding.binding]
 }
 
-# State migration: these resources were unconditional before storage.gcs.create existed.
 moved {
   from = google_storage_bucket.bucket
   to   = google_storage_bucket.bucket[0]

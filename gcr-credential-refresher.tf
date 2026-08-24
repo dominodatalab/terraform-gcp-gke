@@ -36,7 +36,6 @@ resource "google_service_account_iam_member" "gcr_credential_refresher_workload_
   member             = "serviceAccount:${var.project}.svc.id.goog[${var.namespaces.platform}/nucleus-gcr-credential-refresher]"
 }
 
-# State migration: these resources were unconditional before registry.create existed.
 moved {
   from = google_service_account.gcr_credential_refresher
   to   = google_service_account.gcr_credential_refresher[0]
