@@ -6,7 +6,7 @@ parameters:
     type: string
 
 orbs:
-  terraform: circleci/terraform@4.0.0
+  terraform: circleci/terraform@3.7.0
 
 environment: &default_environment
   CLOUDSDK_CORE_PROJECT: domino-eng-platform-dev
