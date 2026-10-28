@@ -29,7 +29,7 @@ commands:
       - run:
           name: install pre-reqs
           command: |
-            apt-get install -y wget zip
+            apt-get update && apt-get install -y wget zip
   install_tf:
     parameters:
       terraform_version:
