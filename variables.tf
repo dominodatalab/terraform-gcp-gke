@@ -258,7 +258,7 @@ variable "node_pools" {
         disk_size_gb    = optional(number, 400)
         image_type      = optional(string, "COS_CONTAINERD")
         instance_type   = optional(string, "n1-highmem-8")
-        gpu_accelerator = optional(string, "nvidia-tesla-p100")
+        gpu_accelerator = optional(string, "nvidia-tesla-t4")
         labels = optional(map(string), {
           "dominodatalab.com/node-pool" = "default-gpu"
           "nvidia.com/gpu"              = "true"
