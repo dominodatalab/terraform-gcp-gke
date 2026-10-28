@@ -24,6 +24,7 @@
         }
       },
       "gke": {
+        "release_channel": "REGULAR",
         "public_access": {
           "enabled": true,
           "cidrs": ["0.0.0.0/0"]
