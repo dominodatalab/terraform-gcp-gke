@@ -100,7 +100,7 @@ Please submit any feature enhancements, bug fixes, or ideas via pull requests or
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4 |
 | <a name="requirement_google"></a> [google](#requirement\_google) | >= 7.28.0, < 8.0 |
 | <a name="requirement_google-beta"></a> [google-beta](#requirement\_google-beta) | >= 5.0, < 8.0 |
-| <a name="requirement_netapp-ontap"></a> [netapp-ontap](#requirement\_netapp-ontap) | 2.7.0 |
+| <a name="requirement_netapp-ontap"></a> [netapp-ontap](#requirement\_netapp-ontap) | 2.7.1 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.9 |
 
 ## Providers
@@ -108,7 +108,7 @@ Please submit any feature enhancements, bug fixes, or ideas via pull requests or
 | Name | Version |
 | ---- | ------- |
 | <a name="provider_google"></a> [google](#provider\_google) | >= 7.28.0, < 8.0 |
-| <a name="provider_netapp-ontap"></a> [netapp-ontap](#provider\_netapp-ontap) | 2.7.0 |
+| <a name="provider_netapp-ontap"></a> [netapp-ontap](#provider\_netapp-ontap) | 2.7.1 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
@@ -169,14 +169,14 @@ No modules.
 | [google_service_networking_connection.gcnv](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_networking_connection) | resource |
 | [google_storage_bucket.bucket](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket) | resource |
 | [google_storage_bucket_iam_binding.bucket](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket_iam_binding) | resource |
-| [netapp-ontap_nfs_export_policy_rule.gcnv_node_access](https://registry.terraform.io/providers/NetApp/netapp-ontap/2.7.0/docs/resources/nfs_export_policy_rule) | resource |
+| [netapp-ontap_nfs_export_policy_rule.gcnv_node_access](https://registry.terraform.io/providers/NetApp/netapp-ontap/2.7.1/docs/resources/nfs_export_policy_rule) | resource |
 | [terraform_data.gcnv_ontap_ready](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [terraform_data.gcnv_volume_cleanup](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [terraform_data.kubeconfig](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [google_compute_zones.gcnv](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/compute_zones) | data source |
 | [google_project.domino](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/project) | data source |
 | [google_storage_project_service_account.gcs_account](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/storage_project_service_account) | data source |
-| [netapp-ontap_volumes.gcnv](https://registry.terraform.io/providers/NetApp/netapp-ontap/2.7.0/docs/data-sources/volumes) | data source |
+| [netapp-ontap_volumes.gcnv](https://registry.terraform.io/providers/NetApp/netapp-ontap/2.7.1/docs/data-sources/volumes) | data source |
 
 ## Inputs
 
