@@ -2,7 +2,7 @@ version: 2.1
 
 parameters:
   terraform_version:
-    default: "1.15.6"
+    default: "1.17.0"
     type: string
 
 orbs:
@@ -29,7 +29,7 @@ commands:
       - run:
           name: install pre-reqs
           command: |
-            apt-get install -y wget zip
+            apt-get update && apt-get install -y wget zip
   install_tf:
     parameters:
       terraform_version:
@@ -87,7 +87,8 @@ jobs:
       - run:
           name: pre-commit
           command: |
-            curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+            # tflint removed its install script upstream (terraform-linters/tflint#2607)
+            curl -fsSL --retry 10 --retry-delay 2 --retry-all-errors -o /tmp/tflint.zip https://github.com/terraform-linters/tflint/releases/download/v0.65.0/tflint_linux_amd64.zip && python3 -m zipfile -e /tmp/tflint.zip /tmp && chmod +x /tmp/tflint && sudo mv /tmp/tflint /usr/local/bin
             curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
             curl -L https://github.com/terraform-docs/terraform-docs/releases/download/v0.24.0/terraform-docs-v0.24.0-linux-amd64.tar.gz | tar -C /tmp -xzf - && chmod +x /tmp/terraform-docs && sudo mv /tmp/terraform-docs /usr/local/bin
             pip3 install checkov pre-commit

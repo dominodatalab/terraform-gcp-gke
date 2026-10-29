@@ -16,6 +16,13 @@
         "platform": "domino-platform",
         "compute": "domino-compute"
       },
+      "node_pools": {
+        "compute": {},
+        "platform": {},
+        "gpu": {
+          "gpu_accelerator": "nvidia-tesla-t4"
+        }
+      },
       "gke": {
         "public_access": {
           "enabled": true,
